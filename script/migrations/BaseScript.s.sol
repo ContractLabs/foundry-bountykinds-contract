@@ -63,8 +63,10 @@ contract BaseScript is Logger {
      * @dev Utilized in the event of upgrading to new logic.
      */
     function upgradeTo(string memory contractName) public returns (address, address) {
-        address proxy = getContractAddress(contractName, block.chainid);
-        string memory kind = getProxyKind(contractName, block.chainid);
+        // address proxy = getContractAddress(contractName, block.chainid);
+        address proxy = 0x412dEa263e6531645235931dC104dD3DB1Ec7923;
+        string memory kind = "uups";
+        // string memory kind = getProxyKind(contractName, block.chainid);
         address newImplementation = deployCode(_prefixName(contractName), _EMPTY_PARAMS);
 
         if (_areStringsEqual(kind, "uups")) {
