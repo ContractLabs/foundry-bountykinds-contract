@@ -3,15 +3,18 @@
 
 pragma solidity ^0.8.0;
 
-import {IBeacon} from "./IBeacon.sol";
-import {Ownable} from "../../access/Ownable.sol";
-import {Address} from "../../utils/Address.sol";
+import { IBeacon } from "./IBeacon.sol";
+import { Ownable } from "../../access/Ownable.sol";
+import { Address } from "../../utils/Address.sol";
 
 /**
- * @dev This contract is used in conjunction with one or more instances of {BeaconProxy} to determine their
- * implementation contract, which is where they will delegate all function calls.
+ * @dev This contract is used in conjunction with one or more instances of
+ * {BeaconProxy} to determine their
+ * implementation contract, which is where they will delegate all function
+ * calls.
  *
- * An owner is able to change the implementation the beacon points to, thus upgrading the proxies that use this beacon.
+ * An owner is able to change the implementation the beacon points to, thus
+ * upgrading the proxies that use this beacon.
  */
 contract UpgradeableBeacon is IBeacon, Ownable {
     bytes32 private __implementation;
@@ -22,7 +25,8 @@ contract UpgradeableBeacon is IBeacon, Ownable {
     event Upgraded(address indexed implementation);
 
     /**
-     * @dev Sets the address of the initial implementation, and the deployer account as the owner who can upgrade the
+     * @dev Sets the address of the initial implementation, and the deployer
+     * account as the owner who can upgrade the
      * beacon.
      */
     constructor(address implementation_) payable {
@@ -67,8 +71,9 @@ contract UpgradeableBeacon is IBeacon, Ownable {
      * - `newImplementation` must be a contract.
      */
     function _setImplementation(address newImplementation) private {
-        if (!Address.isContract(newImplementation))
+        if (!Address.isContract(newImplementation)) {
             revert UpgradeableBeacon__ImplementationIsNotAContract();
+        }
 
         assembly {
             sstore(__implementation.slot, newImplementation)

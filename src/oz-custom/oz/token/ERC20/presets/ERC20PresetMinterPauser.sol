@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/presets/ERC20PresetMinterPauser.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (token/ERC20/presets/ERC20PresetMinterPauser.sol)
 
 pragma solidity ^0.8.17;
 
-import {ERC20} from "../ERC20.sol";
-import {ERC20Burnable} from "../extensions/ERC20Burnable.sol";
-import {ERC20Pausable} from "../extensions/ERC20Pausable.sol";
-import {
-    AccessControlEnumerable
-} from "../../../access/AccessControlEnumerable.sol";
+import { ERC20 } from "../ERC20.sol";
+import { ERC20Burnable } from "../extensions/ERC20Burnable.sol";
+import { ERC20Pausable } from "../extensions/ERC20Pausable.sol";
+import { AccessControlEnumerable } from
+    "../../../access/AccessControlEnumerable.sol";
 
 /**
  * @dev {ERC20} token, including:
@@ -47,7 +47,10 @@ abstract contract ERC20PresetMinterPauser is
     constructor(
         string memory name_,
         string memory symbol_
-    ) payable ERC20(name_, symbol_) {
+    )
+        payable
+        ERC20(name_, symbol_)
+    {
         address sender = _msgSender();
 
         _grantRole(MINTER_ROLE, sender);
@@ -67,7 +70,11 @@ abstract contract ERC20PresetMinterPauser is
     function mint(
         address to,
         uint256 amount
-    ) external virtual onlyRole(MINTER_ROLE) {
+    )
+        external
+        virtual
+        onlyRole(MINTER_ROLE)
+    {
         _mint(to, amount);
     }
 
@@ -101,7 +108,11 @@ abstract contract ERC20PresetMinterPauser is
         address from,
         address to,
         uint256 amount
-    ) internal virtual override(ERC20, ERC20Pausable) {
+    )
+        internal
+        virtual
+        override(ERC20, ERC20Pausable)
+    {
         super._beforeTokenTransfer(from, to, amount);
     }
 }

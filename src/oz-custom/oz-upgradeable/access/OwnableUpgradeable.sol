@@ -3,17 +3,16 @@
 
 pragma solidity ^0.8.0;
 
-import {ContextUpgradeable} from "../utils/ContextUpgradeable.sol";
+import { ContextUpgradeable } from "../utils/ContextUpgradeable.sol";
 
-import {Bytes32Address} from "../../libraries/Bytes32Address.sol";
+import { Bytes32Address } from "../../libraries/Bytes32Address.sol";
 
 interface IOwnableUpgradeable {
     error Ownable__Unauthorized();
     error Ownable__NonZeroAddress();
 
     event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
+        address indexed previousOwner, address indexed newOwner
     );
 
     function renounceOwnership() external;
@@ -73,8 +72,9 @@ abstract contract OwnableUpgradeable is
      * @dev Throws if the sender is not the owner.
      */
     function _checkOwner(address sender_) internal view virtual {
-        if (__owner != sender_.fillLast12Bytes())
+        if (__owner != sender_.fillLast12Bytes()) {
             revert Ownable__Unauthorized();
+        }
     }
 
     /**
@@ -107,7 +107,8 @@ abstract contract OwnableUpgradeable is
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

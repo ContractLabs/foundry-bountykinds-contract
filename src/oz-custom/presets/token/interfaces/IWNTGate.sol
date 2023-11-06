@@ -1,6 +1,6 @@
 pragma solidity ^0.8.17;
 
-import {IWNT} from "./IWNT.sol";
+import { IWNT } from "./IWNT.sol";
 
 interface IWNTGate {
     error WNTGate__InvalidAddress();

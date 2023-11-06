@@ -2,7 +2,8 @@
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
-import {Initializable} from "../proxy/utils/Initializable.sol";
+
+import { Initializable } from "../proxy/utils/Initializable.sol";
 
 /**
  * @dev Provides information about the current execution context, including the
@@ -24,7 +25,8 @@ abstract contract ContextUpgradeable is Initializable {
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

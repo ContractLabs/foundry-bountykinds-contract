@@ -60,7 +60,12 @@ interface IBK721 is IBKAsset {
      * @param typeId The type ID of the token.
      * @param amount The amount of tokens being redeemed.
      */
-    event Redeemded(address indexed operator, address indexed claimer, uint256 indexed typeId, uint256 amount);
+    event Redeemded(
+        address indexed operator,
+        address indexed claimer,
+        uint256 indexed typeId,
+        uint256 amount
+    );
 
     /**
      * @dev Emitted when tokens are minted in bulk by an operator.
@@ -68,15 +73,20 @@ interface IBK721 is IBKAsset {
      * @param amount The amount of tokens being minted.
      * @param tos The addresses of the users receiving the tokens.
      */
-    event BatchMinted(address indexed operator, uint256 indexed amount, address[] tos);
+    event BatchMinted(
+        address indexed operator, uint256 indexed amount, address[] tos
+    );
 
     /**
-     * @dev Emitted when tokens are transferred in bulk from one user to multiple users.
+     * @dev Emitted when tokens are transferred in bulk from one user to
+     * multiple users.
      * @param operator The address of the operator performing the transfer.
      * @param from The address of the user transferring the tokens.
      * @param nextId The next available token ID.
      */
-    event BatchTransfered(address indexed operator, address indexed from, uint256 indexed nextId);
+    event BatchTransfered(
+        address indexed operator, address indexed from, uint256 indexed nextId
+    );
 
     function exchangeAssets(
         IBK721 forNFT_,
@@ -100,11 +110,26 @@ interface IBK721 is IBKAsset {
     )
         external;
 
-    function transferBatch(address from_, address[] calldata tos_, uint256[] calldata tokenIds_) external;
+    function transferBatch(
+        address from_,
+        address[] calldata tos_,
+        uint256[] calldata tokenIds_
+    )
+        external;
 
-    function mint(address to_, uint256 tokenId_) external returns (uint256 tokenId);
+    function mint(
+        address to_,
+        uint256 tokenId_
+    )
+        external
+        returns (uint256 tokenId);
 
-    function safeMint(address to_, uint256 typeId_) external returns (uint256 tokenId);
+    function safeMint(
+        address to_,
+        uint256 typeId_
+    )
+        external
+        returns (uint256 tokenId);
 
     function mintBatch(uint256 typeId_, address[] calldata tos_) external;
 
@@ -116,13 +141,30 @@ interface IBK721 is IBKAsset {
         external
         returns (uint256[] memory tokenIds);
 
-    function merge(uint256[] calldata fromIds_, uint256 toId_, uint256 deadline_, bytes calldata signature_) external;
+    function merge(
+        uint256[] calldata fromIds_,
+        uint256 toId_,
+        uint256 deadline_,
+        bytes calldata signature_
+    )
+        external;
 
     function nonces(address account_) external view returns (uint256);
 
-    function nonceBitMaps(address account_, uint256 nonce_) external view returns (uint256 bitmap, bool isDirtied);
+    function nonceBitMaps(
+        address account_,
+        uint256 nonce_
+    )
+        external
+        view
+        returns (uint256 bitmap, bool isDirtied);
 
-    function invalidateNonce(address account_, uint248 wordPos_, uint256 mask_) external;
+    function invalidateNonce(
+        address account_,
+        uint248 wordPos_,
+        uint256 mask_
+    )
+        external;
 
     function nextIdFromType(uint256 typeId_) external view returns (uint256);
 

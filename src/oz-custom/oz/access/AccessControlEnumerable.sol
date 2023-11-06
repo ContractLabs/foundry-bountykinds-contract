@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (access/AccessControlEnumerable.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (access/AccessControlEnumerable.sol)
 
 pragma solidity ^0.8.17;
 
-import {AccessControl} from "./AccessControl.sol";
+import { AccessControl } from "./AccessControl.sol";
 
-import {IAccessControlEnumerable} from "./IAccessControlEnumerable.sol";
+import { IAccessControlEnumerable } from "./IAccessControlEnumerable.sol";
 
-import {EnumerableSet} from "../utils/structs/EnumerableSet.sol";
+import { EnumerableSet } from "../utils/structs/EnumerableSet.sol";
 
 /**
- * @dev Extension of {AccessControl} that allows enumerating the members of each role.
+ * @dev Extension of {AccessControl} that allows enumerating the members of each
+ * role.
  */
 abstract contract AccessControlEnumerable is
     IAccessControlEnumerable,
@@ -23,17 +25,24 @@ abstract contract AccessControlEnumerable is
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override returns (bool) {
-        return
-            interfaceId == type(IAccessControlEnumerable).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return interfaceId == type(IAccessControlEnumerable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
-    function getAllRoleMembers(
-        bytes32 role_
-    ) public view virtual override returns (address[] memory) {
+    function getAllRoleMembers(bytes32 role_)
+        public
+        view
+        virtual
+        override
+        returns (address[] memory)
+    {
         return _roleMembers[role_].values();
     }
 
@@ -46,13 +55,20 @@ abstract contract AccessControlEnumerable is
      *
      * WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure
      * you perform all queries on the same block. See the following
-     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
+     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum
+     * post]
      * for more information.
      */
     function getRoleMember(
         bytes32 role,
         uint256 index
-    ) public view virtual override returns (address) {
+    )
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -60,9 +76,13 @@ abstract contract AccessControlEnumerable is
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(
-        bytes32 role
-    ) public view virtual override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -72,7 +92,11 @@ abstract contract AccessControlEnumerable is
     function _grantRole(
         bytes32 role,
         address account
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._grantRole(role, account);
         _roleMembers[role].add(account);
     }
@@ -83,7 +107,11 @@ abstract contract AccessControlEnumerable is
     function _revokeRole(
         bytes32 role,
         address account
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._revokeRole(role, account);
         _roleMembers[role].remove(account);
     }

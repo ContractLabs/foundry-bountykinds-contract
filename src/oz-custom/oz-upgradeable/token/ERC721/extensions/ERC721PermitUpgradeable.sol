@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.10;
 
-import {ERC721Upgradeable, IERC165Upgradeable} from "../ERC721Upgradeable.sol";
-import {
-    SignableUpgradeable
-} from "../../../../internal-upgradeable/SignableUpgradeable.sol";
+import { ERC721Upgradeable, IERC165Upgradeable } from "../ERC721Upgradeable.sol";
+import { SignableUpgradeable } from
+    "../../../../internal-upgradeable/SignableUpgradeable.sol";
 
-import {IERC721PermitUpgradeable} from "./IERC721PermitUpgradeable.sol";
+import { IERC721PermitUpgradeable } from "./IERC721PermitUpgradeable.sol";
 
 /// @title ERC721 with permit
 /// @notice Nonfungible tokens that support an approve via signature, i.e. permit
@@ -18,12 +17,16 @@ abstract contract ERC721PermitUpgradeable is
     function __ERC721Permit_init(
         string calldata name_,
         string calldata symbol_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         __EIP712_init_unchained(name_, "1");
         __ERC721_init_unchained(name_, symbol_);
     }
 
-    /// @dev Gets the current nonce for a token ID and then increments it, returning the original value
+    /// @dev Gets the current nonce for a token ID and then increments it,
+    /// returning the original value
 
     /// @inheritdoc IERC721PermitUpgradeable
     function DOMAIN_SEPARATOR()
@@ -35,7 +38,8 @@ abstract contract ERC721PermitUpgradeable is
         return _domainSeparatorV4();
     }
 
-    /// @dev Value is equal to to keccak256("Permit(address spender,uint256 tokenId,uint256 nonce,uint256 deadline)");
+    /// @dev Value is equal to to keccak256("Permit(address spender,uint256
+    /// tokenId,uint256 nonce,uint256 deadline)");
     bytes32 private constant __PERMIT_TYPEHASH =
         0x49ecf333e5b8c95c40fdafc95c1ad136e8914a8fb55e9dc8bb01eaa83a2df9ad;
 
@@ -45,7 +49,10 @@ abstract contract ERC721PermitUpgradeable is
         uint256 tokenId_,
         uint256 deadline_,
         bytes calldata signature_
-    ) external override {
+    )
+        external
+        override
+    {
         address owner = ownerOf(tokenId_);
 
         bytes32 digest;
@@ -88,9 +95,12 @@ abstract contract ERC721PermitUpgradeable is
         }
     }
 
-    function nonces(
-        uint256 tokenId_
-    ) external view override returns (uint256 nonce) {
+    function nonces(uint256 tokenId_)
+        external
+        view
+        override
+        returns (uint256 nonce)
+    {
         assembly {
             mstore(0x00, tokenId_)
             mstore(0x20, _nonces.slot)
@@ -100,25 +110,24 @@ abstract contract ERC721PermitUpgradeable is
 
     /// @notice Query if a contract implements an interface
     /// @param interfaceId The interface identifier, as specified in ERC-165
-    /// @dev Overridden from ERC721 here in order to include the interface of this EIP
+    /// @dev Overridden from ERC721 here in order to include the interface of
+    /// this EIP
     /// @return `true` if the contract implements `interfaceID` and
     ///  `interfaceID` is not 0xffffffff, `false` otherwise
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
         override(ERC721Upgradeable, IERC165Upgradeable)
         returns (bool)
     {
-        return
-            interfaceId == type(IERC721PermitUpgradeable).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC721PermitUpgradeable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

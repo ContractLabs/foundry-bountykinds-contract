@@ -3,10 +3,11 @@
 
 pragma solidity ^0.8.0;
 
-import {IAccessControlUpgradeable} from "./IAccessControlUpgradeable.sol";
+import { IAccessControlUpgradeable } from "./IAccessControlUpgradeable.sol";
 
 /**
- * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
+ * @dev External interface of AccessControlEnumerable declared to support ERC165
+ * detection.
  */
 interface IAccessControlEnumerableUpgradeable is IAccessControlUpgradeable {
     /**
@@ -18,13 +19,17 @@ interface IAccessControlEnumerableUpgradeable is IAccessControlUpgradeable {
      *
      * WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure
      * you perform all queries on the same block. See the following
-     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
+     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum
+     * post]
      * for more information.
      */
     function getRoleMember(
         bytes32 role,
         uint256 index
-    ) external view returns (address);
+    )
+        external
+        view
+        returns (address);
 
     /**
      * @dev Returns the number of accounts that have `role`. Can be used
@@ -32,7 +37,8 @@ interface IAccessControlEnumerableUpgradeable is IAccessControlUpgradeable {
      */
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 
-    function getAllRoleMembers(
-        bytes32 role_
-    ) external view returns (address[] memory);
+    function getAllRoleMembers(bytes32 role_)
+        external
+        view
+        returns (address[] memory);
 }

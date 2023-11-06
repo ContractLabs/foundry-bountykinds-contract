@@ -3,15 +3,14 @@
 
 pragma solidity ^0.8.0;
 
-import {Initializable} from "../proxy/utils/Initializable.sol";
-import {OwnableUpgradeable, Bytes32Address} from "./OwnableUpgradeable.sol";
+import { Initializable } from "../proxy/utils/Initializable.sol";
+import { OwnableUpgradeable, Bytes32Address } from "./OwnableUpgradeable.sol";
 
 interface IOwnable2StepUpgradeable {
     error Ownable2Step__CallerIsNotTheNewOwner();
 
     event OwnershipTransferStarted(
-        address indexed previousOwner,
-        address indexed newOwner
+        address indexed previousOwner, address indexed newOwner
     );
 
     function pendingOwner() external view returns (address _pendingOwner);
@@ -51,18 +50,24 @@ abstract contract Ownable2StepUpgradeable is
     }
 
     /**
-     * @dev Starts the ownership transfer of the contract to a new account. Replaces the pending transfer if there is one.
+     * @dev Starts the ownership transfer of the contract to a new account.
+     * Replaces the pending transfer if there is
+     * one.
      * Can only be called by the current owner.
      */
-    function transferOwnership(
-        address newOwner_
-    ) public virtual override onlyOwner {
+    function transferOwnership(address newOwner_)
+        public
+        virtual
+        override
+        onlyOwner
+    {
         __pendingOwner = newOwner_.fillLast12Bytes();
         emit OwnershipTransferStarted(owner(), newOwner_);
     }
 
     /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`) and deletes any pending owner.
+     * @dev Transfers ownership of the contract to a new account (`newOwner`)
+     * and deletes any pending owner.
      * Internal function without access restriction.
      */
     function _transferOwnership(address newOwner) internal virtual override {
@@ -75,14 +80,16 @@ abstract contract Ownable2StepUpgradeable is
      */
     function acceptOwnership() external {
         address sender = _msgSender();
-        if (pendingOwner() != sender)
+        if (pendingOwner() != sender) {
             revert Ownable2Step__CallerIsNotTheNewOwner();
+        }
 
         _transferOwnership(sender);
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (proxy/ERC1967/ERC1967Upgrade.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (proxy/ERC1967/ERC1967Upgrade.sol)
 
 pragma solidity ^0.8.2;
 
-import {IBeacon} from "../beacon/IBeacon.sol";
+import { IBeacon } from "../beacon/IBeacon.sol";
 
-import {IERC1822Proxiable} from "../../interfaces/draft-IERC1822.sol";
+import { IERC1822Proxiable } from "../../interfaces/draft-IERC1822.sol";
 
-import {Address} from "../../utils/Address.sol";
-import {StorageSlot} from "../../utils/StorageSlot.sol";
+import { Address } from "../../utils/Address.sol";
+import { StorageSlot } from "../../utils/StorageSlot.sol";
 
 error ERC1967__ZeroAddress();
 error ERC1967__NewBeaconIsNotAContract();
@@ -18,7 +19,8 @@ error ERC1967__NewImplementationIsNotAContract();
 error ERC1967__BeaconImplementationIsNotAContract();
 
 /**
- * @dev This abstract contract provides getters and event emitting update functions for
+ * @dev This abstract contract provides getters and event emitting update
+ * functions for
  * https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots.
  *
  * _Available since v4.1._
@@ -32,7 +34,8 @@ abstract contract ERC1967Upgrade {
 
     /**
      * @dev Storage slot with the address of the current implementation.
-     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1, and is
+     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted
+     * by 1, and is
      * validated in the constructor.
      */
     bytes32 internal constant _IMPLEMENTATION_SLOT =
@@ -54,11 +57,11 @@ abstract contract ERC1967Upgrade {
      * @dev Stores a new address in the EIP1967 implementation slot.
      */
     function _setImplementation(address newImplementation) private {
-        if (!Address.isContract(newImplementation))
+        if (!Address.isContract(newImplementation)) {
             revert ERC1967__NewImplementationIsNotAContract();
-        StorageSlot
-            .getAddressSlot(_IMPLEMENTATION_SLOT)
-            .value = newImplementation;
+        }
+        StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT).value =
+            newImplementation;
     }
 
     /**
@@ -80,14 +83,18 @@ abstract contract ERC1967Upgrade {
         address newImplementation,
         bytes memory data,
         bool forceCall
-    ) internal {
+    )
+        internal
+    {
         _upgradeTo(newImplementation);
-        if (forceCall || data.length != 0)
+        if (forceCall || data.length != 0) {
             Address.functionDelegateCall(newImplementation, data);
+        }
     }
 
     /**
-     * @dev Perform implementation upgrade with security checks for UUPS proxies, and additional setup call.
+     * @dev Perform implementation upgrade with security checks for UUPS
+     * proxies, and additional setup call.
      *
      * Emits an {Upgraded} event.
      */
@@ -95,18 +102,24 @@ abstract contract ERC1967Upgrade {
         address newImplementation,
         bytes memory data,
         bool forceCall
-    ) internal {
-        // Upgrades from old implementations will perform a rollback test. This test requires the new
-        // implementation to upgrade back to the old, non-ERC1822 compliant, implementation. Removing
-        // this special case will break upgrade paths from old UUPS implementation to new ones.
+    )
+        internal
+    {
+        // Upgrades from old implementations will perform a rollback test. This
+        // test requires the new
+        // implementation to upgrade back to the old, non-ERC1822 compliant,
+        // implementation. Removing
+        // this special case will break upgrade paths from old UUPS
+        // implementation to new ones.
         if (StorageSlot.getBooleanSlot(__ROLLBACK_SLOT).value) {
             _setImplementation(newImplementation);
         } else {
             try IERC1822Proxiable(newImplementation).proxiableUUID() returns (
                 bytes32 slot
             ) {
-                if (slot != _IMPLEMENTATION_SLOT)
+                if (slot != _IMPLEMENTATION_SLOT) {
                     revert ERC1967__UnsupportedProxiableUUID();
+                }
             } catch {
                 revert ERC1967__NewImplementationIsNotUUPS();
             }
@@ -116,7 +129,8 @@ abstract contract ERC1967Upgrade {
 
     /**
      * @dev Storage slot with the admin of the contract.
-     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1, and is
+     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1, and
+     * is
      * validated in the constructor.
      */
     bytes32 internal constant _ADMIN_SLOT =
@@ -153,8 +167,10 @@ abstract contract ERC1967Upgrade {
     }
 
     /**
-     * @dev The storage slot of the UpgradeableBeacon contract which defines the implementation for this proxy.
-     * This is bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)) and is validated in the constructor.
+     * @dev The storage slot of the UpgradeableBeacon contract which defines the
+     * implementation for this proxy.
+     * This is bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)) and is
+     * validated in the constructor.
      */
     bytes32 internal constant _BEACON_SLOT =
         0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
@@ -175,17 +191,21 @@ abstract contract ERC1967Upgrade {
      * @dev Stores a new beacon in the EIP1967 beacon slot.
      */
     function _setBeacon(address newBeacon) private {
-        if (!Address.isContract(newBeacon))
+        if (!Address.isContract(newBeacon)) {
             revert ERC1967__NewBeaconIsNotAContract();
-        if (!Address.isContract(IBeacon(newBeacon).implementation()))
+        }
+        if (!Address.isContract(IBeacon(newBeacon).implementation())) {
             revert ERC1967__BeaconImplementationIsNotAContract();
+        }
 
         StorageSlot.getAddressSlot(_BEACON_SLOT).value = newBeacon;
     }
 
     /**
-     * @dev Perform beacon upgrade with additional setup call. Note: This upgrades the address of the beacon, it does
-     * not upgrade the implementation contained in the beacon (see {UpgradeableBeacon-_setImplementation} for that).
+     * @dev Perform beacon upgrade with additional setup call. Note: This
+     * upgrades the address of the beacon, it does
+     * not upgrade the implementation contained in the beacon (see
+     * {UpgradeableBeacon-_setImplementation} for that).
      *
      * Emits a {BeaconUpgraded} event.
      */
@@ -193,13 +213,14 @@ abstract contract ERC1967Upgrade {
         address newBeacon,
         bytes memory data,
         bool forceCall
-    ) internal {
+    )
+        internal
+    {
         _setBeacon(newBeacon);
         emit BeaconUpgraded(newBeacon);
         if (forceCall || data.length != 0) {
             Address.functionDelegateCall(
-                IBeacon(newBeacon).implementation(),
-                data
+                IBeacon(newBeacon).implementation(), data
             );
         }
     }

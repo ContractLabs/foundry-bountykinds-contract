@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
-import {ECDSA, EIP712} from "../oz/utils/cryptography/draft-EIP712.sol";
+import { Context } from "../oz/utils/Context.sol";
+import { ECDSA, EIP712 } from "../oz/utils/cryptography/draft-EIP712.sol";
 
-import {ISignable} from "./interfaces/ISignable.sol";
+import { ISignable } from "./interfaces/ISignable.sol";
 
-import {Bytes32Address} from "../libraries/Bytes32Address.sol";
+import { Bytes32Address } from "../libraries/Bytes32Address.sol";
 
 /**
  * @title Signable
@@ -29,7 +29,10 @@ abstract contract Signable is Context, EIP712, ISignable {
     constructor(
         string memory name_,
         string memory version_
-    ) payable EIP712(name_, version_) {}
+    )
+        payable
+        EIP712(name_, version_)
+    { }
 
     /**
      * @dev Verifies that the signer of the typed data is the given address
@@ -41,9 +44,14 @@ abstract contract Signable is Context, EIP712, ISignable {
         address verifier_,
         bytes32 structHash_,
         bytes calldata signature_
-    ) internal view virtual {
-        if (_recoverSigner(structHash_, signature_) != verifier_)
+    )
+        internal
+        view
+        virtual
+    {
+        if (_recoverSigner(structHash_, signature_) != verifier_) {
             revert Signable__InvalidSignature();
+        }
     }
 
     /**
@@ -60,9 +68,14 @@ abstract contract Signable is Context, EIP712, ISignable {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) internal view virtual {
-        if (_recoverSigner(structHash_, v, r, s) != verifier_)
+    )
+        internal
+        view
+        virtual
+    {
+        if (_recoverSigner(structHash_, v, r, s) != verifier_) {
             revert Signable__InvalidSignature();
+        }
     }
 
     /**
@@ -74,7 +87,11 @@ abstract contract Signable is Context, EIP712, ISignable {
     function _recoverSigner(
         bytes32 structHash_,
         bytes calldata signature_
-    ) internal view returns (address) {
+    )
+        internal
+        view
+        returns (address)
+    {
         return _hashTypedDataV4(structHash_).recover(signature_);
     }
 
@@ -91,7 +108,11 @@ abstract contract Signable is Context, EIP712, ISignable {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) internal view returns (address) {
+    )
+        internal
+        view
+        returns (address)
+    {
         return _hashTypedDataV4(structHash_).recover(v, r, s);
     }
 
@@ -112,7 +133,8 @@ abstract contract Signable is Context, EIP712, ISignable {
             log4(
                 0x00,
                 0x00,
-                /// @dev value is equal to keccak256("NonceIncremented(address,bytes32,uint256)")
+                /// @dev value is equal to
+                /// keccak256("NonceIncremented(address,bytes32,uint256)")
                 0x81950aaf2c3573be1f953223448244747f16268d5a0573dea6bd6fa249a4c86e,
                 sender,
                 id_,

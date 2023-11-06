@@ -1,43 +1,77 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { BitMapsUpgradeable } from "src/oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
+// forgefmt: disable-start
+import {
+    IBKTreasury
+} from "./interfaces/IBKTreasury.sol";
+import {
+    IMarketplace
+} from "./interfaces/IMarketplace.sol";
+import {
+    Bytes32Address
+} from "src/oz-custom/libraries/Bytes32Address.sol";
+import {
+    FixedPointMathLib
+} from "src/oz-custom/libraries/FixedPointMathLib.sol";
 
-import { SignableUpgradeable } from "src/oz-custom/internal-upgradeable/SignableUpgradeable.sol";
-import { ProxyCheckerUpgradeable } from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
+import {
+    BKFundForwarderUpgradeable
+} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
-import { Roles, IAuthority, ManagerUpgradeable } from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+import {
+    SignableUpgradeable
+} from "src/oz-custom/internal-upgradeable/SignableUpgradeable.sol";
 
-import { BKFundForwarderUpgradeable } from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+import {
+    Roles,
+    IAuthority,
+    ManagerUpgradeable
+} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
 
-import { IBKTreasury } from "./interfaces/IBKTreasury.sol";
-import { IMarketplace } from "./interfaces/IMarketplace.sol";
-import { IWithdrawableUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+import {
+    ProxyCheckerUpgradeable
+} from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
 
-import { IFundForwarderUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+import {
+    BitMapsUpgradeable
+} from "src/oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
 
-import { IERC721PermitUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+import {
+    IWithdrawableUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+
+import {
+    IFundForwarderUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 
 import {
     IERC20Upgradeable,
     IERC20PermitUpgradeable
 } from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
 
-import { FixedPointMathLib } from "src/oz-custom/libraries/FixedPointMathLib.sol";
+import {
+    IERC721PermitUpgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+// forgefmt: disable-end
 
-import { Bytes32Address } from "src/oz-custom/libraries/Bytes32Address.sol";
-
-contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, BKFundForwarderUpgradeable {
+contract Marketplace is
+    IMarketplace,
+    ManagerUpgradeable,
+    SignableUpgradeable,
+    BKFundForwarderUpgradeable
+{
     using Bytes32Address for *;
     using FixedPointMathLib for uint256;
     using BitMapsUpgradeable for BitMapsUpgradeable.BitMap;
 
     uint256 public constant PERCENTAGE_FRACTION = 10_000;
 
-    /// @dev value is equal to keccak256("Permit(address buyer,address nft,address payment,uint256 price,uint256
+    /// @dev value is equal to keccak256("Permit(address buyer,address
+    /// nft,address payment,uint256 price,uint256
     /// tokenId,uint256 nonce,uint256 deadline)")
-    bytes32 private constant __PERMIT_TYPE_HASH = 0xc396b6309f782cacc3389f4dd579db291ad1b771b8b4966f3695dab14150633e;
+    bytes32 private constant __PERMIT_TYPE_HASH =
+        0xc396b6309f782cacc3389f4dd579db291ad1b771b8b4966f3695dab14150633e;
 
     uint256 public protocolFee;
     BitMapsUpgradeable.BitMap private __whitelistedContracts;
@@ -53,7 +87,9 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         __Signable_init_unchained(type(Marketplace).name, "1");
         __Manager_init_unchained(authority_, Roles.TREASURER_ROLE);
         __Marketplace_init_unchained(feeFraction_, supportedContracts_);
-        __FundForwarder_init_unchained(IFundForwarderUpgradeable(address(authority_)).vault());
+        __FundForwarder_init_unchained(
+            IFundForwarderUpgradeable(address(authority_)).vault()
+        );
     }
 
     function __Marketplace_init_unchained(
@@ -67,15 +103,25 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         __whiteListContracts(supportedContracts_);
     }
 
-    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         _changeVault(vault_);
     }
 
-    function whiteListContracts(address[] calldata addrs_) external onlyRole(Roles.OPERATOR_ROLE) {
+    function whiteListContracts(address[] calldata addrs_)
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         __whiteListContracts(addrs_);
     }
 
-    function setProtocolFee(uint256 feeFraction_) external onlyRole(Roles.OPERATOR_ROLE) {
+    function setProtocolFee(uint256 feeFraction_)
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         __setProtocolFee(feeFraction_);
     }
 
@@ -110,16 +156,35 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         return __whitelistedContracts.get(addr_.fillLast96Bits());
     }
 
-    function _beforeRecover(bytes memory) internal override whenPaused onlyRole(Roles.OPERATOR_ROLE) { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        whenPaused
+        onlyRole(Roles.OPERATOR_ROLE)
+    { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 
     function __setProtocolFee(uint256 feeFraction_) private {
         protocolFee = feeFraction_;
         emit ProtocolFeeUpdated(_msgSender(), feeFraction_);
     }
 
-    function __transferItem(address buyerAddr_, address sellerAddr_, Seller calldata seller_) private {
+    function __transferItem(
+        address buyerAddr_,
+        address sellerAddr_,
+        Seller calldata seller_
+    )
+        private
+    {
         uint256 tokenId = seller_.tokenId;
         IERC721PermitUpgradeable nft = seller_.nft;
 
@@ -128,7 +193,9 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         }
 
         if (nft.getApproved(tokenId) != address(this)) {
-            nft.permit(address(this), tokenId, seller_.deadline, seller_.signature);
+            nft.permit(
+                address(this), tokenId, seller_.deadline, seller_.signature
+            );
         }
 
         nft.safeTransferFrom(sellerAddr_, buyerAddr_, tokenId);
@@ -154,9 +221,19 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         }
 
         if (address(seller_.payment) != address(0)) {
-            if (IERC20Upgradeable(seller_.payment).allowance(buyerAddr_, address(this)) < seller_.unitPrice) {
+            if (
+                IERC20Upgradeable(seller_.payment).allowance(
+                    buyerAddr_, address(this)
+                ) < seller_.unitPrice
+            ) {
                 IERC20PermitUpgradeable(seller_.payment).permit(
-                    buyerAddr_, address(this), seller_.unitPrice, buyer_.deadline, buyer_.v, buyer_.r, buyer_.s
+                    buyerAddr_,
+                    address(this),
+                    seller_.unitPrice,
+                    buyer_.deadline,
+                    buyer_.v,
+                    buyer_.r,
+                    buyer_.s
                 );
             }
 
@@ -164,7 +241,9 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
                 IERC20Upgradeable(seller_.payment),
                 buyerAddr_,
                 sellerAddr_,
-                seller_.unitPrice.mulDivDown(receiveFraction, percentageFraction)
+                seller_.unitPrice.mulDivDown(
+                    receiveFraction, percentageFraction
+                )
             );
             if (_protocolFee != 0) {
                 uint256 received;
@@ -172,7 +251,9 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
                     IERC20Upgradeable(seller_.payment),
                     buyerAddr_,
                     _vault,
-                    received = seller_.unitPrice.mulDivDown(_protocolFee, percentageFraction)
+                    received = seller_.unitPrice.mulDivDown(
+                        _protocolFee, percentageFraction
+                    )
                 );
                 if (
                     IWithdrawableUpgradeable(_vault).notifyERC20Transfer(
@@ -187,10 +268,20 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
             uint256 refund = msg.value - seller_.unitPrice;
 
             _safeNativeTransfer(
-                sellerAddr_, seller_.unitPrice.mulDivDown(receiveFraction, percentageFraction), emptyBytes
+                sellerAddr_,
+                seller_.unitPrice.mulDivDown(
+                    receiveFraction, percentageFraction
+                ),
+                emptyBytes
             );
             if (_protocolFee != 0) {
-                _safeNativeTransfer(_vault, seller_.unitPrice.mulDivDown(_protocolFee, percentageFraction), emptyBytes);
+                _safeNativeTransfer(
+                    _vault,
+                    seller_.unitPrice.mulDivDown(
+                        _protocolFee, percentageFraction
+                    ),
+                    emptyBytes
+                );
             }
 
             if (refund == 0) return;
@@ -198,7 +289,9 @@ contract Marketplace is IMarketplace, ManagerUpgradeable, SignableUpgradeable, B
         }
     }
 
-    function __whiteListContracts(address[] calldata supportedContracts_) private {
+    function __whiteListContracts(address[] calldata supportedContracts_)
+        private
+    {
         uint256[] memory uintContracts;
         address[] memory supportedContracts = supportedContracts_;
         assembly {

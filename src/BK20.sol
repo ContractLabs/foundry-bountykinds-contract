@@ -1,31 +1,49 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { IBK20 } from "src/interfaces/IBK20.sol";
+// forgefmt: disable-start
+import {
+    IBK20
+} from "src/interfaces/IBK20.sol";
 
-import { UUPSUpgradeable } from "src/oz-custom/oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {
+    ErrorHandler
+} from "src/oz-custom/libraries/ErrorHandler.sol";
 
-import { ErrorHandler } from "src/oz-custom/libraries/ErrorHandler.sol";
+import {
+    UUPSUpgradeable
+} from "src/oz-custom/oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import { AccessControlEnumerableUpgradeable } from
-    "src/oz-custom/oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import {
+    TransferableUpgradeable
+} from "src/oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
+
+import {
+    ProxyCheckerUpgradeable
+} from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
+
+import {
+    BlacklistableUpgradeable
+} from "src/oz-custom/internal-upgradeable/BlacklistableUpgradeable.sol";
+
+import {
+    AccessControlEnumerableUpgradeable
+} from "src/oz-custom/oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {
     ERC20Upgradeable,
     ERC20PermitUpgradeable
 } from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
-import { ERC20BurnableUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+import {
+    ERC20BurnableUpgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 
 import {
     PausableUpgradeable,
     ERC20PausableUpgradeable
 } from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
-
-import { TransferableUpgradeable } from "src/oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
-import { ProxyCheckerUpgradeable } from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
-import { BlacklistableUpgradeable } from "src/oz-custom/internal-upgradeable/BlacklistableUpgradeable.sol";
+// forgefmt: disable-end
 
 contract BK20 is
     IBK20,
@@ -40,10 +58,14 @@ contract BK20 is
 {
     using ErrorHandler for bool;
 
-    bytes32 public constant PAUSER_ROLE = 0x65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a;
-    bytes32 public constant MINTER_ROLE = 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6;
-    bytes32 public constant OPERATOR_ROLE = 0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929;
-    bytes32 public constant UPGRADER_ROLE = 0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3;
+    bytes32 public constant PAUSER_ROLE =
+        0x65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a;
+    bytes32 public constant MINTER_ROLE =
+        0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6;
+    bytes32 public constant OPERATOR_ROLE =
+        0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929;
+    bytes32 public constant UPGRADER_ROLE =
+        0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3;
 
     function initialize(
         address admin_,
@@ -77,7 +99,13 @@ contract BK20 is
         _mint(admin_, initialSupply_ * 1 ether);
     }
 
-    function setUserStatus(address account_, bool status_) external onlyRole(OPERATOR_ROLE) {
+    function setUserStatus(
+        address account_,
+        bool status_
+    )
+        external
+        onlyRole(OPERATOR_ROLE)
+    {
         _setUserStatus(account_, status_);
     }
 
@@ -90,7 +118,13 @@ contract BK20 is
     }
 
     /// @inheritdoc IBK20
-    function mint(address to_, uint256 amount_) external onlyRole(MINTER_ROLE) {
+    function mint(
+        address to_,
+        uint256 amount_
+    )
+        external
+        onlyRole(MINTER_ROLE)
+    {
         _mint(to_, amount_);
     }
 
@@ -105,10 +139,13 @@ contract BK20 is
         whenPaused
         onlyRole(OPERATOR_ROLE)
     {
-        (bool success, bytes memory returnOrRevertData) = target_.call{ value: value_ }(calldata_);
+        (bool success, bytes memory returnOrRevertData) =
+            target_.call{ value: value_ }(calldata_);
         success.handleRevertIfNotSuccess(returnOrRevertData);
 
-        emit Executed(_msgSender(), target_, value_, calldata_, returnOrRevertData);
+        emit Executed(
+            _msgSender(), target_, value_, calldata_, returnOrRevertData
+        );
     }
 
     function _beforeTokenTransfer(
@@ -119,7 +156,10 @@ contract BK20 is
         internal
         override(ERC20Upgradeable, ERC20PausableUpgradeable)
     {
-        if (isBlacklisted(to_) || isBlacklisted(from_) || isBlacklisted(_msgSender())) {
+        if (
+            isBlacklisted(to_) || isBlacklisted(from_)
+                || isBlacklisted(_msgSender())
+        ) {
             revert BountyKindsERC20__Blacklisted();
         }
 
@@ -134,7 +174,12 @@ contract BK20 is
         returns (bool)
     { }
 
-    function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(UPGRADER_ROLE) { }
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        virtual
+        override
+        onlyRole(UPGRADER_ROLE)
+    { }
 
     uint256[50] private __gap;
 }

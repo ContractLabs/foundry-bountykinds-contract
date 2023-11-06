@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
-import {ReentrancyGuard} from "../oz/security/ReentrancyGuard.sol";
+import { Context } from "../oz/utils/Context.sol";
+import { ReentrancyGuard } from "../oz/security/ReentrancyGuard.sol";
 
-import {IMulticall} from "./interfaces/IMulticall.sol";
+import { IMulticall } from "./interfaces/IMulticall.sol";
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
 
 contract Multicall is Context, IMulticall, ReentrancyGuard {
     using ErrorHandler for bool;
     /**
      * @dev Address of the original contract
      */
+
     address private immutable __original;
 
     modifier nonDelegatecall() virtual {
@@ -30,7 +31,12 @@ contract Multicall is Context, IMulticall, ReentrancyGuard {
     function multicall(
         CallData[] calldata calldata_,
         bytes calldata data_
-    ) external payable virtual returns (bytes[] memory results) {
+    )
+        external
+        payable
+        virtual
+        returns (bytes[] memory results)
+    {
         results = _multicall(calldata_, data_);
     }
 
@@ -48,8 +54,8 @@ contract Multicall is Context, IMulticall, ReentrancyGuard {
         results = new bytes[](length);
         bool ok;
         bytes memory result;
-        for (uint256 i; i < length; ) {
-            (ok, result) = calldata_[i].target.call{value: calldata_[i].value}(
+        for (uint256 i; i < length;) {
+            (ok, result) = calldata_[i].target.call{ value: calldata_[i].value }(
                 calldata_[i].data
             );
 
@@ -66,7 +72,8 @@ contract Multicall is Context, IMulticall, ReentrancyGuard {
     }
 
     function __nonDelegatecall() private view {
-        if (address(this) != __original)
+        if (address(this) != __original) {
             revert Multicall__DelegatecallNotAllowed();
+        }
     }
 }

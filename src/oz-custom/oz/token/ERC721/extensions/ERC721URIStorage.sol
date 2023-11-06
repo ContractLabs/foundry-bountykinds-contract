@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/extensions/ERC721URIStorage.sol)
+// OpenZeppelin Contracts (last updated v4.7.0)
+// (token/ERC721/extensions/ERC721URIStorage.sol)
 
 pragma solidity ^0.8.10;
 
-import {ERC721} from "../ERC721.sol";
+import { ERC721 } from "../ERC721.sol";
 
-import {StringLib} from "../../../../libraries/StringLib.sol";
+import { StringLib } from "../../../../libraries/StringLib.sol";
 
 /**
  * @dev ERC721 token with storage based token URI management.
@@ -35,9 +36,13 @@ abstract contract ERC721URIStorage is ERC721 {
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(
-        uint256 tokenId
-    ) public view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         ownerOf(tokenId);
 
         string memory _tokenURI = __tokenURIs[tokenId];
@@ -46,16 +51,13 @@ abstract contract ERC721URIStorage is ERC721 {
         // If there is no base URI, return the token URI.
         if (bytes(baseTokenURI_).length == 0) return _tokenURI;
 
-        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
-        if (bytes(_tokenURI).length != 0)
-            return
-                string(
-                    abi.encodePacked(
-                        baseTokenURI_,
-                        _tokenURI,
-                        tokenId.toString()
-                    )
-                );
+        // If both are set, concatenate the baseURI and tokenURI (via
+        // abi.encodePacked).
+        if (bytes(_tokenURI).length != 0) {
+            return string(
+                abi.encodePacked(baseTokenURI_, _tokenURI, tokenId.toString())
+            );
+        }
 
         return tokenURI(tokenId);
     }
@@ -70,20 +72,25 @@ abstract contract ERC721URIStorage is ERC721 {
     function _setTokenURI(
         uint256 tokenId,
         string calldata _tokenURI
-    ) internal virtual {
+    )
+        internal
+        virtual
+    {
         ownerOf(tokenId);
         __tokenURIs[tokenId] = _tokenURI;
     }
 
     /**
      * @dev See {ERC721-_burn}. This override additionally checks to see if a
-     * token-specific URI was set for the token, and if so, it deletes the token URI from
+     * token-specific URI was set for the token, and if so, it deletes the token
+     * URI from
      * the storage mapping.
      */
     function _burn(uint256 tokenId) internal virtual override {
         super._burn(tokenId);
 
-        if (bytes(__tokenURIs[tokenId]).length != 0)
+        if (bytes(__tokenURIs[tokenId]).length != 0) {
             delete __tokenURIs[tokenId];
+        }
     }
 }

@@ -2,8 +2,10 @@
 pragma solidity ^0.8.17;
 
 /// @notice Arithmetic library with operations for fixed-point numbers.
-/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/FixedPointMathLib.sol)
-/// @author Inspired by USM (https://github.com/usmfum/USM/blob/master/contracts/WadMath.sol)
+/// @author Solmate
+/// (https://github.com/transmissions11/solmate/blob/main/src/utils/FixedPointMathLib.sol)
+/// @author Inspired by USM
+/// (https://github.com/usmfum/USM/blob/master/contracts/WadMath.sol)
 library FixedPointMathLib {
     /*//////////////////////////////////////////////////////////////
                     SIMPLIFIED FIXED POINT OPERATIONS
@@ -13,7 +15,8 @@ library FixedPointMathLib {
     uint256 internal constant WAD = 1e18; // The scalar of ETH and most ERC20s.
 
     function mulWadDown(uint256 x, uint256 y) internal pure returns (uint256) {
-        return mulDivDown(x, y, WAD); // Equivalent to (x * y) / WAD rounded down.
+        return mulDivDown(x, y, WAD); // Equivalent to (x * y) / WAD rounded
+            // down.
     }
 
     function mulWadUp(uint256 x, uint256 y) internal pure returns (uint256) {
@@ -21,7 +24,8 @@ library FixedPointMathLib {
     }
 
     function divWadDown(uint256 x, uint256 y) internal pure returns (uint256) {
-        return mulDivDown(x, WAD, y); // Equivalent to (x * WAD) / y rounded down.
+        return mulDivDown(x, WAD, y); // Equivalent to (x * WAD) / y rounded
+            // down.
     }
 
     function divWadUp(uint256 x, uint256 y) internal pure returns (uint256) {
@@ -36,14 +40,17 @@ library FixedPointMathLib {
         uint256 x,
         uint256 y,
         uint256 denominator
-    ) internal pure returns (uint256 z) {
+    )
+        internal
+        pure
+        returns (uint256 z)
+    {
         assembly {
-            // Equivalent to require(denominator != 0 && (y == 0 || x <= type(uint256).max / y))
+            // Equivalent to require(denominator != 0 && (y == 0 || x <=
+            // type(uint256).max / y))
             if iszero(
                 mul(denominator, iszero(mul(y, gt(x, div(MAX_UINT256, y)))))
-            ) {
-                revert(0, 0)
-            }
+            ) { revert(0, 0) }
 
             z := div(mul(x, y), denominator)
         }
@@ -53,20 +60,21 @@ library FixedPointMathLib {
         uint256 x,
         uint256 y,
         uint256 denominator
-    ) internal pure returns (uint256 z) {
+    )
+        internal
+        pure
+        returns (uint256 z)
+    {
         assembly {
-            // Equivalent to require(denominator != 0 && (y == 0 || x <= type(uint256).max / y))
+            // Equivalent to require(denominator != 0 && (y == 0 || x <=
+            // type(uint256).max / y))
             if iszero(
                 mul(denominator, iszero(mul(y, gt(x, div(MAX_UINT256, y)))))
-            ) {
-                revert(0, 0)
-            }
+            ) { revert(0, 0) }
 
             // Add 1 to the result if x * y mod denominator != 0.
-            z := add(
-                gt(mod(mul(x, y), denominator), 0),
-                div(mul(x, y), denominator)
-            )
+            z :=
+                add(gt(mod(mul(x, y), denominator), 0), div(mul(x, y), denominator))
         }
     }
 
@@ -74,7 +82,11 @@ library FixedPointMathLib {
         uint256 x,
         uint256 n,
         uint256 scalar
-    ) internal pure returns (uint256 z) {
+    )
+        internal
+        pure
+        returns (uint256 z)
+    {
         assembly {
             switch x
             case 0 {
@@ -111,9 +123,7 @@ library FixedPointMathLib {
                 } {
                     // Revert immediately if x ** 2 would overflow.
                     // Equivalent to iszero(eq(div(xx, x), x)) here.
-                    if shr(128, x) {
-                        revert(0, 0)
-                    }
+                    if shr(128, x) { revert(0, 0) }
 
                     // Store x squared.
                     let xx := mul(x, x)
@@ -122,9 +132,7 @@ library FixedPointMathLib {
                     let xxRound := add(xx, half)
 
                     // Revert if xx + half overflowed.
-                    if lt(xxRound, xx) {
-                        revert(0, 0)
-                    }
+                    if lt(xxRound, xx) { revert(0, 0) }
 
                     // Set x to scaled xxRound.
                     x := div(xxRound, scalar)
@@ -137,18 +145,14 @@ library FixedPointMathLib {
                         // If z * x overflowed:
                         if iszero(eq(div(zx, x), z)) {
                             // Revert if x is non-zero.
-                            if iszero(iszero(x)) {
-                                revert(0, 0)
-                            }
+                            if iszero(iszero(x)) { revert(0, 0) }
                         }
 
                         // Round to the nearest number.
                         let zxRound := add(zx, half)
 
                         // Revert if zx + half overflowed.
-                        if lt(zxRound, zx) {
-                            revert(0, 0)
-                        }
+                        if lt(zxRound, zx) { revert(0, 0) }
 
                         // Return properly scaled zxRound.
                         z := div(zxRound, scalar)
@@ -213,9 +217,7 @@ library FixedPointMathLib {
             let zRoundDown := div(x, z)
 
             // If zRoundDown is smaller, use it.
-            if lt(zRoundDown, z) {
-                z := zRoundDown
-            }
+            if lt(zRoundDown, z) { z := zRoundDown }
         }
     }
 }

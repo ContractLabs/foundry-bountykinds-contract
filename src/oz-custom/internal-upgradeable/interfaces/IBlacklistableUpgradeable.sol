@@ -9,9 +9,11 @@ interface IBlacklistableUpgradeable {
     );
 
     /**
-     * @dev Set the status of an account to either blacklisted or not blacklisted.
+     * @dev Set the status of an account to either blacklisted or not
+     * blacklisted.
      * @param account_ The address to change the status of.
-     * @param status The new status for the address. True for blacklisted, false for not blacklisted.
+     * @param status The new status for the address. True for blacklisted, false
+     * for not blacklisted.
      */
     function setUserStatus(address account_, bool status) external;
 
@@ -22,7 +24,8 @@ interface IBlacklistableUpgradeable {
      */
     function isBlacklisted(address account_) external view returns (bool);
 
-    function areBlacklisted(
-        address[] calldata accounts_
-    ) external view returns (bool);
+    function areBlacklisted(address[] calldata accounts_)
+        external
+        view
+        returns (bool);
 }

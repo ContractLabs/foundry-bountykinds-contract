@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.17;
 
-import {ERC721} from "../ERC721.sol";
-import {Pausable} from "../../../security/Pausable.sol";
+import { ERC721 } from "../ERC721.sol";
+import { Pausable } from "../../../security/Pausable.sol";
 
 /**
  * @dev ERC721 token with pausable token transfers, minting and burning.
@@ -26,7 +26,12 @@ abstract contract ERC721Pausable is ERC721, Pausable {
         address to,
         uint256 tokenId,
         uint256 batchSize
-    ) internal virtual override whenNotPaused {
+    )
+        internal
+        virtual
+        override
+        whenNotPaused
+    {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 }

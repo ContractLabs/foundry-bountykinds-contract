@@ -1,15 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../../utils/Context.sol";
+import { Context } from "../../utils/Context.sol";
 
-import {IERC20} from "./IERC20.sol";
-import {IERC20Metadata} from "./extensions/IERC20Metadata.sol";
+import { IERC20 } from "./IERC20.sol";
+import { IERC20Metadata } from "./extensions/IERC20Metadata.sol";
 
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
-/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol)
-/// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)
-/// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
+/// @author Solmate
+/// (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol)
+/// @author Modified from Uniswap
+/// (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)
+/// @dev Do not manually set balances without updating totalSupply, as the sum
+/// of all user balances must not exceed it.
 abstract contract ERC20 is Context, IERC20, IERC20Metadata {
     /*//////////////////////////////////////////////////////////////
                               ERC20 STORAGE
@@ -29,8 +32,9 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
     //////////////////////////////////////////////////////////////*/
 
     constructor(string memory name_, string memory symbol_) payable {
-        if (bytes(symbol_).length > 32 || bytes(name_).length > 32)
+        if (bytes(symbol_).length > 32 || bytes(name_).length > 32) {
             revert ERC20__StringTooLong();
+        }
 
         name = name_;
         symbol = symbol_;
@@ -60,7 +64,11 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
     function approve(
         address spender,
         uint256 amount
-    ) public virtual returns (bool approved) {
+    )
+        public
+        virtual
+        returns (bool approved)
+    {
         address sender = _msgSender();
 
         assembly {
@@ -75,7 +83,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("Approval(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("Approval(address,address,uint256)")
                 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925,
                 sender,
                 spender
@@ -88,7 +97,11 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
     function transfer(
         address to,
         uint256 amount
-    ) public virtual returns (bool) {
+    )
+        public
+        virtual
+        returns (bool)
+    {
         address sender = _msgSender();
         _beforeTokenTransfer(sender, to, amount);
 
@@ -99,9 +112,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             let balanceKey := keccak256(0x00, 0x40)
             let balanceBefore := sload(balanceKey)
             //  underflow check
-            if gt(amount, balanceBefore) {
-                revert(0, 0)
-            }
+            if gt(amount, balanceBefore) { revert(0, 0) }
             sstore(balanceKey, sub(balanceBefore, amount))
 
             //  _balanceOf[to] += amount;
@@ -115,7 +126,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("Transfer(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("Transfer(address,address,uint256)")
                 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef,
                 sender,
                 to
@@ -131,7 +143,11 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
         address from,
         address to,
         uint256 amount
-    ) public virtual returns (bool) {
+    )
+        public
+        virtual
+        returns (bool)
+    {
         _beforeTokenTransfer(from, to, amount);
         _spendAllowance(from, _msgSender(), amount);
 
@@ -142,9 +158,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             let balanceKey := keccak256(0x00, 0x40)
             let balanceBefore := sload(balanceKey)
             //  @dev underflow check
-            if gt(amount, balanceBefore) {
-                revert(0, 0)
-            }
+            if gt(amount, balanceBefore) { revert(0, 0) }
             sstore(balanceKey, sub(balanceBefore, amount))
 
             //  @dev Cannot overflow because the sum of all user
@@ -159,7 +173,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("Transfer(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("Transfer(address,address,uint256)")
                 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef,
                 from,
                 to
@@ -171,9 +186,12 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
         return true;
     }
 
-    function balanceOf(
-        address account
-    ) external view override returns (uint256 _balance) {
+    function balanceOf(address account)
+        external
+        view
+        override
+        returns (uint256 _balance)
+    {
         assembly {
             mstore(0x00, account)
             mstore(0x20, _balanceOf.slot)
@@ -184,7 +202,12 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
     function allowance(
         address owner,
         address spender
-    ) external view override returns (uint256 allowance_) {
+    )
+        external
+        view
+        override
+        returns (uint256 allowance_)
+    {
         assembly {
             mstore(0x00, owner)
             mstore(0x20, _allowance.slot)
@@ -201,7 +224,10 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
         address owner_,
         address spender_,
         uint256 amount_
-    ) internal virtual {
+    )
+        internal
+        virtual
+    {
         assembly {
             mstore(0x00, owner_)
             mstore(0x20, _allowance.slot)
@@ -217,9 +243,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
                 )
             ) {
                 //  underflow check
-                if gt(amount_, allowed) {
-                    revert(0, 0)
-                }
+                if gt(amount_, allowed) { revert(0, 0) }
                 sstore(allowanceKey, sub(allowed, amount_))
             }
         }
@@ -229,13 +253,19 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
         address from,
         address to,
         uint256 amount
-    ) internal virtual {}
+    )
+        internal
+        virtual
+    { }
 
     function _afterTokenTransfer(
         address from,
         address to,
         uint256 amount
-    ) internal virtual {}
+    )
+        internal
+        virtual
+    { }
 
     function _mint(address to, uint256 amount) internal virtual {
         _beforeTokenTransfer(address(0), to, amount);
@@ -245,9 +275,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             let cachedVal := sload(totalSupply.slot)
             cachedVal := add(cachedVal, amount)
             //  @dev overflow check
-            if lt(cachedVal, amount) {
-                revert(0, 0)
-            }
+            if lt(cachedVal, amount) { revert(0, 0) }
             sstore(totalSupply.slot, cachedVal)
 
             //  @dev Cannot overflow because the sum of all user
@@ -263,7 +291,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("Transfer(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("Transfer(address,address,uint256)")
                 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef,
                 0,
                 to
@@ -283,9 +312,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             let key := keccak256(0, 64)
             let cachedVal := sload(key)
             // @dev underflow check
-            if gt(amount, cachedVal) {
-                revert(0, 0)
-            }
+            if gt(amount, cachedVal) { revert(0, 0) }
 
             cachedVal := sub(cachedVal, amount)
             sstore(key, cachedVal)
@@ -302,7 +329,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("Transfer(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("Transfer(address,address,uint256)")
                 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef,
                 from,
                 0

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.2) (utils/introspection/ERC165Checker.sol)
+// OpenZeppelin Contracts (last updated v4.7.2)
+// (utils/introspection/ERC165Checker.sol)
 
 pragma solidity ^0.8.0;
 
-import {IERC165Upgradeable} from "./IERC165Upgradeable.sol";
+import { IERC165Upgradeable } from "./IERC165Upgradeable.sol";
 
 /**
  * @dev Library used to query support of an interface declared via {IERC165}.
@@ -20,14 +21,13 @@ library ERC165CheckerUpgradeable {
      * @dev Returns true if `account` supports the {IERC165} interface,
      */
     function supportsERC165(address account) internal view returns (bool) {
-        // Any contract that implements ERC165 must explicitly indicate support of
-        // InterfaceId_ERC165 and explicitly indicate non-support of InterfaceId_Invalid
-        return
-            supportsERC165InterfaceUnchecked(
-                account,
-                type(IERC165Upgradeable).interfaceId
-            ) &&
-            !supportsERC165InterfaceUnchecked(account, __INTERFACE_ID_INVALID);
+        // Any contract that implements ERC165 must explicitly indicate support
+        // of
+        // InterfaceId_ERC165 and explicitly indicate non-support of
+        // InterfaceId_Invalid
+        return supportsERC165InterfaceUnchecked(
+            account, type(IERC165Upgradeable).interfaceId
+        ) && !supportsERC165InterfaceUnchecked(account, __INTERFACE_ID_INVALID);
     }
 
     /**
@@ -39,11 +39,15 @@ library ERC165CheckerUpgradeable {
     function supportsInterface(
         address account,
         bytes4 interfaceId
-    ) internal view returns (bool) {
-        // query support of both ERC165 as per the spec and support of _interfaceId
-        return
-            supportsERC165(account) &&
-            supportsERC165InterfaceUnchecked(account, interfaceId);
+    )
+        internal
+        view
+        returns (bool)
+    {
+        // query support of both ERC165 as per the spec and support of
+        // _interfaceId
+        return supportsERC165(account)
+            && supportsERC165InterfaceUnchecked(account, interfaceId);
     }
 
     /**
@@ -59,20 +63,23 @@ library ERC165CheckerUpgradeable {
     function getSupportedInterfaces(
         address account,
         bytes4[] calldata interfaceIds
-    ) internal view returns (bool[] memory interfaceIdsSupported) {
+    )
+        internal
+        view
+        returns (bool[] memory interfaceIdsSupported)
+    {
         uint256 length = interfaceIds.length;
 
-        // an array of booleans corresponding to interfaceIds and whether they're supported or not
+        // an array of booleans corresponding to interfaceIds and whether
+        // they're supported or not
         interfaceIdsSupported = new bool[](length);
 
         // query support of ERC165 itself
         if (supportsERC165(account)) {
             // query support of each interface in interfaceIds
-            for (uint256 i; i < length; ) {
-                interfaceIdsSupported[i] = supportsERC165InterfaceUnchecked(
-                    account,
-                    interfaceIds[i]
-                );
+            for (uint256 i; i < length;) {
+                interfaceIdsSupported[i] =
+                    supportsERC165InterfaceUnchecked(account, interfaceIds[i]);
                 unchecked {
                     ++i;
                 }
@@ -92,15 +99,20 @@ library ERC165CheckerUpgradeable {
     function supportsAllInterfaces(
         address account,
         bytes4[] calldata interfaceIds
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         // query support of ERC165 itself
         if (!supportsERC165(account)) return false;
 
         uint256 length = interfaceIds.length;
         // query support of each interface in _interfaceIds
-        for (uint256 i; i < length; ) {
-            if (!supportsERC165InterfaceUnchecked(account, interfaceIds[i]))
+        for (uint256 i; i < length;) {
+            if (!supportsERC165InterfaceUnchecked(account, interfaceIds[i])) {
                 return false;
+            }
 
             unchecked {
                 ++i;
@@ -112,39 +124,47 @@ library ERC165CheckerUpgradeable {
     }
 
     /**
-     * @notice Query if a contract implements an interface, does not check ERC165 support
-     * @param account The address of the contract to query for support of an interface
+     * @notice Query if a contract implements an interface, does not check
+     * ERC165 support
+     * @param account The address of the contract to query for support of an
+     * interface
      * @param interfaceId The interface identifier, as specified in ERC-165
-     * @return true if the contract at account indicates support of the interface with
+     * @return true if the contract at account indicates support of the
+     * interface with
      * identifier interfaceId, false otherwise
-     * @dev Assumes that account contains a contract that supports ERC165, otherwise
-     * the behavior of this method is undefined. This precondition can be checked
+     * @dev Assumes that account contains a contract that supports ERC165,
+     * otherwise
+     * the behavior of this method is undefined. This precondition can be
+     * checked
      * with {supportsERC165}.
      * Interface identification is specified in ERC-165.
      */
     function supportsERC165InterfaceUnchecked(
         address account,
         bytes4 interfaceId
-    ) private view returns (bool) {
+    )
+        private
+        view
+        returns (bool)
+    {
         // prepare call
-        bytes memory encodedParams = abi.encodeCall(
-            IERC165Upgradeable.supportsInterface,
-            (interfaceId)
-        );
+        bytes memory encodedParams =
+            abi.encodeCall(IERC165Upgradeable.supportsInterface, (interfaceId));
 
         // perform static call
         bool success;
         uint256 returnSize;
         uint256 returnValue;
         assembly {
-            success := staticcall(
-                30000,
-                account,
-                add(encodedParams, 0x20),
-                mload(encodedParams),
-                0x00,
-                0x20
-            )
+            success :=
+                staticcall(
+                    30000,
+                    account,
+                    add(encodedParams, 0x20),
+                    mload(encodedParams),
+                    0x00,
+                    0x20
+                )
             returnSize := returndatasize()
             returnValue := mload(0x00)
         }

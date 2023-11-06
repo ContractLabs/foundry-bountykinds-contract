@@ -1,23 +1,39 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { FundForwarder } from "src/oz-custom/internal/FundForwarder.sol";
+// forgefmt: disable-start
+import {
+    FundForwarder
+} from "src/oz-custom/internal/FundForwarder.sol";
 
-import { ITreasury } from "src/oz-custom/presets/interfaces/ITreasury.sol";
+import {
+    ITreasury
+} from "src/oz-custom/presets/interfaces/ITreasury.sol";
 
-import { ERC165Checker } from "src/oz-custom/oz/utils/introspection/ERC165Checker.sol";
+import {
+    ERC165Checker
+} from "src/oz-custom/oz/utils/introspection/ERC165Checker.sol";
+// forgefmt: disable-end
 
 abstract contract BKFundForwarder is FundForwarder {
     using ERC165Checker for address;
 
     function safeRecoverHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_RECOVER_HEADER")
-        return bytes.concat(bytes32(0x556d79614195ebefcc31ab1ee514b9953934b87d25857902370689cbd29b49de));
+        return bytes.concat(
+            bytes32(
+                0x556d79614195ebefcc31ab1ee514b9953934b87d25857902370689cbd29b49de
+            )
+        );
     }
 
     function safeTransferHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_TRANSFER")
-        return bytes.concat(bytes32(0xc9627ddb76e5ee80829319617b557cc79498bbbc5553d8c632749a7511825f5d));
+        return bytes.concat(
+            bytes32(
+                0xc9627ddb76e5ee80829319617b557cc79498bbbc5553d8c632749a7511825f5d
+            )
+        );
     }
 
     function _checkValidAddress(address vault_) internal view override {

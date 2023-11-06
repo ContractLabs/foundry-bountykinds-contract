@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {IERC721} from "../IERC721.sol";
+import { IERC721 } from "../IERC721.sol";
 
 interface IERC721Rentable is IERC721 {
     error ERC721Rentable__NotValidTransfer();
@@ -13,23 +13,24 @@ interface IERC721Rentable is IERC721 {
     }
 
     // Logged when the user of an NFT is changed or expires is changed
-    /// @notice Emitted when the `user` of an NFT or the `expires` of the `user` is changed
+    /// @notice Emitted when the `user` of an NFT or the `expires` of the `user`
+    /// is changed
     /// The zero address for user indicates that there is no user address
     event UpdateUser(
-        uint256 indexed tokenId,
-        address indexed user,
-        uint64 expires
+        uint256 indexed tokenId, address indexed user, uint64 expires
     );
 
     /// @notice set the user and expires of an NFT
     /// @dev The zero address indicates there is no user
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
-    /// @param expires  UNIX timestamp, The new user could use the NFT before expires
+    /// @param expires  UNIX timestamp, The new user could use the NFT before
+    /// expires
     function setUser(uint256 tokenId, address user, uint64 expires) external;
 
     /// @notice Get the user address of an NFT
-    /// @dev The zero address indicates that there is no user or the user is expired
+    /// @dev The zero address indicates that there is no user or the user is
+    /// expired
     /// @param tokenId The NFT to get the user address for
     /// @return The user address for this NFT
     function userOf(uint256 tokenId) external view returns (address);

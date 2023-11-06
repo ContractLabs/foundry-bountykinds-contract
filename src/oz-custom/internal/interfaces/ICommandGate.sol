@@ -26,9 +26,7 @@ interface ICommandGate {
     event VaultsWhitelisted(address indexed operator, address[] vaults);
 
     event Commanded(
-        address indexed operator,
-        Asset depositAsset,
-        Command command
+        address indexed operator, Asset depositAsset, Command command
     );
 
     function whitelistTarget(address addr_) external;

@@ -7,9 +7,7 @@ interface ITaxable {
     error Taxable__InvalidArguments();
 
     event TaxEnabled(
-        address indexed operator,
-        uint256 indexed start,
-        uint256 indexed stop
+        address indexed operator, uint256 indexed start, uint256 indexed stop
     );
 
     event TaxBeneficiarySet(
@@ -25,7 +23,10 @@ interface ITaxable {
     function tax(
         address token_,
         uint256 amount_
-    ) external view returns (uint256);
+    )
+        external
+        view
+        returns (uint256);
 
     function taxFraction(address token_) external pure returns (uint256);
 

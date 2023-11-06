@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.17;
 
-import {ERC20} from "../ERC20.sol";
-import {Pausable} from "../../../security/Pausable.sol";
+import { ERC20 } from "../ERC20.sol";
+import { Pausable } from "../../../security/Pausable.sol";
 
 /**
  * @dev ERC20 token with pausable token transfers, minting and burning.
@@ -25,7 +25,12 @@ abstract contract ERC20Pausable is ERC20, Pausable {
         address from,
         address to,
         uint256 amount
-    ) internal virtual override whenNotPaused {
+    )
+        internal
+        virtual
+        override
+        whenNotPaused
+    {
         super._beforeTokenTransfer(from, to, amount);
     }
 }

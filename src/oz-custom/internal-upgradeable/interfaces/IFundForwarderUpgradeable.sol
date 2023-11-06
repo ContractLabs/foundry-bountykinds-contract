@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    IERC20Upgradeable
-} from "../../oz-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import { IERC20Upgradeable } from
+    "../../oz-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 import {
     IERC721Upgradeable,
     IERC721EnumerableUpgradeable
-} from "../../oz-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol";
+} from
+    "../../oz-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol";
 
 interface IFundForwarderUpgradeable {
     error FundForwarder__InvalidArgument();
@@ -26,16 +26,14 @@ interface IFundForwarderUpgradeable {
      * @param to New vault address
      */
     event VaultUpdated(
-        address indexed operator,
-        address indexed from,
-        address indexed to
+        address indexed operator, address indexed from, address indexed to
     );
 
     /**
-     *@dev Emits when a single ERC721 token is recovered
-     *@param operator Address of the contract calling this function
-     *@param token Address of the token contract
-     *@param value Token ID of the recovered token
+     * @dev Emits when a single ERC721 token is recovered
+     * @param operator Address of the contract calling this function
+     * @param token Address of the token contract
+     * @param value Token ID of the recovered token
      */
     event Recovered(
         address indexed operator,

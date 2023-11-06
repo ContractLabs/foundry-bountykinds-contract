@@ -6,10 +6,12 @@ pragma solidity ^0.8.0;
 error SafeCast__Overflow();
 
 /**
- * @dev Wrappers over Solidity's uintXX/intXX casting operators with added overflow
+ * @dev Wrappers over Solidity's uintXX/intXX casting operators with added
+ * overflow
  * checks.
  *
- * Downcasting from uint256/int256 in Solidity does not revert on overflow. This can
+ * Downcasting from uint256/int256 in Solidity does not revert on overflow. This
+ * can
  * easily result in undesired exploitation or bugs, since developers usually
  * assume that overflows raise errors. `SafeCast` restores this intuition by
  * reverting the transaction when such an operation overflows.
@@ -17,7 +19,8 @@ error SafeCast__Overflow();
  * Using this library instead of the unchecked operations eliminates an entire
  * class of bugs, so it's recommended to use it always.
  *
- * Can be combined with {SafeMath} and {SignedSafeMath} to extend it to smaller types, by performing
+ * Can be combined with {SafeMath} and {SignedSafeMath} to extend it to smaller
+ * types, by performing
  * all math on `uint256` and `int256` and then downcasting.
  */
 library SafeCastUpgradeable {
@@ -414,7 +417,8 @@ library SafeCastUpgradeable {
      * _Available since v4.2._
      */
     function toUint96(uint256 value) internal pure returns (uint96) {
-        //require(value <= type(uint96).max, "SafeCast: value doesn't fit in 96 bits");
+        //require(value <= type(uint96).max, "SafeCast: value doesn't fit in 96
+        // bits");
         if (value > ~uint96(0)) revert SafeCast__Overflow();
         return uint96(value);
     }
@@ -1314,7 +1318,8 @@ library SafeCastUpgradeable {
     //  * _Available since v3.0._
     //  */
     // function toInt256(uint256 value) internal pure returns (int256) {
-    //     // Note: Unsafe cast below is okay because `type(int256).max` is guaranteed to be positive
+    //     // Note: Unsafe cast below is okay because `type(int256).max` is
+    // guaranteed to be positive
     //     require(
     //         value <= uint256(type(int256).max),
     //         "SafeCast: value doesn't fit in an int256"

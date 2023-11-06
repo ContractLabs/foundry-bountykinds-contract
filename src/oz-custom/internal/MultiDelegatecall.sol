@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
-import {ReentrancyGuard} from "../oz/security/ReentrancyGuard.sol";
+import { Context } from "../oz/utils/Context.sol";
+import { ReentrancyGuard } from "../oz/security/ReentrancyGuard.sol";
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
 
 error MultiDelegatecall__OnlyDelegatecall();
 error MultiDelegatecall__DelegatecallNotAllowed();
 
 /**
  * @title MultiDelegatecall
- * @dev Abstract contract for performing multiple delegatecalls in a single transaction.
+ * @dev Abstract contract for performing multiple delegatecalls in a single
+ * transaction.
  */
 abstract contract MultiDelegatecall is Context, ReentrancyGuard {
     using ErrorHandler for bool;
@@ -27,9 +28,7 @@ abstract contract MultiDelegatecall is Context, ReentrancyGuard {
     }
 
     event BatchExecutionDelegated(
-        address indexed operator,
-        bytes[] callData,
-        bytes[] results
+        address indexed operator, bytes[] callData, bytes[] results
     );
 
     /**
@@ -44,9 +43,7 @@ abstract contract MultiDelegatecall is Context, ReentrancyGuard {
      * @param data_ Array of calldata for delegatecalls
      * @return results Array of delegatecall results
      */
-    function _multiDelegatecall(
-        bytes[] calldata data_
-    )
+    function _multiDelegatecall(bytes[] calldata data_)
         internal
         virtual
         onlyDelegatecalll
@@ -57,7 +54,7 @@ abstract contract MultiDelegatecall is Context, ReentrancyGuard {
         results = new bytes[](length);
         bool ok;
         bytes memory result;
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             (ok, result) = address(this).delegatecall(data_[i]);
 
             ok.handleRevertIfNotSuccess(result);
@@ -73,7 +70,8 @@ abstract contract MultiDelegatecall is Context, ReentrancyGuard {
     }
 
     function __onlyDelegateCall() private view {
-        if (address(this) == __original)
+        if (address(this) == __original) {
             revert MultiDelegatecall__OnlyDelegatecall();
+        }
     }
 }

@@ -5,10 +5,20 @@ import { IERC165Upgradeable, ERC721Upgradeable } from "../ERC721Upgradeable.sol"
 
 import { IERC721RentableUpgradeable } from "./IERC721RentableUpgradeable.sol";
 
-abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721RentableUpgradeable {
+abstract contract ERC721RentableUpgradeable is
+    ERC721Upgradeable,
+    IERC721RentableUpgradeable
+{
     mapping(uint256 => UserInfo) internal _users;
 
-    function setUser(uint256 tokenId, address user, uint64 expires) public virtual {
+    function setUser(
+        uint256 tokenId,
+        address user,
+        uint64 expires
+    )
+        public
+        virtual
+    {
         if (!_isApprovedOrOwner(_msgSender(), tokenId)) {
             revert ERC721Rentable__OnlyOwnerOrApproved();
         }
@@ -23,7 +33,8 @@ abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721Rentabl
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                /// @dev value is equal to
+                /// keccak256("UpdateUser(uint256,address,uint64)")
                 0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                 tokenId,
                 user
@@ -31,7 +42,13 @@ abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721Rentabl
         }
     }
 
-    function userOf(uint256 tokenId) public view virtual override returns (address user) {
+    function userOf(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address user)
+    {
         assembly {
             mstore(0x00, tokenId)
             mstore(0x20, _users.slot)
@@ -42,7 +59,13 @@ abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721Rentabl
         }
     }
 
-    function userExpires(uint256 tokenId) public view virtual override returns (uint256 expires) {
+    function userExpires(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (uint256 expires)
+    {
         assembly {
             mstore(0x00, tokenId)
             mstore(0x20, _users.slot)
@@ -57,7 +80,8 @@ abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721Rentabl
         override(IERC165Upgradeable, ERC721Upgradeable)
         returns (bool)
     {
-        return interfaceId == type(IERC721RentableUpgradeable).interfaceId || super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC721RentableUpgradeable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     function _beforeTokenTransfer(
@@ -79,14 +103,21 @@ abstract contract ERC721RentableUpgradeable is ERC721Upgradeable, IERC721Rentabl
                 let key := keccak256(0x00, 0x40)
                 let rentInfo := sload(key)
 
-                if iszero(iszero(and(rentInfo, 0xffffffffffffffffffffffffffffffffffffffff))) {
+                if iszero(
+                    iszero(
+                        and(
+                            rentInfo, 0xffffffffffffffffffffffffffffffffffffffff
+                        )
+                    )
+                ) {
                     sstore(key, 0)
 
                     mstore(0x00, 0)
                     log3(
                         0x00,
                         0x20,
-                        /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                        /// @dev value is equal to
+                        /// keccak256("UpdateUser(uint256,address,uint64)")
                         0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                         0,
                         0

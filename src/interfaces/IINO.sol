@@ -27,21 +27,60 @@ interface IINO {
         uint256 amount;
     }
 
-    event Registered(address indexed user, address indexed erc721, uint256[] tokenIds, uint256 price);
+    event Registered(
+        address indexed user,
+        address indexed erc721,
+        uint256[] tokenIds,
+        uint256 price
+    );
 
-    event Redeemed(address indexed buyer, uint256 indexed ticketId, address indexed paymentToken, uint256 total);
+    event Redeemed(
+        address indexed buyer,
+        uint256 indexed ticketId,
+        address indexed paymentToken,
+        uint256 total
+    );
 
-    event Received(address indexed from, address indexed to, uint256 indexed tokenId, bytes data);
+    event Received(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId,
+        bytes data
+    );
 
-    event NewCampaign(uint256 indexed campaignId, uint64 indexed startAt, uint64 indexed endAt);
+    event NewCampaign(
+        uint256 indexed campaignId, uint64 indexed startAt, uint64 indexed endAt
+    );
 
-    function ticketId(uint64 campaignId_, uint32 amount_) external pure returns (uint256);
+    function ticketId(
+        uint64 campaignId_,
+        uint32 amount_
+    )
+        external
+        pure
+        returns (uint256);
 
-    function redeem(address user_, address token_, uint256 value_, uint256 ticketId_) external;
+    function redeem(
+        address user_,
+        address token_,
+        uint256 value_,
+        uint256 ticketId_
+    )
+        external;
 
-    function setCampaign(uint256 campaignId_, Campaign calldata campaign_) external;
+    function setCampaign(
+        uint256 campaignId_,
+        Campaign calldata campaign_
+    )
+        external;
 
-    function paymentOf(uint256 campaignId_) external view returns (address[] memory);
+    function paymentOf(uint256 campaignId_)
+        external
+        view
+        returns (address[] memory);
 
-    function campaign(uint256 campaignId_) external view returns (Campaign memory campaign_);
+    function campaign(uint256 campaignId_)
+        external
+        view
+        returns (Campaign memory campaign_);
 }

@@ -4,5 +4,8 @@ pragma solidity 0.8.20;
 interface IBKAsset {
     function typeIdTrackers(uint256 typeId_) external view returns (uint256);
 
-    function metadataOf(uint256 tokenId_) external view returns (uint256 typeId, uint256 index);
+    function metadataOf(uint256 tokenId_)
+        external
+        view
+        returns (uint256 typeId, uint256 index);
 }

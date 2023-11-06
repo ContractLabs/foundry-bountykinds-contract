@@ -13,7 +13,11 @@ library SigUtil {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) internal pure returns (bytes memory signature) {
+    )
+        internal
+        pure
+        returns (bytes memory signature)
+    {
         signature = new bytes(65);
         assembly {
             mstore(add(signature, 0x20), r)
@@ -27,9 +31,11 @@ library SigUtil {
      * @param signature_ Signature bytes to split
      * @return r s v Tuple of ECDSA values
      */
-    function split(
-        bytes calldata signature_
-    ) internal pure returns (bytes32 r, bytes32 s, uint8 v) {
+    function split(bytes calldata signature_)
+        internal
+        pure
+        returns (bytes32 r, bytes32 s, uint8 v)
+    {
         assembly {
             r := calldataload(signature_.offset)
             s := calldataload(add(signature_.offset, 0x20))

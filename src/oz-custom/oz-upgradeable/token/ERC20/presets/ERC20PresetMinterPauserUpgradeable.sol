@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/presets/ERC20PresetMinterPauser.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (token/ERC20/presets/ERC20PresetMinterPauser.sol)
 
 pragma solidity ^0.8.17;
 
-import {ERC20Upgradeable} from "../ERC20Upgradeable.sol";
-import {
-    ERC20BurnableUpgradeable
-} from "../extensions/ERC20BurnableUpgradeable.sol";
-import {
-    ERC20PausableUpgradeable
-} from "../extensions/ERC20PausableUpgradeable.sol";
-import {
-    AccessControlEnumerableUpgradeable
-} from "../../../access/AccessControlEnumerableUpgradeable.sol";
+import { ERC20Upgradeable } from "../ERC20Upgradeable.sol";
+import { ERC20BurnableUpgradeable } from
+    "../extensions/ERC20BurnableUpgradeable.sol";
+import { ERC20PausableUpgradeable } from
+    "../extensions/ERC20PausableUpgradeable.sol";
+import { AccessControlEnumerableUpgradeable } from
+    "../../../access/AccessControlEnumerableUpgradeable.sol";
 
 /**
  * @dev {ERC20} token, including:
@@ -52,7 +50,10 @@ abstract contract ERC20PresetMinterPauserUpgradeable is
     function __ERC20PresetMinterPauser_init(
         string calldata name_,
         string calldata symbol_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         __ERC20PresetMinterPauser_init_unchained();
         __ERC20_init_unchained(name_, symbol_);
     }
@@ -80,7 +81,11 @@ abstract contract ERC20PresetMinterPauserUpgradeable is
     function mint(
         address to,
         uint256 amount
-    ) external virtual onlyRole(MINTER_ROLE) {
+    )
+        external
+        virtual
+        onlyRole(MINTER_ROLE)
+    {
         _mint(to, amount);
     }
 
@@ -110,9 +115,7 @@ abstract contract ERC20PresetMinterPauserUpgradeable is
         _unpause();
     }
 
-    function supportsInterface(
-        bytes4 interfaceId_
-    )
+    function supportsInterface(bytes4 interfaceId_)
         public
         view
         override(ERC20Upgradeable, AccessControlEnumerableUpgradeable)
@@ -125,7 +128,11 @@ abstract contract ERC20PresetMinterPauserUpgradeable is
         address from,
         address to,
         uint256 amount
-    ) internal virtual override(ERC20Upgradeable, ERC20PausableUpgradeable) {
+    )
+        internal
+        virtual
+        override(ERC20Upgradeable, ERC20PausableUpgradeable)
+    {
         super._beforeTokenTransfer(from, to, amount);
     }
 

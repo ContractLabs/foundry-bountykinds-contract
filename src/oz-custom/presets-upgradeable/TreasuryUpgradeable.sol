@@ -1,17 +1,33 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { Roles, IAuthority, ManagerUpgradeable } from "./base/ManagerUpgradeable.sol";
+import {
+    Roles,
+    IAuthority,
+    ManagerUpgradeable
+} from "./base/ManagerUpgradeable.sol";
 
-import { IWithdrawableUpgradeable, WithdrawableUpgradeable } from "../internal-upgradeable/WithdrawableUpgradeable.sol";
-import { Bytes32Address, SignableUpgradeable } from "../internal-upgradeable/SignableUpgradeable.sol";
+import {
+    IWithdrawableUpgradeable,
+    WithdrawableUpgradeable
+} from "../internal-upgradeable/WithdrawableUpgradeable.sol";
+import {
+    Bytes32Address,
+    SignableUpgradeable
+} from "../internal-upgradeable/SignableUpgradeable.sol";
 
 import { ITreasury } from "./interfaces/ITreasury.sol";
-import { IERC20Upgradeable } from "../oz-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import { IERC20Upgradeable } from
+    "../oz-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {
-    IERC721Upgradeable, ERC721TokenReceiverUpgradeable
+    IERC721Upgradeable,
+    ERC721TokenReceiverUpgradeable
 } from "../oz-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import { IERC1155, IERC1155Receiver } from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol"; // TODO:
+import {
+    IERC1155,
+    IERC1155Receiver
+} from
+    "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol"; // TODO:
     // update oz-custom
 
 import {
@@ -30,9 +46,11 @@ abstract contract TreasuryUpgradeable is
     using Bytes32Address for address;
     using ERC165CheckerUpgradeable for address;
 
-    ///@dev value is equal to keccak256("Permit(address token,address to,uint256 value,uint256 amount,uint256
+    ///@dev value is equal to keccak256("Permit(address token,address to,uint256
+    /// value,uint256 amount,uint256
     /// nonce,uint256 deadline)")
-    bytes32 private constant __PERMIT_TYPE_HASH = 0x1d4e5c65da4048ea0e84458001171f3bf2f0666aa734d5dc971be326031829c5;
+    bytes32 private constant __PERMIT_TYPE_HASH =
+        0x1d4e5c65da4048ea0e84458001171f3bf2f0666aa734d5dc971be326031829c5;
 
     uint256 public safeReceivedNativeBalance;
 
@@ -40,7 +58,13 @@ abstract contract TreasuryUpgradeable is
     mapping(address => mapping(uint256 => bool)) public erc721Balances;
     mapping(address => mapping(uint256 => uint256)) public erc1155Balances;
 
-    function __Treasury_init(IAuthority authority_, string calldata name_) internal onlyInitializing {
+    function __Treasury_init(
+        IAuthority authority_,
+        string calldata name_
+    )
+        internal
+        onlyInitializing
+    {
         __Treasury_init_unchained();
         __Signable_init_unchained(name_, "1");
         __Manager_init_unchained(authority_, Roles.TREASURER_ROLE);
@@ -240,10 +264,16 @@ abstract contract TreasuryUpgradeable is
 
         if (token_ == address(0)) {
             _safeNativeTransfer(to_, value_, "");
-        } else if (token_.supportsInterface(type(IERC721Upgradeable).interfaceId)) {
-            IERC721Upgradeable(token_).safeTransferFrom(address(this), to_, value_, "");
+        } else if (
+            token_.supportsInterface(type(IERC721Upgradeable).interfaceId)
+        ) {
+            IERC721Upgradeable(token_).safeTransferFrom(
+                address(this), to_, value_, ""
+            );
         } else if (token_.supportsInterface(type(IERC1155).interfaceId)) {
-            IERC1155(token_).safeTransferFrom(address(this), to_, value_, amount_, "");
+            IERC1155(token_).safeTransferFrom(
+                address(this), to_, value_, amount_, ""
+            );
         } else {
             _safeERC20Transfer(IERC20Upgradeable(token_), to_, value_);
         }
@@ -265,21 +295,27 @@ abstract contract TreasuryUpgradeable is
         if (token_ == address(0)) {
             safeReceivedNativeBalance -= value_;
             _safeNativeTransfer(to_, value_, "");
-        } else if (token_.supportsInterface(type(IERC721Upgradeable).interfaceId)) {
+        } else if (
+            token_.supportsInterface(type(IERC721Upgradeable).interfaceId)
+        ) {
             if (!erc721Balances[token_][value_]) {
                 revert Treasury__UnauthorizedWithdrawal();
             }
 
             delete erc721Balances[token_][value_];
 
-            IERC721Upgradeable(token_).safeTransferFrom(address(this), to_, value_, "");
+            IERC721Upgradeable(token_).safeTransferFrom(
+                address(this), to_, value_, ""
+            );
         } else if (token_.supportsInterface(type(IERC1155).interfaceId)) {
             uint256 amount = abi.decode(data_, (uint256));
 
             // will throw under flow if id balance < amount
             erc1155Balances[token_][value_] -= amount;
 
-            IERC1155(token_).safeTransferFrom(address(this), to_, value_, amount, "");
+            IERC1155(token_).safeTransferFrom(
+                address(this), to_, value_, amount, ""
+            );
         } else {
             // will throw under flow if id balance < amount
             erc20Balances[token_] -= value_;
@@ -296,25 +332,46 @@ abstract contract TreasuryUpgradeable is
 
     function safeRecoverHeader() public pure returns (bytes32) {
         /// @dev value is equal keccak256("SAFE_RECOVER_HEADER")
-        return 0x556d79614195ebefcc31ab1ee514b9953934b87d25857902370689cbd29b49de;
+        return
+            0x556d79614195ebefcc31ab1ee514b9953934b87d25857902370689cbd29b49de;
     }
 
     function safeTransferHeader() public pure returns (bytes32) {
         /// @dev value is equal keccak256("SAFE_TRANSFER")
-        return 0xc9627ddb76e5ee80829319617b557cc79498bbbc5553d8c632749a7511825f5d;
+        return
+            0xc9627ddb76e5ee80829319617b557cc79498bbbc5553d8c632749a7511825f5d;
     }
 
-    function supportsInterface(bytes4 interfaceId) external pure virtual override returns (bool) {
-        return interfaceId == type(ITreasury).interfaceId || interfaceId == type(IERC165Upgradeable).interfaceId
+    function supportsInterface(bytes4 interfaceId)
+        external
+        pure
+        virtual
+        override
+        returns (bool)
+    {
+        return interfaceId == type(ITreasury).interfaceId
+            || interfaceId == type(IERC165Upgradeable).interfaceId
             || interfaceId == type(IWithdrawableUpgradeable).interfaceId
             || interfaceId == type(IERC1155Receiver).interfaceId;
     }
 
-    function _isRecoverHeader(bytes memory data_) internal pure virtual returns (bool) {
-        return abi.decode(data_, (bytes32)) == safeRecoverHeader() ? true : false;
+    function _isRecoverHeader(bytes memory data_)
+        internal
+        pure
+        virtual
+        returns (bool)
+    {
+        return
+            abi.decode(data_, (bytes32)) == safeRecoverHeader() ? true : false;
     }
 
-    function __checkInterface(address token_, bytes4 interfaceId_) private view {
+    function __checkInterface(
+        address token_,
+        bytes4 interfaceId_
+    )
+        private
+        view
+    {
         if (!token_.supportsInterface(interfaceId_)) {
             revert Treasury__InvalidFunctionCall();
         }

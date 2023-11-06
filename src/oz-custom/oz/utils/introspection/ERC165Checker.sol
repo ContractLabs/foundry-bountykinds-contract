@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.17;
 
-import {IERC165} from "./IERC165.sol";
+import { IERC165 } from "./IERC165.sol";
 
 /**
  * @dev Library used to query support of an interface declared via {IERC165}.
@@ -20,14 +20,13 @@ library ERC165Checker {
      * @dev Returns true if `account` supports the {IERC165} interface,
      */
     function supportsERC165(address account) internal view returns (bool) {
-        // Any contract that implements ERC165 must explicitly indicate support of
-        // InterfaceId_ERC165 and explicitly indicate non-support of InterfaceId_Invalid
-        return
-            supportsERC165InterfaceUnchecked(
-                account,
-                type(IERC165).interfaceId
-            ) &&
-            !supportsERC165InterfaceUnchecked(account, __INTERFACE_ID_INVALID);
+        // Any contract that implements ERC165 must explicitly indicate support
+        // of
+        // InterfaceId_ERC165 and explicitly indicate non-support of
+        // InterfaceId_Invalid
+        return supportsERC165InterfaceUnchecked(
+            account, type(IERC165).interfaceId
+        ) && !supportsERC165InterfaceUnchecked(account, __INTERFACE_ID_INVALID);
     }
 
     /**
@@ -39,11 +38,15 @@ library ERC165Checker {
     function supportsInterface(
         address account,
         bytes4 interfaceId
-    ) internal view returns (bool) {
-        // query support of both ERC165 as per the spec and support of _interfaceId
-        return
-            supportsERC165(account) &&
-            supportsERC165InterfaceUnchecked(account, interfaceId);
+    )
+        internal
+        view
+        returns (bool)
+    {
+        // query support of both ERC165 as per the spec and support of
+        // _interfaceId
+        return supportsERC165(account)
+            && supportsERC165InterfaceUnchecked(account, interfaceId);
     }
 
     /**
@@ -59,20 +62,23 @@ library ERC165Checker {
     function getSupportedInterfaces(
         address account,
         bytes4[] calldata interfaceIds
-    ) internal view returns (bool[] memory interfaceIdsSupported) {
+    )
+        internal
+        view
+        returns (bool[] memory interfaceIdsSupported)
+    {
         uint256 length = interfaceIds.length;
 
-        // an array of booleans corresponding to interfaceIds and whether they're supported or not
+        // an array of booleans corresponding to interfaceIds and whether
+        // they're supported or not
         interfaceIdsSupported = new bool[](length);
 
         // query support of ERC165 itself
         if (supportsERC165(account)) {
             // query support of each interface in interfaceIds
-            for (uint256 i; i < length; ) {
-                interfaceIdsSupported[i] = supportsERC165InterfaceUnchecked(
-                    account,
-                    interfaceIds[i]
-                );
+            for (uint256 i; i < length;) {
+                interfaceIdsSupported[i] =
+                    supportsERC165InterfaceUnchecked(account, interfaceIds[i]);
                 unchecked {
                     ++i;
                 }
@@ -92,15 +98,20 @@ library ERC165Checker {
     function supportsAllInterfaces(
         address account,
         bytes4[] calldata interfaceIds
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         // query support of ERC165 itself
         if (!supportsERC165(account)) return false;
 
         uint256 length = interfaceIds.length;
         // query support of each interface in _interfaceIds
-        for (uint256 i; i < length; ) {
-            if (!supportsERC165InterfaceUnchecked(account, interfaceIds[i]))
+        for (uint256 i; i < length;) {
+            if (!supportsERC165InterfaceUnchecked(account, interfaceIds[i])) {
                 return false;
+            }
 
             unchecked {
                 ++i;
@@ -112,21 +123,30 @@ library ERC165Checker {
     }
 
     /**
-     * @notice Query if a contract implements an interface, does not check ERC165 support
-     * @param account The address of the contract to query for support of an interface
+     * @notice Query if a contract implements an interface, does not check
+     * ERC165 support
+     * @param account The address of the contract to query for support of an
+     * interface
      * @param interfaceId The interface identifier, as specified in ERC-165
-     * @return true if the contract at account indicates support of the interface with
+     * @return true if the contract at account indicates support of the
+     * interface with
      * identifier interfaceId, false otherwise
-     * @dev Assumes that account contains a contract that supports ERC165, otherwise
-     * the behavior of this method is undefined. This precondition can be checked
+     * @dev Assumes that account contains a contract that supports ERC165,
+     * otherwise
+     * the behavior of this method is undefined. This precondition can be
+     * checked
      * with {supportsERC165}.
      * Interface identification is specified in ERC-165.
      */
     function supportsERC165InterfaceUnchecked(
         address account,
         bytes4 interfaceId
-    ) internal view returns (bool) {
-        (bool success, bytes memory result) = account.staticcall{gas: 30000}(
+    )
+        internal
+        view
+        returns (bool)
+    {
+        (bool success, bytes memory result) = account.staticcall{ gas: 30_000 }(
             abi.encodeCall(IERC165.supportsInterface, (interfaceId))
         );
         if (result.length < 32) return false;

@@ -1,20 +1,21 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Roles, Manager, IAuthority} from "./base/Manager.sol";
+import { Roles, Manager, IAuthority } from "./base/Manager.sol";
 
-import {IWithdrawable, Withdrawable} from "../internal/Withdrawable.sol";
-import {Signable, Bytes32Address} from "../internal/Signable.sol";
+import { IWithdrawable, Withdrawable } from "../internal/Withdrawable.sol";
+import { Signable, Bytes32Address } from "../internal/Signable.sol";
 
-import {ITreasury} from "./interfaces/ITreasury.sol";
-import {IERC20} from "../oz/token/ERC20/IERC20.sol";
-import {IERC721, ERC721TokenReceiver} from "../oz/token/ERC721/ERC721.sol";
+import { ITreasury } from "./interfaces/ITreasury.sol";
+import { IERC20 } from "../oz/token/ERC20/IERC20.sol";
+import { IERC721, ERC721TokenReceiver } from "../oz/token/ERC721/ERC721.sol";
 import {
     IERC1155,
     IERC1155Receiver
-} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol"; // TODO: update oz-custom
+} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol"; // TODO: update
+    // oz-custom
 
-import {ERC165Checker} from "../oz/utils/introspection/ERC165Checker.sol";
+import { ERC165Checker } from "../oz/utils/introspection/ERC165Checker.sol";
 
 contract Treasury is
     Manager,
@@ -27,7 +28,9 @@ contract Treasury is
     using ERC165Checker for address;
     using Bytes32Address for address;
 
-    ///@dev value is equal to keccak256("Permit(address token,address to,uint256 value,uint256 amount,uint256 nonce,uint256 deadline)")
+    ///@dev value is equal to keccak256("Permit(address token,address to,uint256
+    /// value,uint256 amount,uint256
+    /// nonce,uint256 deadline)")
     bytes32 private constant __PERMIT_TYPE_HASH =
         0x1d4e5c65da4048ea0e84458001171f3bf2f0666aa734d5dc971be326031829c5;
 
@@ -40,7 +43,11 @@ contract Treasury is
     constructor(
         IAuthority authority_,
         string memory name_
-    ) payable Signable(name_, "1") Manager(authority_, Roles.TREASURER_ROLE) {
+    )
+        payable
+        Signable(name_, "1")
+        Manager(authority_, Roles.TREASURER_ROLE)
+    {
         safeReceivedNativeBalance = msg.value;
         emit BalanceInitiated(_msgSender(), msg.value);
     }
@@ -68,12 +75,17 @@ contract Treasury is
         uint256 id_,
         uint256 value_,
         bytes calldata data_
-    ) external returns (bytes4) {
-        if (value_ == 0 || data_.length == 0)
+    )
+        external
+        returns (bytes4)
+    {
+        if (value_ == 0 || data_.length == 0) {
             revert Treasury__InvalidArgument();
+        }
 
-        if (_isRecoverHeader(data_))
+        if (_isRecoverHeader(data_)) {
             return IERC1155Receiver.onERC1155Received.selector;
+        }
 
         address token = _msgSender();
         _onlyProxy(token);
@@ -93,11 +105,15 @@ contract Treasury is
         uint256[] calldata ids_,
         uint256[] calldata values_,
         bytes calldata data_
-    ) external returns (bytes4) {
+    )
+        external
+        returns (bytes4)
+    {
         uint256 length = ids_.length;
         if (length != values_.length) revert Treasury__LengthMismatch();
-        if (_isRecoverHeader(data_))
+        if (_isRecoverHeader(data_)) {
             return IERC1155Receiver.onERC1155BatchReceived.selector;
+        }
 
         address token = _msgSender();
         _onlyProxy(token);
@@ -111,7 +127,7 @@ contract Treasury is
             mstore(0x20, keccak256(0x00, 0x40))
         }
 
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             // compute erc1155Balances[token][ids_[i]] = keccak256(ids_[i], key)
             // erc1155Balances[token][ids_[i]] += values_[i]
             assembly {
@@ -121,9 +137,7 @@ contract Treasury is
                 let value := calldataload(add(values_.offset, idx))
                 let newVal := add(value, sload(key))
                 // overflow check
-                if lt(newVal, value) {
-                    revert(0, 0)
-                }
+                if lt(newVal, value) { revert(0, 0) }
                 sstore(key, newVal)
                 i := add(1, i)
             }
@@ -139,9 +153,14 @@ contract Treasury is
         address,
         uint256 tokenId_,
         bytes calldata data_
-    ) external override returns (bytes4) {
-        if (_isRecoverHeader(data_))
+    )
+        external
+        override
+        returns (bytes4)
+    {
+        if (_isRecoverHeader(data_)) {
             return ERC721TokenReceiver.onERC721Received.selector;
+        }
 
         address token = _msgSender();
         _onlyProxy(token);
@@ -159,16 +178,24 @@ contract Treasury is
         address token_,
         uint256 value_,
         bytes calldata data_
-    ) external virtual override onlyRole(Roles.PROXY_ROLE) returns (bytes4) {
-        if (_isRecoverHeader(data_))
+    )
+        external
+        virtual
+        override
+        onlyRole(Roles.PROXY_ROLE)
+        returns (bytes4)
+    {
+        if (_isRecoverHeader(data_)) {
             return IWithdrawable.notifyERC20Transfer.selector;
+        }
 
         if (value_ == 0) revert Treasury__InvalidArgument();
         if (
-            token_ == address(0) ||
-            token_ == address(this) ||
-            token_.supportsInterface(type(IERC721).interfaceId)
-        ) revert Treasury__InvalidTokenAddress();
+            token_ == address(0) || token_ == address(this)
+                || token_.supportsInterface(type(IERC721).interfaceId)
+        ) {
+            revert Treasury__InvalidTokenAddress();
+        }
 
         erc20Balances[token_] += value_;
 
@@ -184,7 +211,11 @@ contract Treasury is
         uint256 amount_, // if withdraw ERC1155
         uint256 deadline_,
         bytes calldata signature_
-    ) external onlyEOA whenNotPaused {
+    )
+        external
+        onlyEOA
+        whenNotPaused
+    {
         if (block.timestamp > deadline_) revert Treasury__Expired();
 
         _checkBlacklist(to_);
@@ -215,11 +246,7 @@ contract Treasury is
             IERC721(token_).safeTransferFrom(address(this), to_, value_, "");
         } else if (token_.supportsInterface(type(IERC1155).interfaceId)) {
             IERC1155(token_).safeTransferFrom(
-                address(this),
-                to_,
-                value_,
-                amount_,
-                ""
+                address(this), to_, value_, amount_, ""
             );
         } else {
             _safeERC20Transfer(IERC20(token_), to_, value_);
@@ -233,13 +260,19 @@ contract Treasury is
         address to_,
         uint256 value_,
         bytes calldata data_
-    ) external virtual override onlyRole(Roles.TREASURER_ROLE) {
+    )
+        external
+        virtual
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         if (token_ == address(0)) {
             safeReceivedNativeBalance -= value_;
             _safeNativeTransfer(to_, value_, "");
         } else if (token_.supportsInterface(type(IERC721).interfaceId)) {
-            if (!erc721Balances[token_][value_])
+            if (!erc721Balances[token_][value_]) {
                 revert Treasury__UnauthorizedWithdrawal();
+            }
 
             delete erc721Balances[token_][value_];
 
@@ -251,11 +284,7 @@ contract Treasury is
             erc1155Balances[token_][value_] -= amount;
 
             IERC1155(token_).safeTransferFrom(
-                address(this),
-                to_,
-                value_,
-                amount,
-                ""
+                address(this), to_, value_, amount, ""
             );
         } else {
             // will throw under flow if id balance < amount
@@ -283,18 +312,24 @@ contract Treasury is
             0xc9627ddb76e5ee80829319617b557cc79498bbbc5553d8c632749a7511825f5d;
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) external pure virtual override returns (bool) {
-        return
-            interfaceId == type(ITreasury).interfaceId ||
-            interfaceId == type(IWithdrawable).interfaceId ||
-            interfaceId == type(IERC1155Receiver).interfaceId;
+    function supportsInterface(bytes4 interfaceId)
+        external
+        pure
+        virtual
+        override
+        returns (bool)
+    {
+        return interfaceId == type(ITreasury).interfaceId
+            || interfaceId == type(IWithdrawable).interfaceId
+            || interfaceId == type(IERC1155Receiver).interfaceId;
     }
 
-    function _isRecoverHeader(
-        bytes memory data_
-    ) internal pure virtual returns (bool) {
+    function _isRecoverHeader(bytes memory data_)
+        internal
+        pure
+        virtual
+        returns (bool)
+    {
         return
             abi.decode(data_, (bytes32)) == safeRecoverHeader() ? true : false;
     }
@@ -302,8 +337,12 @@ contract Treasury is
     function __checkInterface(
         address token_,
         bytes4 interfaceId_
-    ) private view {
-        if (!token_.supportsInterface(interfaceId_))
+    )
+        private
+        view
+    {
+        if (!token_.supportsInterface(interfaceId_)) {
             revert Treasury__InvalidFunctionCall();
+        }
     }
 }

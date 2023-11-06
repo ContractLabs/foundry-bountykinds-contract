@@ -1,33 +1,26 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ContextUpgradeable
-} from "../../oz-upgradeable/utils/ContextUpgradeable.sol";
-import {
-    UUPSUpgradeable
-} from "../../oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import { ContextUpgradeable } from
+    "../../oz-upgradeable/utils/ContextUpgradeable.sol";
+import { UUPSUpgradeable } from
+    "../../oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import {
-    ProxyCheckerUpgradeable
-} from "../../internal-upgradeable/ProxyCheckerUpgradeable.sol";
-import {IManager, IAuthority} from "./interfaces/IManager.sol";
+import { ProxyCheckerUpgradeable } from
+    "../../internal-upgradeable/ProxyCheckerUpgradeable.sol";
+import { IManager, IAuthority } from "./interfaces/IManager.sol";
 
-import {
-    IPausableUpgradeable
-} from "../../oz-upgradeable/security/PausableUpgradeable.sol";
-import {
-    IAccessControlUpgradeable
-} from "../../oz-upgradeable/access/IAccessControlUpgradeable.sol";
-import {
-    IBlacklistableUpgradeable
-} from "../../internal-upgradeable/interfaces/IBlacklistableUpgradeable.sol";
+import { IPausableUpgradeable } from
+    "../../oz-upgradeable/security/PausableUpgradeable.sol";
+import { IAccessControlUpgradeable } from
+    "../../oz-upgradeable/access/IAccessControlUpgradeable.sol";
+import { IBlacklistableUpgradeable } from
+    "../../internal-upgradeable/interfaces/IBlacklistableUpgradeable.sol";
 
-import {Roles} from "../../libraries/Roles.sol";
-import {ErrorHandler} from "../../libraries/ErrorHandler.sol";
-import {
-    ERC165CheckerUpgradeable
-} from "../../oz-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
+import { Roles } from "../../libraries/Roles.sol";
+import { ErrorHandler } from "../../libraries/ErrorHandler.sol";
+import { ERC165CheckerUpgradeable } from
+    "../../oz-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 
 abstract contract ManagerUpgradeable is
     IManager,
@@ -64,14 +57,20 @@ abstract contract ManagerUpgradeable is
     function __Manager_init(
         IAuthority authority_,
         bytes32 role_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         __Manager_init_unchained(authority_, role_);
     }
 
     function __Manager_init_unchained(
         IAuthority authority_,
         bytes32 role_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         assembly {
             sstore(__requestedRole.slot, role_)
         }
@@ -89,9 +88,10 @@ abstract contract ManagerUpgradeable is
     }
 
     /// @inheritdoc IManager
-    function updateAuthority(
-        IAuthority authority_
-    ) external onlyRole(Roles.OPERATOR_ROLE) {
+    function updateAuthority(IAuthority authority_)
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         IAuthority old = authority();
         if (old == authority_) revert Manager__AlreadySet();
 
@@ -113,7 +113,8 @@ abstract contract ManagerUpgradeable is
 
     /**
      * @notice Returns the address of the authority contract, for internal use.
-     * @dev This function is for internal use only and should not be called by external contracts.
+     * @dev This function is for internal use only and should not be called by
+     * external contracts.
      * @return authority_ is the address of the authority contract.
      */
     function _authority() internal view returns (address authority_) {
@@ -124,9 +125,11 @@ abstract contract ManagerUpgradeable is
     }
 
     /**
-     * @notice Checks if the given account is blacklisted by the authority contract.
+     * @notice Checks if the given account is blacklisted by the authority
+     * contract.
      * @param account_ The address to check for blacklisting.
-     * @dev This function should be called before allowing the given account to perform certain actions.
+     * @dev This function should be called before allowing the given account to
+     * perform certain actions.
      * @custom:throws Manager__Blacklisted if the given account is blacklisted.
      */
     function _checkBlacklist(address account_) internal view {
@@ -136,30 +139,33 @@ abstract contract ManagerUpgradeable is
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (abi.decode(returnOrRevertData, (bool)))
+        if (abi.decode(returnOrRevertData, (bool))) {
             revert Manager__Blacklisted();
+        }
     }
 
     function _checkBlacklistMulti(address[] memory accounts_) internal view {
         (bool ok, bytes memory returnOrRevertData) = _authority().staticcall(
             abi.encodeCall(
-                IBlacklistableUpgradeable.areBlacklisted,
-                (accounts_)
+                IBlacklistableUpgradeable.areBlacklisted, (accounts_)
             )
         );
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (abi.decode(returnOrRevertData, (bool)))
+        if (abi.decode(returnOrRevertData, (bool))) {
             revert Manager__Blacklisted();
+        }
     }
 
     /**
      * @notice Checks if the given account has the given role.
      * @param role_ The role to check for.
      * @param account_ The address to check for the role.
-     * @dev This function should be called before allowing the given account to perform certain actions.
-     * @custom:throws Manager__Unauthorized if the given account does not have the given role.
+     * @dev This function should be called before allowing the given account to
+     * perform certain actions.
+     * @custom:throws Manager__Unauthorized if the given account does not have
+     * the given role.
      */
     function _checkRole(bytes32 role_, address account_) internal view {
         if (!_hasRole(role_, account_)) revert Manager__Unauthorized();
@@ -179,8 +185,9 @@ abstract contract ManagerUpgradeable is
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (!abi.decode(returnOrRevertData, (bool)))
+        if (!abi.decode(returnOrRevertData, (bool))) {
             revert Manager__NotPaused();
+        }
     }
 
     function _requireNotPaused() internal view {
@@ -195,12 +202,13 @@ abstract contract ManagerUpgradeable is
     function _hasRole(
         bytes32 role_,
         address account_
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         (bool ok, bytes memory returnOrRevertData) = _authority().staticcall(
-            abi.encodeCall(
-                IAccessControlUpgradeable.hasRole,
-                (role_, account_)
-            )
+            abi.encodeCall(IAccessControlUpgradeable.hasRole, (role_, account_))
         );
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
@@ -210,15 +218,16 @@ abstract contract ManagerUpgradeable is
 
     function __checkAuthority(address authority_) private view {
         if (
-            authority_ == address(0) ||
-            !_isProxy(authority_) ||
-            !authority_.supportsInterface(type(IAuthority).interfaceId)
+            authority_ == address(0) || !_isProxy(authority_)
+                || !authority_.supportsInterface(type(IAuthority).interfaceId)
         ) revert Manager__InvalidArgument();
     }
 
-    function _authorizeUpgrade(
-        address implement_
-    ) internal override onlyRole(Roles.UPGRADER_ROLE) {}
+    function _authorizeUpgrade(address implement_)
+        internal
+        override
+        onlyRole(Roles.UPGRADER_ROLE)
+    { }
 
     uint256[48] private __gap;
 }

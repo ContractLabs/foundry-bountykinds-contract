@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.10;
 
-import {ERC721} from "../ERC721.sol";
-import {Signable} from "../../../../internal/Signable.sol";
+import { ERC721 } from "../ERC721.sol";
+import { Signable } from "../../../../internal/Signable.sol";
 
-import {IERC721Permit} from "./IERC721Permit.sol";
+import { IERC721Permit } from "./IERC721Permit.sol";
 
 /// @title ERC721 with permit
 /// @notice Nonfungible tokens that support an approve via signature, i.e. permit
@@ -12,9 +12,14 @@ abstract contract ERC721Permit is ERC721, IERC721Permit, Signable {
     constructor(
         string memory name_,
         string memory symbol_
-    ) payable Signable(name_, "1") ERC721(name_, symbol_) {}
+    )
+        payable
+        Signable(name_, "1")
+        ERC721(name_, symbol_)
+    { }
 
-    /// @dev Gets the current nonce for a token ID and then increments it, returning the original value
+    /// @dev Gets the current nonce for a token ID and then increments it,
+    /// returning the original value
 
     /// @inheritdoc IERC721Permit
     function DOMAIN_SEPARATOR()
@@ -26,7 +31,8 @@ abstract contract ERC721Permit is ERC721, IERC721Permit, Signable {
         return _domainSeparatorV4();
     }
 
-    /// @dev Value is equal to to keccak256("Permit(address spender,uint256 tokenId,uint256 nonce,uint256 deadline)");
+    /// @dev Value is equal to to keccak256("Permit(address spender,uint256
+    /// tokenId,uint256 nonce,uint256 deadline)");
     bytes32 private constant __PERMIT_TYPEHASH =
         0x49ecf333e5b8c95c40fdafc95c1ad136e8914a8fb55e9dc8bb01eaa83a2df9ad;
 
@@ -36,7 +42,10 @@ abstract contract ERC721Permit is ERC721, IERC721Permit, Signable {
         uint256 tokenId_,
         uint256 deadline_,
         bytes calldata signature_
-    ) external override {
+    )
+        external
+        override
+    {
         address owner = ownerOf(tokenId_);
 
         bytes32 digest;
@@ -79,9 +88,12 @@ abstract contract ERC721Permit is ERC721, IERC721Permit, Signable {
         }
     }
 
-    function nonces(
-        uint256 tokenId_
-    ) external view override returns (uint256 nonce) {
+    function nonces(uint256 tokenId_)
+        external
+        view
+        override
+        returns (uint256 nonce)
+    {
         assembly {
             mstore(0x00, tokenId_)
             mstore(0x20, _nonces.slot)

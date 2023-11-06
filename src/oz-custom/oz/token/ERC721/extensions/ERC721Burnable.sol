@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/extensions/ERC721Burnable.sol)
+// OpenZeppelin Contracts (last updated v4.7.0)
+// (token/ERC721/extensions/ERC721Burnable.sol)
 
 pragma solidity ^0.8.10;
 
-import {ERC721, IERC721} from "../ERC721.sol";
+import { ERC721, IERC721 } from "../ERC721.sol";
 
 interface IERC712Burnable is IERC721 {
     error ERC721Burnable__OnlyOwnerOrApproved();
@@ -26,8 +27,9 @@ abstract contract ERC721Burnable is ERC721, IERC712Burnable {
      */
     function burn(uint256 tokenId) public virtual {
         //solhint-disable-next-line max-line-length
-        if (!_isApprovedOrOwner(_msgSender(), tokenId))
+        if (!_isApprovedOrOwner(_msgSender(), tokenId)) {
             revert ERC721Burnable__OnlyOwnerOrApproved();
+        }
 
         _burn(tokenId);
     }

@@ -15,12 +15,24 @@ interface IGacha {
         bool isUsed;
     }
 
-    event Rewarded(address indexed operator, uint256 indexed ticketId, address indexed token, uint256 value);
+    event Rewarded(
+        address indexed operator,
+        uint256 indexed ticketId,
+        address indexed token,
+        uint256 value
+    );
 
-    event Redeemed(address indexed account, uint256 indexed ticketId, uint256 indexed typeId);
+    event Redeemed(
+        address indexed account,
+        uint256 indexed ticketId,
+        uint256 indexed typeId
+    );
 
     event TicketPricesUpdated(
-        address indexed operator, uint256 indexed typeId, address[] supportedPayments, uint96[] unitPrices
+        address indexed operator,
+        uint256 indexed typeId,
+        address[] supportedPayments,
+        uint96[] unitPrices
     );
 
     function updateTicketPrice(
@@ -30,7 +42,14 @@ interface IGacha {
     )
         external;
 
-    function redeemTicket(address user_, address token_, uint256 value_, uint256 id_, uint256 type_) external;
+    function redeemTicket(
+        address user_,
+        address token_,
+        uint256 value_,
+        uint256 id_,
+        uint256 type_
+    )
+        external;
 
     function claimReward(
         address token_,

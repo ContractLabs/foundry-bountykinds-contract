@@ -2,14 +2,20 @@
 pragma solidity >=0.8.0;
 
 /// @notice Gas optimized merkle proof verification library.
-/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/MerkleProofLib.sol)
-/// @author Modified from Solady (https://github.com/Vectorized/solady/blob/main/src/utils/MerkleProofLib.sol)
+/// @author Solmate
+/// (https://github.com/transmissions11/solmate/blob/main/src/utils/MerkleProofLib.sol)
+/// @author Modified from Solady
+/// (https://github.com/Vectorized/solady/blob/main/src/utils/MerkleProofLib.sol)
 library MerkleProofUpgradeable {
     function verify(
         bytes32[] calldata proof,
         bytes32 root,
         bytes32 leaf
-    ) internal pure returns (bool isValid) {
+    )
+        internal
+        pure
+        returns (bool isValid)
+    {
         assembly {
             if proof.length {
                 // Left shifting by 5 is like multiplying by 32.
@@ -20,19 +26,21 @@ library MerkleProofUpgradeable {
 
                 // Iterate over proof elements to compute root hash.
                 // prettier-ignore
-                for {} 1 {} {
+                for { } 1 { } {
                     // Slot where the leaf should be put in scratch space. If
                     // leaf > calldataload(offset): slot 32, otherwise: slot 0.
                     let leafSlot := shl(5, gt(leaf, calldataload(offset)))
 
                     // Store elements to hash contiguously in scratch space.
                     // The xor puts calldataload(offset) in whichever slot leaf
-                    // is not occupying, so 0 if leafSlot is 32, and 32 otherwise.
+                    // is not occupying, so 0 if leafSlot is 32, and 32
+                    // otherwise.
                     mstore(leafSlot, leaf)
                     mstore(xor(leafSlot, 32), calldataload(offset))
 
                     // Reuse leaf to store the hash to reduce stack operations.
-                    leaf := keccak256(0, 64) // Hash both slots of scratch space.
+                    leaf := keccak256(0, 64) // Hash both slots of scratch
+                        // space.
 
                     offset := add(offset, 32) // Shift 1 word per cycle.
 

@@ -3,14 +3,13 @@
 
 pragma solidity ^0.8.0;
 
-import {Ownable, Bytes32Address} from "./Ownable.sol";
+import { Ownable, Bytes32Address } from "./Ownable.sol";
 
 interface IOwnable2Step {
     error Ownable2Step__CallerIsNotTheNewOwner();
 
     event OwnershipTransferStarted(
-        address indexed previousOwner,
-        address indexed newOwner
+        address indexed previousOwner, address indexed newOwner
     );
 
     function pendingOwner() external view returns (address _pendingOwner);
@@ -49,12 +48,17 @@ abstract contract Ownable2Step is Ownable, IOwnable2Step {
     }
 
     /**
-     * @dev Starts the ownership transfer of the contract to a new account. Replaces the pending transfer if there is one.
+     * @dev Starts the ownership transfer of the contract to a new account.
+     * Replaces the pending transfer if there is
+     * one.
      * Can only be called by the current owner.
      */
-    function transferOwnership(
-        address newOwner_
-    ) public virtual override onlyOwner {
+    function transferOwnership(address newOwner_)
+        public
+        virtual
+        override
+        onlyOwner
+    {
         assembly {
             sstore(__pendingOwner.slot, newOwner_)
         }
@@ -62,7 +66,8 @@ abstract contract Ownable2Step is Ownable, IOwnable2Step {
     }
 
     /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`) and deletes any pending owner.
+     * @dev Transfers ownership of the contract to a new account (`newOwner`)
+     * and deletes any pending owner.
      * Internal function without access restriction.
      */
     function _transferOwnership(address newOwner) internal virtual override {
@@ -75,8 +80,9 @@ abstract contract Ownable2Step is Ownable, IOwnable2Step {
      */
     function acceptOwnership() external {
         address sender = _msgSender();
-        if (pendingOwner() != sender)
+        if (pendingOwner() != sender) {
             revert Ownable2Step__CallerIsNotTheNewOwner();
+        }
 
         _transferOwnership(sender);
     }

@@ -3,7 +3,8 @@ pragma solidity 0.8.20;
 
 /**
  * @title IBountyKindsERC20
- * @dev This interface defines the methods and events for a contract that manages a ERC20 token and allows executing
+ * @dev This interface defines the methods and events for a contract that
+ * manages a ERC20 token and allows executing
  * calls to external contracts.
  */
 interface IBK20 {
@@ -26,7 +27,11 @@ interface IBK20 {
      * @param returnData The data returned by the external contract.
      */
     event Executed(
-        address indexed operator, address indexed target, uint256 indexed value_, bytes callData, bytes returnData
+        address indexed operator,
+        address indexed target,
+        uint256 indexed value_,
+        bytes callData,
+        bytes returnData
     );
 
     /**
@@ -42,5 +47,10 @@ interface IBK20 {
      * @param value_ The amount of ether to send with the call.
      * @param calldata_ The data to send with the call.
      */
-    function execute(address target_, uint256 value_, bytes calldata calldata_) external;
+    function execute(
+        address target_,
+        uint256 value_,
+        bytes calldata calldata_
+    )
+        external;
 }

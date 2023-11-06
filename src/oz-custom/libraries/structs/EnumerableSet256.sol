@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (utils/structs/EnumerableSet.sol)
+// OpenZeppelin Contracts (last updated v4.7.0)
+// (utils/structs/EnumerableSet.sol)
 
 pragma solidity ^0.8.17;
 
-import {ArrayUtil, BitMap256} from "../ArrayUtil.sol";
+import { ArrayUtil, BitMap256 } from "../ArrayUtil.sol";
 
 error EnumerableSet256__SlotOccupied();
 
@@ -25,8 +26,12 @@ library EnumerableSet256 {
     function _contains(
         Set storage set,
         uint256 value
-    ) private view returns (uint256) {
-        uint256 index = value.index({shouldHash_: false});
+    )
+        private
+        view
+        returns (uint256)
+    {
+        uint256 index = value.index({ shouldHash_: false });
         uint256 slotVal;
         if ((slotVal = set.values[index]) == 0) return 0x100;
         if (slotVal == value) return index;
@@ -38,7 +43,7 @@ library EnumerableSet256 {
         uint256 index;
         if ((index = _contains(set, value)) != 0x100) {
             set.values[index] = value;
-            set.indexMap.set({value_: value, shouldHash_: false});
+            set.indexMap.set({ value_: value, shouldHash_: false });
             unchecked {
                 ++set.length;
             }
@@ -54,8 +59,9 @@ library EnumerableSet256 {
      * present.
      */
     function _remove(Set storage set, uint256 value) private returns (bool) {
-        // We read and store the value's index to prevent multiple reads from the same storage slot
-        uint256 idx = value.index({shouldHash_: false});
+        // We read and store the value's index to prevent multiple reads from
+        // the same storage slot
+        uint256 idx = value.index({ shouldHash_: false });
         uint256 valueIndex = set.values[idx] == value ? idx : 0;
 
         if (valueIndex == 0) return false;
@@ -64,7 +70,7 @@ library EnumerableSet256 {
         unchecked {
             --set.length;
         }
-        set.indexMap.unset({value_: value, shouldHash_: false});
+        set.indexMap.unset({ value_: value, shouldHash_: false });
 
         return true;
     }
@@ -89,17 +95,25 @@ library EnumerableSet256 {
     function _at(
         Set storage set,
         uint256 index
-    ) private view returns (uint256) {
+    )
+        private
+        view
+        returns (uint256)
+    {
         return set.values[index];
     }
 
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
     function _values(Set storage set) private view returns (uint256[] memory) {
         return set.values.trim(0);
@@ -120,7 +134,10 @@ library EnumerableSet256 {
     function add(
         Bytes32Set storage set,
         bytes32 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         uint256 val;
         assembly {
             val := value
@@ -137,7 +154,10 @@ library EnumerableSet256 {
     function remove(
         Bytes32Set storage set,
         bytes32 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         uint256 val;
         assembly {
             val := value
@@ -151,7 +171,11 @@ library EnumerableSet256 {
     function contains(
         Bytes32Set storage set,
         bytes32 value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         uint256 val;
         assembly {
             val := value
@@ -179,7 +203,11 @@ library EnumerableSet256 {
     function at(
         Bytes32Set storage set,
         uint256 index
-    ) internal view returns (bytes32) {
+    )
+        internal
+        view
+        returns (bytes32)
+    {
         uint256 val = _at(set._inner, index);
         bytes32 val_;
         assembly {
@@ -191,14 +219,20 @@ library EnumerableSet256 {
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        Bytes32Set storage set
-    ) internal view returns (bytes32[] memory res) {
+    function values(Bytes32Set storage set)
+        internal
+        view
+        returns (bytes32[] memory res)
+    {
         uint256[] memory val = _values(set._inner);
         assembly {
             res := val
@@ -220,7 +254,10 @@ library EnumerableSet256 {
     function add(
         AddressSet storage set,
         address value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         uint256 store;
         assembly {
             store := value
@@ -237,7 +274,10 @@ library EnumerableSet256 {
     function remove(
         AddressSet storage set,
         address value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         uint256 store;
         assembly {
             store := value
@@ -251,7 +291,11 @@ library EnumerableSet256 {
     function contains(
         AddressSet storage set,
         address value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         uint256 store;
         assembly {
             store := value
@@ -279,7 +323,11 @@ library EnumerableSet256 {
     function at(
         AddressSet storage set,
         uint256 index
-    ) internal view returns (address addr) {
+    )
+        internal
+        view
+        returns (address addr)
+    {
         uint256 value = _at(set._inner, index);
         assembly {
             addr := value
@@ -289,14 +337,20 @@ library EnumerableSet256 {
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        AddressSet storage set
-    ) internal view returns (address[] memory res) {
+    function values(AddressSet storage set)
+        internal
+        view
+        returns (address[] memory res)
+    {
         uint256[] memory store = _values(set._inner);
 
         /// @solidity memory-safe-assembly
@@ -330,7 +384,10 @@ library EnumerableSet256 {
     function remove(
         UintSet storage set,
         uint256 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
@@ -340,7 +397,11 @@ library EnumerableSet256 {
     function contains(
         UintSet storage set,
         uint256 value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value) != 0x100;
     }
 
@@ -364,21 +425,31 @@ library EnumerableSet256 {
     function at(
         UintSet storage set,
         uint256 index
-    ) internal view returns (uint256) {
+    )
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        UintSet storage set
-    ) internal view returns (uint256[] memory) {
+    function values(UintSet storage set)
+        internal
+        view
+        returns (uint256[] memory)
+    {
         return _values(set._inner);
     }
 }

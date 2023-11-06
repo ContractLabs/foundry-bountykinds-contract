@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (access/AccessControlEnumerable.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (access/AccessControlEnumerable.sol)
 
 pragma solidity ^0.8.0;
 
-import {AccessControlUpgradeable} from "./AccessControlUpgradeable.sol";
-import {
-    IAccessControlEnumerableUpgradeable
-} from "./IAccessControlEnumerableUpgradeable.sol";
-import {
-    EnumerableSetUpgradeable
-} from "../utils/structs/EnumerableSetUpgradeable.sol";
+import { AccessControlUpgradeable } from "./AccessControlUpgradeable.sol";
+import { IAccessControlEnumerableUpgradeable } from
+    "./IAccessControlEnumerableUpgradeable.sol";
+import { EnumerableSetUpgradeable } from
+    "../utils/structs/EnumerableSetUpgradeable.sol";
 
 /**
- * @dev Extension of {AccessControl} that allows enumerating the members of each role.
+ * @dev Extension of {AccessControl} that allows enumerating the members of each
+ * role.
  */
 abstract contract AccessControlEnumerableUpgradeable is
     AccessControlUpgradeable,
@@ -20,24 +20,31 @@ abstract contract AccessControlEnumerableUpgradeable is
 {
     using EnumerableSetUpgradeable for EnumerableSetUpgradeable.AddressSet;
 
-    mapping(bytes32 => EnumerableSetUpgradeable.AddressSet)
-        internal _roleMembers;
+    mapping(bytes32 => EnumerableSetUpgradeable.AddressSet) internal
+        _roleMembers;
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override returns (bool) {
-        return
-            interfaceId ==
-            type(IAccessControlEnumerableUpgradeable).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return interfaceId
+            == type(IAccessControlEnumerableUpgradeable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
-    function getAllRoleMembers(
-        bytes32 role_
-    ) public view virtual override returns (address[] memory) {
+    function getAllRoleMembers(bytes32 role_)
+        public
+        view
+        virtual
+        override
+        returns (address[] memory)
+    {
         return _roleMembers[role_].values();
     }
 
@@ -50,13 +57,20 @@ abstract contract AccessControlEnumerableUpgradeable is
      *
      * WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure
      * you perform all queries on the same block. See the following
-     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post]
+     * https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum
+     * post]
      * for more information.
      */
     function getRoleMember(
         bytes32 role,
         uint256 index
-    ) public view virtual override returns (address) {
+    )
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
         return _roleMembers[role].at(index);
     }
 
@@ -64,9 +78,13 @@ abstract contract AccessControlEnumerableUpgradeable is
      * @dev Returns the number of accounts that have `role`. Can be used
      * together with {getRoleMember} to enumerate all bearers of a role.
      */
-    function getRoleMemberCount(
-        bytes32 role
-    ) public view virtual override returns (uint256) {
+    function getRoleMemberCount(bytes32 role)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _roleMembers[role].length();
     }
 
@@ -76,7 +94,11 @@ abstract contract AccessControlEnumerableUpgradeable is
     function _grantRole(
         bytes32 role,
         address account
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._grantRole(role, account);
         _roleMembers[role].add(account);
     }
@@ -87,13 +109,18 @@ abstract contract AccessControlEnumerableUpgradeable is
     function _revokeRole(
         bytes32 role,
         address account
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._revokeRole(role, account);
         _roleMembers[role].remove(account);
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

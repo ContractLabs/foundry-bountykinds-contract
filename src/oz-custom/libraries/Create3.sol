@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.17;
 
-import {Bytes32Address} from "./Bytes32Address.sol";
+import { Bytes32Address } from "./Bytes32Address.sol";
 
 /// @notice Deploy to deterministic addresses without an initcode factor.
-/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/CREATE3.sol)
-/// @author Modified from 0xSequence (https://github.com/0xSequence/create3/blob/master/contracts/Create3.sol)
+/// @author Solmate
+/// (https://github.com/transmissions11/solmate/blob/main/src/utils/CREATE3.sol)
+/// @author Modified from 0xSequence
+/// (https://github.com/0xSequence/create3/blob/master/contracts/Create3.sol)
 library Create3 {
     using Bytes32Address for bytes32;
 
@@ -45,7 +47,10 @@ library Create3 {
         bytes32 salt,
         bytes memory creationCode,
         uint256 value
-    ) internal returns (address deployed) {
+    )
+        internal
+        returns (address deployed)
+    {
         assembly {
             // Store the `PROXY_BYTECODE` into scratch space.
             mstore(0x00, PROXY_BYTECODE)
@@ -62,9 +67,11 @@ library Create3 {
 
             // Store the proxy's address.
             mstore(0x00, proxy)
-            // 0xd6 = 0xc0 (short RLP prefix) + 0x16 (length of: 0x94 ++ proxy ++ 0x01).
+            // 0xd6 = 0xc0 (short RLP prefix) + 0x16 (length of: 0x94 ++ proxy
+            // ++ 0x01).
             mstore8(0x0a, 0xd6)
-            // 0x94 = 0x80 + 0x14 (0x14 = the length of an address, 20 bytes, in hex).
+            // 0x94 = 0x80 + 0x14 (0x14 = the length of an address, 20 bytes, in
+            // hex).
             mstore8(0x0b, 0x94)
             // Nonce of the proxy contract (1).
             mstore8(0x20, 0x01)
@@ -83,7 +90,8 @@ library Create3 {
                     0x00 // Length of output.
                 )
             ) {
-                // Store the function selector of `Create3__InitializationFailed()`.
+                // Store the function selector of
+                // `Create3__InitializationFailed()`.
                 mstore(0x00, 0x4a663aaa)
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
@@ -91,7 +99,8 @@ library Create3 {
 
             // If the code size of `deployed` is zero, revert.
             if iszero(extcodesize(deployed)) {
-                // Store the function selector of `Create3__InitializationFailed()`.
+                // Store the function selector of
+                // `Create3__InitializationFailed()`.
                 mstore(0x00, 0x4a663aaa)
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
@@ -99,9 +108,11 @@ library Create3 {
         }
     }
 
-    function getDeployed(
-        bytes32 salt
-    ) internal view returns (address deployed) {
+    function getDeployed(bytes32 salt)
+        internal
+        view
+        returns (address deployed)
+    {
         assembly {
             // Cache the free memory pointer.
             let m := mload(0x40)
@@ -118,9 +129,11 @@ library Create3 {
             mstore(0x00, keccak256(0x0b, 0x55))
             // Restore the free memory pointer.
             mstore(0x40, m)
-            // 0xd6 = 0xc0 (short RLP prefix) + 0x16 (length of: 0x94 ++ proxy ++ 0x01).
+            // 0xd6 = 0xc0 (short RLP prefix) + 0x16 (length of: 0x94 ++ proxy
+            // ++ 0x01).
             mstore8(0x0a, 0xd6)
-            // 0x94 = 0x80 + 0x14 (0x14 = the length of an address, 20 bytes, in hex).
+            // 0x94 = 0x80 + 0x14 (0x14 = the length of an address, 20 bytes, in
+            // hex).
             mstore8(0x0b, 0x94)
             // Nonce of the proxy contract (1).
             mstore8(0x20, 0x01)

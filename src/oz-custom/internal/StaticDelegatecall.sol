@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
 
 /**
  * @dev Provides emulation of static delegatecalls for implementing view-only
@@ -18,7 +18,11 @@ abstract contract StaticDelegateCall {
     function _staticDelegateCall(
         address target,
         bytes memory data
-    ) internal view returns (bool, bytes memory) {
+    )
+        internal
+        view
+        returns (bool, bytes memory)
+    {
         /* This staticcall always reverts, so we can ignore the success boolean */
         (, bytes memory returndata) = address(this).staticcall(
             abi.encodeCall(this.delegateCallAndRevert, (target, data))
@@ -36,7 +40,9 @@ abstract contract StaticDelegateCall {
     function delegateCallAndRevert(
         address target,
         bytes calldata data
-    ) external {
+    )
+        external
+    {
         require(
             msg.sender == address(this),
             "StaticDelegateCall: caller must be self"

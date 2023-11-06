@@ -3,25 +3,32 @@
 
 pragma solidity ^0.8.10;
 
-import {IERC2981Upgradeable} from "../../interfaces/IERC2981Upgradeable.sol";
+import { IERC2981Upgradeable } from "../../interfaces/IERC2981Upgradeable.sol";
 import {
     ERC165Upgradeable,
     IERC165Upgradeable
 } from "../..//utils/introspection/ERC165Upgradeable.sol";
-import {FixedPointMathLib} from "../../../libraries/FixedPointMathLib.sol";
+import { FixedPointMathLib } from "../../../libraries/FixedPointMathLib.sol";
 
 /**
- * @dev Implementation of the NFT Royalty Standard, a standardized way to retrieve royalty payment information.
+ * @dev Implementation of the NFT Royalty Standard, a standardized way to
+ * retrieve royalty payment information.
  *
- * Royalty information can be specified globally for all token ids via {_setDefaultRoyalty}, and/or individually for
- * specific token ids via {_setTokenRoyalty}. The latter takes precedence over the first.
+ * Royalty information can be specified globally for all token ids via
+ * {_setDefaultRoyalty}, and/or individually for
+ * specific token ids via {_setTokenRoyalty}. The latter takes precedence over
+ * the first.
  *
- * Royalty is specified as a fraction of sale price. {_feeDenominator} is overridable but defaults to 10000, meaning the
+ * Royalty is specified as a fraction of sale price. {_feeDenominator} is
+ * overridable but defaults to 10000, meaning the
  * fee is specified in basis points by default.
  *
- * IMPORTANT: ERC-2981 only specifies a way to signal royalty information and does not enforce its payment. See
- * https://eips.ethereum.org/EIPS/eip-2981#optional-royalty-payments[Rationale] in the EIP. Marketplaces are expected to
- * voluntarily pay royalties together with sales, but note that this standard is not yet widely supported.
+ * IMPORTANT: ERC-2981 only specifies a way to signal royalty information and
+ * does not enforce its payment. See
+ * https://eips.ethereum.org/EIPS/eip-2981#optional-royalty-payments[Rationale]
+ * in the EIP. Marketplaces are expected to
+ * voluntarily pay royalties together with sales, but note that this standard is
+ * not yet widely supported.
  *
  * _Available since v4.5._
  */
@@ -37,18 +44,15 @@ abstract contract ERC2981Upgradeable is
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
         override(IERC165Upgradeable, ERC165Upgradeable)
         returns (bool)
     {
-        return
-            interfaceId == type(IERC2981Upgradeable).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC2981Upgradeable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     /**
@@ -57,7 +61,13 @@ abstract contract ERC2981Upgradeable is
     function royaltyInfo(
         uint256 _tokenId,
         uint256 _salePrice
-    ) public view virtual override returns (address, uint256) {
+    )
+        public
+        view
+        virtual
+        override
+        returns (address, uint256)
+    {
         address receiver;
         uint256 royaltyFraction;
         assembly {
@@ -69,23 +79,22 @@ abstract contract ERC2981Upgradeable is
 
             if iszero(receiver) {
                 data := sload(_defaultRoyaltyInfo.slot)
-                receiver := and(
-                    data,
-                    0xffffffffffffffffffffffffffffffffffffffff
-                )
+                receiver :=
+                    and(data, 0xffffffffffffffffffffffffffffffffffffffff)
                 royaltyFraction := shr(data, 160)
             }
         }
 
         return (
-            receiver,
-            _salePrice.mulDivDown(royaltyFraction, _feeDenominator())
+            receiver, _salePrice.mulDivDown(royaltyFraction, _feeDenominator())
         );
     }
 
     /**
-     * @dev The denominator with which to interpret the fee set in {_setTokenRoyalty} and {_setDefaultRoyalty} as a
-     * fraction of the sale price. Defaults to 10000 so fees are expressed in basis points, but may be customized by an
+     * @dev The denominator with which to interpret the fee set in
+     * {_setTokenRoyalty} and {_setDefaultRoyalty} as a
+     * fraction of the sale price. Defaults to 10000 so fees are expressed in
+     * basis points, but may be customized by an
      * override.
      */
     function _feeDenominator() internal pure virtual returns (uint96) {
@@ -93,7 +102,8 @@ abstract contract ERC2981Upgradeable is
     }
 
     /**
-     * @dev Sets the royalty information that all ids in this contract will default to.
+     * @dev Sets the royalty information that all ids in this contract will
+     * default to.
      *
      * Requirements:
      *
@@ -103,15 +113,18 @@ abstract contract ERC2981Upgradeable is
     function _setDefaultRoyalty(
         address receiver,
         uint96 feeNumerator
-    ) internal virtual {
+    )
+        internal
+        virtual
+    {
         __nonZeroAdress(receiver);
-        if (feeNumerator > _feeDenominator())
+        if (feeNumerator > _feeDenominator()) {
             revert ERC2981__SalePriceExceeded();
+        }
 
         assembly {
             sstore(
-                _defaultRoyaltyInfo.slot,
-                or(shl(160, feeNumerator), receiver)
+                _defaultRoyaltyInfo.slot, or(shl(160, feeNumerator), receiver)
             )
         }
     }
@@ -124,7 +137,8 @@ abstract contract ERC2981Upgradeable is
     }
 
     /**
-     * @dev Sets the royalty information for a specific token id, overriding the global default.
+     * @dev Sets the royalty information for a specific token id, overriding the
+     * global default.
      *
      * Requirements:
      *
@@ -135,9 +149,13 @@ abstract contract ERC2981Upgradeable is
         uint256 tokenId,
         address receiver,
         uint96 feeNumerator
-    ) internal virtual {
-        if (feeNumerator > _feeDenominator())
+    )
+        internal
+        virtual
+    {
+        if (feeNumerator > _feeDenominator()) {
             revert ERC2981__SalePriceExceeded();
+        }
         __nonZeroAdress(receiver);
 
         assembly {
@@ -148,7 +166,8 @@ abstract contract ERC2981Upgradeable is
     }
 
     /**
-     * @dev Resets royalty information for the token id back to the global default.
+     * @dev Resets royalty information for the token id back to the global
+     * default.
      */
     function _resetTokenRoyalty(uint256 tokenId) internal virtual {
         delete _tokenRoyaltyInfo[tokenId];
@@ -159,7 +178,8 @@ abstract contract ERC2981Upgradeable is
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

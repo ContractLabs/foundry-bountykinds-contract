@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { IERC721 } from "src/oz-custom/oz/token/ERC721/IERC721.sol";
-import { ITreasury } from "src/oz-custom/presets/interfaces/ITreasury.sol";
+import {
+    IERC20,
+    IERC20Permit
+} from "src/oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
 
-import { IERC20, IERC20Permit } from "src/oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
+import { IERC721 } from "src/oz-custom/oz/token/ERC721/IERC721.sol";
+
+import { ITreasury } from "src/oz-custom/presets/interfaces/ITreasury.sol";
 
 interface ICommandGate {
     error CommandGate__ExecutionFailed();

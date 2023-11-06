@@ -16,16 +16,14 @@ interface IMultiSigWallet {
     }
 
     event Deposited(
-        address indexed sender,
-        uint256 indexed amount,
-        uint256 indexed balance
+        address indexed sender, uint256 indexed amount, uint256 indexed balance
     );
 
     event TransactionSubmited(
         address indexed owner,
         uint256 indexed txIndex,
         address indexed to,
-        uint value,
+        uint256 value,
         bytes data
     );
 

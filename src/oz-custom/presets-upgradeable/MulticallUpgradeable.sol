@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ContextUpgradeable
-} from "../oz-upgradeable/utils/ContextUpgradeable.sol";
-import {
-    ReentrancyGuardUpgradeable
-} from "../oz-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import { ContextUpgradeable } from
+    "../oz-upgradeable/utils/ContextUpgradeable.sol";
+import { ReentrancyGuardUpgradeable } from
+    "../oz-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-import {IMulticall} from "./interfaces/IMulticall.sol";
+import { IMulticall } from "./interfaces/IMulticall.sol";
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
 
 contract MulticallUpgradeable is
     IMulticall,
@@ -21,6 +19,7 @@ contract MulticallUpgradeable is
     /**
      * @dev Address of the original contract
      */
+
     address private __original;
 
     modifier nonDelegatecall() virtual {
@@ -40,20 +39,30 @@ contract MulticallUpgradeable is
     function multicall(
         CallData[] calldata calldata_,
         bytes calldata data_
-    ) external payable virtual returns (bytes[] memory results) {
+    )
+        external
+        payable
+        virtual
+        returns (bytes[] memory results)
+    {
         results = _multicall(calldata_, data_);
     }
 
     function _multicall(
         CallData[] calldata calldata_,
         bytes calldata
-    ) internal virtual nonReentrant returns (bytes[] memory results) {
+    )
+        internal
+        virtual
+        nonReentrant
+        returns (bytes[] memory results)
+    {
         uint256 length = calldata_.length;
         results = new bytes[](length);
         bool ok;
         bytes memory result;
-        for (uint256 i; i < length; ) {
-            (ok, result) = calldata_[i].target.call{value: calldata_[i].value}(
+        for (uint256 i; i < length;) {
+            (ok, result) = calldata_[i].target.call{ value: calldata_[i].value }(
                 calldata_[i].data
             );
 
@@ -70,7 +79,8 @@ contract MulticallUpgradeable is
     }
 
     function __nonDelegatecall() private view {
-        if (address(this) != __original)
+        if (address(this) != __original) {
             revert Multicall__DelegatecallNotAllowed();
+        }
     }
 }

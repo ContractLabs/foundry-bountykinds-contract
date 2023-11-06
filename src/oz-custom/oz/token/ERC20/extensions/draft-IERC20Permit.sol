@@ -3,4 +3,4 @@
 
 pragma solidity ^0.8.17;
 
-import {IERC20Permit} from "./IERC20Permit.sol";
+import { IERC20Permit } from "./IERC20Permit.sol";

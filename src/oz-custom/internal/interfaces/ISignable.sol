@@ -5,9 +5,7 @@ interface ISignable {
     error Signable__InvalidSignature();
 
     event NonceIncremented(
-        address indexed operator,
-        bytes32 indexed id,
-        uint256 indexed value
+        address indexed operator, bytes32 indexed id, uint256 indexed value
     );
 
     /**

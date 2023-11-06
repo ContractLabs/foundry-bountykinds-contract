@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.0;
 
-import {ContextUpgradeable} from "../utils/ContextUpgradeable.sol";
+import { ContextUpgradeable } from "../utils/ContextUpgradeable.sol";
 
 interface IPausableUpgradeable {
     error Pausable__Paused();
@@ -20,12 +20,14 @@ interface IPausableUpgradeable {
     event Unpaused(address account);
 
     /**
-     * @dev Pauses all functions in the contract. Only callable by accounts with the PAUSER_ROLE.
+     * @dev Pauses all functions in the contract. Only callable by accounts with
+     * the PAUSER_ROLE.
      */
     function pause() external;
 
     /**
-     * @dev Unpauses all functions in the contract. Only callable by accounts with the PAUSER_ROLE.
+     * @dev Unpauses all functions in the contract. Only callable by accounts
+     * with the PAUSER_ROLE.
      */
     function unpause() external;
 
@@ -59,7 +61,8 @@ abstract contract PausableUpgradeable is
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is not paused.
+     * @dev Modifier to make a function callable only when the contract is not
+     * paused.
      *
      * Requirements:
      *
@@ -71,7 +74,8 @@ abstract contract PausableUpgradeable is
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is paused.
+     * @dev Modifier to make a function callable only when the contract is
+     * paused.
      *
      * Requirements:
      *
@@ -132,7 +136,8 @@ abstract contract PausableUpgradeable is
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

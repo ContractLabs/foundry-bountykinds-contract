@@ -1,17 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {ITreasury} from "./Treasury.sol";
+import { ITreasury } from "./Treasury.sol";
 
-import {
-    UUPSUpgradeable
-} from "../oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {
-    PausableUpgradeable
-} from "../oz-upgradeable/security/PausableUpgradeable.sol";
-import {
-    AccessControlEnumerableUpgradeable
-} from "../oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import { UUPSUpgradeable } from
+    "../oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import { PausableUpgradeable } from
+    "../oz-upgradeable/security/PausableUpgradeable.sol";
+import { AccessControlEnumerableUpgradeable } from
+    "../oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {
     FundForwarderUpgradeable,
@@ -22,10 +19,11 @@ import {
     IBlacklistableUpgradeable
 } from "../internal-upgradeable/BlacklistableUpgradeable.sol";
 
-import {IAuthority} from "./interfaces/IAuthority.sol";
-import {IERC165Upgradeable} from "../oz-upgradeable/utils/introspection/IERC165Upgradeable.sol";
+import { IAuthority } from "./interfaces/IAuthority.sol";
+import { IERC165Upgradeable } from
+    "../oz-upgradeable/utils/introspection/IERC165Upgradeable.sol";
 
-import {Roles} from "../libraries/Roles.sol";
+import { Roles } from "../libraries/Roles.sol";
 
 abstract contract AuthorityUpgradeable is
     IAuthority,
@@ -39,26 +37,28 @@ abstract contract AuthorityUpgradeable is
     bytes32 public constant VERSION =
         0x095dd5e04e0f3f5bce98e4ee904d9f7209827187c4201f036596b2f7fdd602e7;
 
-    function changeVault(
-        address vault_
-    ) external override onlyRole(Roles.OPERATOR_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         _changeVault(vault_);
 
         bytes32 proxyRole = Roles.PROXY_ROLE;
         uint256 length = getRoleMemberCount(proxyRole);
         bool[] memory success = new bool[](length);
         address proxy;
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             proxy = getRoleMember(proxyRole, i);
-        
+
             if (!(proxy == address(this) || proxy.code.length == 0)) {
-                (success[i], ) = proxy.call(
+                (success[i],) = proxy.call(
                     abi.encodeCall(
                         IFundForwarderUpgradeable.changeVault, (vault_)
                     )
                 );
             }
-            
+
             unchecked {
                 ++i;
             }
@@ -70,7 +70,10 @@ abstract contract AuthorityUpgradeable is
     function setRoleAdmin(
         bytes32 role_,
         bytes32 adminRole_
-    ) external onlyRole(getRoleAdmin(adminRole_)) {
+    )
+        external
+        onlyRole(getRoleAdmin(adminRole_))
+    {
         _setRoleAdmin(role_, adminRole_);
     }
 
@@ -95,20 +98,27 @@ abstract contract AuthorityUpgradeable is
         _unpause();
     }
 
-    function supportsInterface(
-        bytes4 interfaceId_
-    ) public view override returns (bool) {
-        return
-            interfaceId_ == type(IAuthority).interfaceId ||
-            interfaceId_ == type(IERC165Upgradeable).interfaceId ||
-            super.supportsInterface(interfaceId_);
+    function supportsInterface(bytes4 interfaceId_)
+        public
+        view
+        override
+        returns (bool)
+    {
+        return interfaceId_ == type(IAuthority).interfaceId
+            || interfaceId_ == type(IERC165Upgradeable).interfaceId
+            || super.supportsInterface(interfaceId_);
     }
 
     /// @inheritdoc IBlacklistableUpgradeable
     function setUserStatus(
         address account_,
         bool status_
-    ) external override whenPaused onlyRole(Roles.PAUSER_ROLE) {
+    )
+        external
+        override
+        whenPaused
+        onlyRole(Roles.PAUSER_ROLE)
+    {
         _setUserStatus(account_, status_);
     }
 
@@ -116,7 +126,11 @@ abstract contract AuthorityUpgradeable is
         address admin_,
         bytes32[] calldata roles_,
         address[] calldata operators_
-    ) internal virtual onlyInitializing {
+    )
+        internal
+        virtual
+        onlyInitializing
+    {
         __Pausable_init_unchained();
         __Authority_init_unchained(admin_, roles_, operators_);
     }
@@ -125,7 +139,11 @@ abstract contract AuthorityUpgradeable is
         address admin_,
         bytes32[] calldata roles_,
         address[] calldata operators_
-    ) internal virtual onlyInitializing {
+    )
+        internal
+        virtual
+        onlyInitializing
+    {
         _grantRole(Roles.PAUSER_ROLE, admin_);
         _grantRole(Roles.SIGNER_ROLE, admin_);
         _grantRole(Roles.MINTER_ROLE, admin_);
@@ -143,7 +161,7 @@ abstract contract AuthorityUpgradeable is
         uint256 length = operators_.length;
         if (length != roles_.length) revert Authority__LengthMismatch();
 
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             _grantRole(roles_[i], operators_[i]);
             unchecked {
                 ++i;
@@ -151,9 +169,12 @@ abstract contract AuthorityUpgradeable is
         }
     }
 
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal virtual override onlyRole(Roles.UPGRADER_ROLE) {}
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        virtual
+        override
+        onlyRole(Roles.UPGRADER_ROLE)
+    { }
 
     uint256[50] private __gap;
 }

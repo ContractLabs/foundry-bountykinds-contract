@@ -1,26 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
+// forgefmt: disable-start
+import { INotifyGate } from "./interfaces/INotifyGate.sol";
+
+import { ReentrancyGuard } from "src/oz-custom/oz/security/ReentrancyGuard.sol";
+
 import { FundForwarder, BKFundForwarder } from "./internal/BKFundForwarder.sol";
 
 import { Roles, Manager, IAuthority } from "src/oz-custom/presets/base/Manager.sol";
-import { ReentrancyGuard } from "src/oz-custom/oz/security/ReentrancyGuard.sol";
 
-import { INotifyGate } from "./interfaces/INotifyGate.sol";
 import { IWithdrawable } from "src/oz-custom/internal/interfaces/IWithdrawable.sol";
 
 import { IFundForwarder } from "src/oz-custom/internal/interfaces/IFundForwarder.sol";
 
-import { IERC20, IERC20Permit } from "src/oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
-
 import { IERC721, ERC721TokenReceiver } from "src/oz-custom/oz/token/ERC721/ERC721.sol";
 
-contract NotifyGate is Manager, INotifyGate, ReentrancyGuard, BKFundForwarder, ERC721TokenReceiver {
-    constructor(IAuthority authority_) payable ReentrancyGuard() Manager(authority_, 0) {
+import { IERC20, IERC20Permit } from "src/oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
+// forgefmt: disable-end
+
+contract NotifyGate is
+    Manager,
+    INotifyGate,
+    ReentrancyGuard,
+    BKFundForwarder,
+    ERC721TokenReceiver
+{
+    constructor(IAuthority authority_)
+        payable
+        ReentrancyGuard()
+        Manager(authority_, 0)
+    {
         _changeVault(IFundForwarder(address(authority_)).vault());
     }
 
-    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         _changeVault(vault_);
     }
 
@@ -40,7 +58,9 @@ contract NotifyGate is Manager, INotifyGate, ReentrancyGuard, BKFundForwarder, E
         returns (bytes4)
     {
         address nft = _msgSender();
-        IERC721(nft).safeTransferFrom(address(this), vault(), tokenId_, safeTransferHeader());
+        IERC721(nft).safeTransferFrom(
+            address(this), vault(), tokenId_, safeTransferHeader()
+        );
 
         emit Notified(from_, message_, nft, tokenId_);
 
@@ -61,7 +81,9 @@ contract NotifyGate is Manager, INotifyGate, ReentrancyGuard, BKFundForwarder, E
     {
         address user = _msgSender();
         if (token_.allowance(user, address(this)) < value_) {
-            IERC20Permit(address(token_)).permit(user, address(this), value_, deadline_, v, r, s);
+            IERC20Permit(address(token_)).permit(
+                user, address(this), value_, deadline_, v, r, s
+            );
         }
 
         address _vault = vault();
@@ -69,14 +91,28 @@ contract NotifyGate is Manager, INotifyGate, ReentrancyGuard, BKFundForwarder, E
         _safeERC20TransferFrom(token_, user, _vault, value_);
 
         if (
-            IWithdrawable(_vault).notifyERC20Transfer(address(token_), value_, safeTransferHeader())
-                != IWithdrawable.notifyERC20Transfer.selector
+            IWithdrawable(_vault).notifyERC20Transfer(
+                address(token_), value_, safeTransferHeader()
+            ) != IWithdrawable.notifyERC20Transfer.selector
         ) revert NofifyGate__ExecutionFailed();
 
         emit Notified(user, message_, address(token_), value_);
     }
 
-    function _beforeRecover(bytes memory) internal override whenPaused onlyRole(Roles.OPERATOR_ROLE) { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        whenPaused
+        onlyRole(Roles.OPERATOR_ROLE)
+    { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 }

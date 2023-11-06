@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {IERC20} from "../../oz/token/ERC20/IERC20.sol";
+import { IERC20 } from "../../oz/token/ERC20/IERC20.sol";
 
 import {
     IERC721,
@@ -26,10 +26,10 @@ interface IFundForwarder {
     event VaultUpdated(address indexed from, address indexed to);
 
     /**
-     *@dev Emits when a single ERC721 token is recovered
-     *@param operator Address of the contract calling this function
-     *@param token Address of the token contract
-     *@param value Token ID of the recovered token
+     * @dev Emits when a single ERC721 token is recovered
+     * @param operator Address of the contract calling this function
+     * @param token Address of the token contract
+     * @param value Token ID of the recovered token
      */
     event Recovered(
         address indexed operator,

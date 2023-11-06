@@ -12,7 +12,8 @@ error ProxyChecker__ProxyUnallowed();
 
 /**
  * @title ProxyChecker
- * @dev Abstract contract for checking if a call was made by a proxy contract or an externally owned account.
+ * @dev Abstract contract for checking if a call was made by a proxy contract or
+ * an externally owned account.
  */
 abstract contract ProxyChecker {
     modifier onlyProxy() {
@@ -21,7 +22,8 @@ abstract contract ProxyChecker {
     }
 
     /**
-     * @dev Modifier to allow a function to be called only by an externally owned account
+     * @dev Modifier to allow a function to be called only by an externally
+     * owned account
      */
     modifier onlyEOA() {
         _onlyEOA(msg.sender);
@@ -42,8 +44,9 @@ abstract contract ProxyChecker {
      * @param txOrigin_ Origin of the transaction
      */
     function _onlyEOA(address msgSender_, address txOrigin_) internal pure {
-        if (_isProxyCall(msgSender_, txOrigin_))
+        if (_isProxyCall(msgSender_, txOrigin_)) {
             revert ProxyChecker__ProxyUnallowed();
+        }
     }
 
     /**
@@ -51,8 +54,9 @@ abstract contract ProxyChecker {
      * @param sender_ Address of the sender
      */
     function _onlyProxy(address sender_) internal view {
-        if (!(_isProxyCall(sender_, _txOrigin()) || _isProxy(sender_)))
+        if (!(_isProxyCall(sender_, _txOrigin()) || _isProxy(sender_))) {
             revert ProxyChecker__EOAUnallowed();
+        }
     }
 
     /**
@@ -61,8 +65,9 @@ abstract contract ProxyChecker {
      * @param txOrigin_ Origin of the transaction
      */
     function _onlyProxy(address msgSender_, address txOrigin_) internal view {
-        if (!(_isProxyCall(msgSender_, txOrigin_) || _isProxy(msgSender_)))
+        if (!(_isProxyCall(msgSender_, txOrigin_) || _isProxy(msgSender_))) {
             revert ProxyChecker__EOAUnallowed();
+        }
     }
 
     /**
@@ -74,7 +79,11 @@ abstract contract ProxyChecker {
     function _isProxyCall(
         address msgSender_,
         address txOrigin_
-    ) internal pure returns (bool) {
+    )
+        internal
+        pure
+        returns (bool)
+    {
         return msgSender_ != txOrigin_;
     }
 

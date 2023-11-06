@@ -1,29 +1,33 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (proxy/utils/UUPSUpgradeable.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (proxy/utils/UUPSUpgradeable.sol)
 
 pragma solidity ^0.8.0;
 
-import {Initializable} from "./Initializable.sol";
-import {
-    ERC1967UpgradeUpgradeable
-} from "../ERC1967/ERC1967UpgradeUpgradeable.sol";
-import {
-    IERC1822ProxiableUpgradeable
-} from "../../interfaces/draft-IERC1822Upgradeable.sol";
+import { Initializable } from "./Initializable.sol";
+import { ERC1967UpgradeUpgradeable } from
+    "../ERC1967/ERC1967UpgradeUpgradeable.sol";
+import { IERC1822ProxiableUpgradeable } from
+    "../../interfaces/draft-IERC1822Upgradeable.sol";
 
 error UUPSUpgradeable__OnlyCall();
 error UUPSUpgradeable__OnlyActiveProxy();
 error UUPSUpgradeable__OnlyDelegateCall();
 
 /**
- * @dev An upgradeability mechanism designed for UUPS proxies. The functions included here can perform an upgrade of an
- * {ERC1967Proxy}, when this contract is set as the implementation behind such a proxy.
+ * @dev An upgradeability mechanism designed for UUPS proxies. The functions
+ * included here can perform an upgrade of an
+ * {ERC1967Proxy}, when this contract is set as the implementation behind such a
+ * proxy.
  *
- * A security mechanism ensures that an upgrade does not turn off upgradeability accidentally, although this risk is
- * reinstated if the upgrade retains upgradeability but removes the security mechanism, e.g. by replacing
+ * A security mechanism ensures that an upgrade does not turn off upgradeability
+ * accidentally, although this risk is
+ * reinstated if the upgrade retains upgradeability but removes the security
+ * mechanism, e.g. by replacing
  * `UUPSUpgradeable` with a custom implementation of upgrades.
  *
- * The {_authorizeUpgrade} function must be overridden to include access restriction to the upgrade mechanism.
+ * The {_authorizeUpgrade} function must be overridden to include access
+ * restriction to the upgrade mechanism.
  *
  * _Available since v4.1._
  */
@@ -32,18 +36,23 @@ abstract contract UUPSUpgradeable is
     ERC1967UpgradeUpgradeable,
     IERC1822ProxiableUpgradeable
 {
-    function __UUPSUpgradeable_init() internal onlyInitializing {}
+    function __UUPSUpgradeable_init() internal onlyInitializing { }
 
-    function __UUPSUpgradeable_init_unchained() internal onlyInitializing {}
+    function __UUPSUpgradeable_init_unchained() internal onlyInitializing { }
 
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable state-variable-assignment
+    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+    /// state-variable-assignment
     address private immutable __self = address(this);
 
     /**
-     * @dev Check that the execution is being performed through a delegatecall call and that the execution context is
-     * a proxy contract with an implementation (as defined in ERC1967) pointing to self. This should only be the case
-     * for UUPS and transparent proxies that are using the current contract as their implementation. Execution of a
-     * function through ERC1167 minimal proxies (clones) would not normally pass this test, but is not guaranteed to
+     * @dev Check that the execution is being performed through a delegatecall
+     * call and that the execution context is
+     * a proxy contract with an implementation (as defined in ERC1967) pointing
+     * to self. This should only be the case
+     * for UUPS and transparent proxies that are using the current contract as
+     * their implementation. Execution of a
+     * function through ERC1167 minimal proxies (clones) would not normally pass
+     * this test, but is not guaranteed to
      * fail.
      */
     modifier onlyProxy() {
@@ -52,7 +61,8 @@ abstract contract UUPSUpgradeable is
     }
 
     /**
-     * @dev Check that the execution is not being performed through a delegate call. This allows a function to be
+     * @dev Check that the execution is not being performed through a delegate
+     * call. This allows a function to be
      * callable on the implementing contract but not through proxies.
      */
     modifier notDelegated() {
@@ -61,12 +71,17 @@ abstract contract UUPSUpgradeable is
     }
 
     /**
-     * @dev Implementation of the ERC1822 {proxiableUUID} function. This returns the storage slot used by the
-     * implementation. It is used to validate that the this implementation remains valid after an upgrade.
+     * @dev Implementation of the ERC1822 {proxiableUUID} function. This returns
+     * the storage slot used by the
+     * implementation. It is used to validate that the this implementation
+     * remains valid after an upgrade.
      *
-     * IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks
-     * bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this
-     * function revert if invoked through a proxy. This is guaranteed by the `notDelegated` modifier.
+     * IMPORTANT: A proxy pointing at a proxiable contract should not be
+     * considered proxiable itself, because this risks
+     * bricking a proxy that upgrades to it, by delegating to itself until out
+     * of gas. Thus it is critical that this
+     * function revert if invoked through a proxy. This is guaranteed by the
+     * `notDelegated` modifier.
      */
     function proxiableUUID()
         external
@@ -92,7 +107,8 @@ abstract contract UUPSUpgradeable is
     }
 
     /**
-     * @dev Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call
+     * @dev Upgrade the implementation of the proxy to `newImplementation`, and
+     * subsequently execute the function call
      * encoded in `data`.
      *
      * Calls {_authorizeUpgrade}.
@@ -102,16 +118,23 @@ abstract contract UUPSUpgradeable is
     function upgradeToAndCall(
         address newImplementation,
         bytes memory data
-    ) external payable virtual onlyProxy {
+    )
+        external
+        payable
+        virtual
+        onlyProxy
+    {
         _authorizeUpgrade(newImplementation);
         _upgradeToAndCallUUPS(newImplementation, data, true);
     }
 
     /**
-     * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by
+     * @dev Function that should revert when `msg.sender` is not authorized to
+     * upgrade the contract. Called by
      * {upgradeTo} and {upgradeToAndCall}.
      *
-     * Normally, this function will use an xref:access.adoc[access control] modifier such as {Ownable-onlyOwner}.
+     * Normally, this function will use an xref:access.adoc[access control]
+     * modifier such as {Ownable-onlyOwner}.
      *
      * ```solidity
      * function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -122,8 +145,9 @@ abstract contract UUPSUpgradeable is
     function __checkProxy() private view {
         address self = __self;
         if (address(this) == self) revert UUPSUpgradeable__OnlyDelegateCall();
-        if (_getImplementation() != self)
+        if (_getImplementation() != self) {
             revert UUPSUpgradeable__OnlyActiveProxy();
+        }
     }
 
     function __checkDelegated() private view {
@@ -131,7 +155,8 @@ abstract contract UUPSUpgradeable is
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

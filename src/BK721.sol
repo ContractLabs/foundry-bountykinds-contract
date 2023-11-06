@@ -1,30 +1,63 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
+// forgefmt: disable-start
+import {
+    IBK721
+} from "src/interfaces/IBK721.sol";
+
+import {
+    IBKTreasury
+} from "src/interfaces/IBKTreasury.sol";
+
+import {
+    SSTORE2
+} from "src/oz-custom/libraries/SSTORE2.sol";
+
+import {
+    StringLib
+} from "src/oz-custom/libraries/StringLib.sol";
+
+import {
+    Bytes32Address
+} from "src/oz-custom/libraries/Bytes32Address.sol";
+
+import {
+    BKFundForwarderUpgradeable
+} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
+
+import {
+    ProtocolFeeUpgradeable
+} from "src/oz-custom/internal-upgradeable/ProtocolFeeUpgradeable.sol";
+
+import {
+    Roles,
+    IAuthority,
+    ManagerUpgradeable
+} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+
+import {
+    IWithdrawableUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+
+import {
+    IFundForwarderUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+
 import {
     ERC721Upgradeable,
     IERC165Upgradeable,
     ERC721PermitUpgradeable
 } from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721PermitUpgradeable.sol";
-import { ERC721EnumerableUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 
-import { Roles, IAuthority, ManagerUpgradeable } from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
-import { ProtocolFeeUpgradeable } from "src/oz-custom/internal-upgradeable/ProtocolFeeUpgradeable.sol";
-import { BKFundForwarderUpgradeable } from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
-import { IWithdrawableUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+import {
+    ERC721BurnableUpgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
 
-import { IFundForwarderUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
-
-import { ERC721BurnableUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
-
-import { IBK721 } from "src/interfaces/IBK721.sol";
-import { IBKTreasury } from "src/interfaces/IBKTreasury.sol";
-
-import { SSTORE2 } from "src/oz-custom/libraries/SSTORE2.sol";
-import { StringLib } from "src/oz-custom/libraries/StringLib.sol";
-import { Bytes32Address } from "src/oz-custom/libraries/Bytes32Address.sol";
+import {
+    ERC721EnumerableUpgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+// forgefmt: disable-end
 
 abstract contract BK721 is
     IBK721,
@@ -81,8 +114,10 @@ abstract contract BK721 is
             uint256 nonce = nonce_;
             uint256 deadline = deadline_;
             data = abi.encode(
-                /// @dev value is equal to keccak256("Exchange(address forNFT,uint256 forAmount,uint256
-                /// forTypeId,address sendTo,uint256 nonce,uint256 deadline,uint256[] myIds)")
+                /// @dev value is equal to keccak256("Exchange(address
+                /// forNFT,uint256 forAmount,uint256
+                /// forTypeId,address sendTo,uint256 nonce,uint256
+                /// deadline,uint256[] myIds)")
                 0xab1a661df2bfbb2fff43d8fb9aa517b6fb6f2001f8c41686daca79a469dcf903,
                 forNFT,
                 forAmount,
@@ -142,7 +177,8 @@ abstract contract BK721 is
         _verifySig(
             keccak256(
                 abi.encode(
-                    ///@dev value is equal to keccak256("Redeem(address claimer,uint256 typeId,uint256 amount,uint256
+                    ///@dev value is equal to keccak256("Redeem(address
+                    /// claimer,uint256 typeId,uint256 amount,uint256
                     /// nonce,uint256 deadline)")
                     0x77ef6871868b6364332f0081c63b10b340f7531a5d1010a6bd3356568ffcf11d,
                     claimer_,
@@ -170,11 +206,18 @@ abstract contract BK721 is
         emit Redeemded(sender, claimer_, typeId_, amount_);
     }
 
-    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         _changeVault(vault_);
     }
 
-    function setBaseURI(string calldata baseURI_) external onlyRole(Roles.OPERATOR_ROLE) {
+    function setBaseURI(string calldata baseURI_)
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         _setBaseURI(baseURI_);
     }
 
@@ -191,13 +234,15 @@ abstract contract BK721 is
         _verifySig(
             keccak256(
                 abi.encode(
-                    ///@dev value is equal to keccak256("Swap(address user,uint256 toId,uint256 deadline,uint256
+                    ///@dev value is equal to keccak256("Swap(address
+                    /// user,uint256 toId,uint256 deadline,uint256
                     /// nonce,uint256[] fromIds)")
                     0x085ba72701c4339ed5b893f5421cabf9405901f059ff0c12083eb0b1df6bc19a,
                     user,
                     toId_,
                     deadline_,
-                    _useNonce(user.fillLast12Bytes()), // @dev resitance to reentrancy
+                    _useNonce(user.fillLast12Bytes()), // @dev resitance to
+                        // reentrancy
                     keccak256(abi.encodePacked(fromIds_))
                 )
             ),
@@ -226,7 +271,13 @@ abstract contract BK721 is
         emit Merged(user, fromIds_, toId_);
     }
 
-    function setRoyalty(address feeToken_, uint96 feeAmt_) external onlyRole(Roles.OPERATOR_ROLE) {
+    function setRoyalty(
+        address feeToken_,
+        uint96 feeAmt_
+    )
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         if (!IBKTreasury(vault()).supportedPayment(feeToken_)) {
             revert BK721__TokenNotSupported();
         }
@@ -236,7 +287,14 @@ abstract contract BK721 is
         emit ProtocolFeeUpdated(_msgSender(), feeToken_, feeAmt_);
     }
 
-    function safeMint(address to_, uint256 typeId_) external onlyRole(Roles.PROXY_ROLE) returns (uint256 tokenId) {
+    function safeMint(
+        address to_,
+        uint256 typeId_
+    )
+        external
+        onlyRole(Roles.PROXY_ROLE)
+        returns (uint256 tokenId)
+    {
         _safeMint(to_, tokenId = _useTypeIdTrackers(typeId_));
     }
 
@@ -268,7 +326,8 @@ abstract contract BK721 is
             log4(
                 0x00,
                 0x00,
-                /// @dev value is equal to keccak256("BatchTransfered(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("BatchTransfered(address,address,uint256)")
                 0xef50f834ec47321b2a791fa7e4f6ccb0ea5fb5852c73a68f7ce1ab9b759d609d,
                 sender,
                 to_,
@@ -277,11 +336,24 @@ abstract contract BK721 is
         }
     }
 
-    function mint(address to_, uint256 typeId_) external onlyRole(Roles.MINTER_ROLE) returns (uint256 tokenId) {
+    function mint(
+        address to_,
+        uint256 typeId_
+    )
+        external
+        onlyRole(Roles.MINTER_ROLE)
+        returns (uint256 tokenId)
+    {
         _mint(to_, tokenId = _useTypeIdTrackers(typeId_));
     }
 
-    function transferBatch(address from_, address[] calldata tos_, uint256[] calldata tokenIds_) external {
+    function transferBatch(
+        address from_,
+        address[] calldata tos_,
+        uint256[] calldata tokenIds_
+    )
+        external
+    {
         uint256 length = tos_.length;
         if (length != tokenIds_.length) revert BK721__LengthMismatch();
 
@@ -294,11 +366,19 @@ abstract contract BK721 is
         }
 
         unchecked {
-            emit BatchTransfered(_msgSender(), from_, i < length - 1 ? tokenIds_[i] : 0);
+            emit BatchTransfered(
+                _msgSender(), from_, i < length - 1 ? tokenIds_[i] : 0
+            );
         }
     }
 
-    function mintBatch(uint256 typeId_, address[] calldata tos_) external onlyRole(Roles.MINTER_ROLE) {
+    function mintBatch(
+        uint256 typeId_,
+        address[] calldata tos_
+    )
+        external
+        onlyRole(Roles.MINTER_ROLE)
+    {
         uint256 length = tos_.length;
         uint256 cursor = nextIdFromType(typeId_);
         for (uint256 i; i < length;) {
@@ -344,7 +424,8 @@ abstract contract BK721 is
             log4(
                 0x00,
                 0x00,
-                /// @dev value is equal to keccak256("BatchTransfered(address,address,uint256)")
+                /// @dev value is equal to
+                /// keccak256("BatchTransfered(address,address,uint256)")
                 0xef50f834ec47321b2a791fa7e4f6ccb0ea5fb5852c73a68f7ce1ab9b759d609d,
                 sender,
                 to_,
@@ -361,12 +442,25 @@ abstract contract BK721 is
         }
     }
 
-    function nonceBitMaps(address account_, uint256 nonce_) external view returns (uint256 bitmap, bool isDirtied) {
+    function nonceBitMaps(
+        address account_,
+        uint256 nonce_
+    )
+        external
+        view
+        returns (uint256 bitmap, bool isDirtied)
+    {
         assembly {
             mstore(0x00, account_)
             mstore(0x20, __nonceBitMaps.slot)
             mstore(0x20, keccak256(0x00, 0x40))
-            mstore(0x00, and(shr(8, nonce_), 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff))
+            mstore(
+                0x00,
+                and(
+                    shr(8, nonce_),
+                    0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                )
+            )
 
             bitmap := sload(keccak256(0x00, 0x40))
             isDirtied := iszero(iszero(and(bitmap, shl(and(nonce_, 0xff), 1))))
@@ -394,7 +488,8 @@ abstract contract BK721 is
             log4(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("NonceUsed(address,address,uint256,uint248)")
+                /// @dev value is equal to
+                /// keccak256("NonceUsed(address,address,uint256,uint248)")
                 0x0df261ec91401191ee6858fdd0e1c4334f5faa334b5db219ea5847b0122164a8,
                 caller(),
                 account_,
@@ -407,14 +502,22 @@ abstract contract BK721 is
         return string(__baseTokenURIPtr.read());
     }
 
-    function metadataOf(uint256 tokenId_) external view returns (uint256 typeId, uint256 index) {
+    function metadataOf(uint256 tokenId_)
+        external
+        view
+        returns (uint256 typeId, uint256 index)
+    {
         ownerOf(tokenId_);
 
         typeId = tokenId_ >> 32;
         index = tokenId_ & 0xffffffff;
     }
 
-    function nextIdFromType(uint256 typeId_) public view returns (uint256 nextId) {
+    function nextIdFromType(uint256 typeId_)
+        public
+        view
+        returns (uint256 nextId)
+    {
         assembly {
             mstore(0x00, typeId_)
             mstore(0x20, typeIdTrackers.slot)
@@ -423,9 +526,21 @@ abstract contract BK721 is
         }
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
         ownerOf(tokenId);
-        return string(abi.encodePacked(__baseTokenURIPtr.read(), address(this).toHexString(), "/", tokenId.toString()));
+        return string(
+            abi.encodePacked(
+                __baseTokenURIPtr.read(),
+                address(this).toHexString(),
+                "/",
+                tokenId.toString()
+            )
+        );
     }
 
     function supportsInterface(bytes4 interfaceId_)
@@ -435,24 +550,36 @@ abstract contract BK721 is
         override(ERC721PermitUpgradeable, ERC721EnumerableUpgradeable)
         returns (bool)
     {
-        return type(IERC165Upgradeable).interfaceId == interfaceId_ || super.supportsInterface(interfaceId_);
+        return type(IERC165Upgradeable).interfaceId == interfaceId_
+            || super.supportsInterface(interfaceId_);
     }
 
     function version() public pure returns (bytes32) {
         /// @dev value is equal to keccak256("BKNFT_v1")
-        return 0x379792d4af837d435deaf8f2b7ca3c489899f24f02d5309487fe8be0aa778cca;
+        return
+            0x379792d4af837d435deaf8f2b7ca3c489899f24f02d5309487fe8be0aa778cca;
     }
 
     function _setBaseURI(string calldata baseURI_) internal {
         __baseTokenURIPtr = bytes(baseURI_).write();
     }
 
-    function _invalidateNonce(address sender_, address account_, uint256 nonce_) internal {
+    function _invalidateNonce(
+        address sender_,
+        address account_,
+        uint256 nonce_
+    )
+        internal
+    {
         assembly {
             mstore(0x00, account_)
             mstore(0x20, __nonceBitMaps.slot)
             mstore(0x20, keccak256(0x00, 0x40))
-            let wordPos := and(shr(8, nonce_), 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+            let wordPos :=
+                and(
+                    shr(8, nonce_),
+                    0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                )
             mstore(0x00, wordPos)
             let key := keccak256(0x00, 0x40)
             let bitmap := sload(key)
@@ -466,7 +593,8 @@ abstract contract BK721 is
             log4(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("NonceUsed(address,address,uint256,uint248)")
+                /// @dev value is equal to
+                /// keccak256("NonceUsed(address,address,uint256,uint248)")
                 0x0df261ec91401191ee6858fdd0e1c4334f5faa334b5db219ea5847b0122164a8,
                 sender_,
                 account_,
@@ -490,14 +618,22 @@ abstract contract BK721 is
         __ERC721Permit_init(name_, symbol_);
         __Manager_init_unchained(authority_, 0);
         __ProtocolFee_init_unchained(feeToken_, feeAmt_);
-        __FundForwarder_init_unchained(IFundForwarderUpgradeable(address(authority_)).vault());
+        __FundForwarder_init_unchained(
+            IFundForwarderUpgradeable(address(authority_)).vault()
+        );
     }
 
-    function __BK_init_unchained(string calldata baseURI_) internal onlyInitializing {
+    function __BK_init_unchained(string calldata baseURI_)
+        internal
+        onlyInitializing
+    {
         _setBaseURI(baseURI_);
     }
 
-    function _useTypeIdTrackers(uint256 typeId_) internal returns (uint256 tokenId) {
+    function _useTypeIdTrackers(uint256 typeId_)
+        internal
+        returns (uint256 tokenId)
+    {
         assembly {
             mstore(0x00, typeId_)
             mstore(0x20, typeIdTrackers.slot)
@@ -531,7 +667,12 @@ abstract contract BK721 is
 
         _checkBlacklistMulti(addrs);
 
-        if ((to_ == address(0) || from_ == address(0) || _hasRole(Roles.OPERATOR_ROLE, sender))) {
+        if (
+            (
+                to_ == address(0) || from_ == address(0)
+                    || _hasRole(Roles.OPERATOR_ROLE, sender)
+            )
+        ) {
             return;
         }
 
@@ -549,8 +690,9 @@ abstract contract BK721 is
         if (token == address(0)) return;
 
         if (
-            IWithdrawableUpgradeable(_vault).notifyERC20Transfer(token, royalty, _safeTransferHeader)
-                == IWithdrawableUpgradeable.notifyERC20Transfer.selector
+            IWithdrawableUpgradeable(_vault).notifyERC20Transfer(
+                token, royalty, _safeTransferHeader
+            ) == IWithdrawableUpgradeable.notifyERC20Transfer.selector
         ) return;
 
         revert BK721__ExecutionFailed();
@@ -569,7 +711,13 @@ abstract contract BK721 is
         _transfer(address(this), to_, tokenId_);
     }
 
-    function _verifySig(bytes32 digest_, bytes calldata signature_) internal view {
+    function _verifySig(
+        bytes32 digest_,
+        bytes calldata signature_
+    )
+        internal
+        view
+    {
         if (!_hasRole(Roles.SIGNER_ROLE, _recoverSigner(digest_, signature_))) {
             revert BK721__InvalidSignature();
         }
@@ -584,13 +732,32 @@ abstract contract BK721 is
         }
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
+    function _baseURI()
+        internal
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         return string(__baseTokenURIPtr.read());
     }
 
-    function _beforeRecover(bytes memory) internal override whenPaused onlyRole(Roles.OPERATOR_ROLE) { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        whenPaused
+        onlyRole(Roles.OPERATOR_ROLE)
+    { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 
     uint256[47] private __gap;
 }
@@ -629,7 +796,8 @@ contract BKNFT is IBKNFT, BK721, ERC721BurnableUpgradeable {
         override(BK721, ERC721BurnableUpgradeable)
         returns (bool)
     {
-        return type(IBK721).interfaceId == interfaceId_ || super.supportsInterface(interfaceId_);
+        return type(IBK721).interfaceId == interfaceId_
+            || super.supportsInterface(interfaceId_);
     }
 
     function _beforeTokenTransfer(

@@ -21,7 +21,8 @@ interface ITreasury {
         uint256 amount_, // if withdraw ERC1155
         uint256 deadline_,
         bytes calldata signature_
-    ) external;
+    )
+        external;
 
     function nonces(address account_) external view returns (uint256);
 }

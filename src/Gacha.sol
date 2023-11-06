@@ -1,26 +1,66 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
+// forgefmt: disable-start
 import {
-    ERC165CheckerUpgradeable, BKFundForwarderUpgradeable
+    IGacha
+} from "./interfaces/IGacha.sol";
+
+import {
+    IBK721
+} from "./interfaces/IBK721.sol";
+
+import {
+    IBKTreasury
+} from "./interfaces/IBKTreasury.sol";
+
+import {
+    Bytes32Address
+} from "src/oz-custom/libraries/Bytes32Address.sol";
+
+import {
+    ERC165CheckerUpgradeable,
+    BKFundForwarderUpgradeable
 } from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
-import { Roles, IAuthority, ManagerUpgradeable } from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+import {
+    SignableUpgradeable
+} from "src/oz-custom/internal-upgradeable/SignableUpgradeable.sol";
 
-import { SignableUpgradeable } from "src/oz-custom/internal-upgradeable/SignableUpgradeable.sol";
-import { TransferableUpgradeable } from "src/oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
-import { ProxyCheckerUpgradeable } from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
-import { MultiDelegatecallUpgradeable } from "src/oz-custom/internal-upgradeable/MultiDelegatecallUpgradeable.sol";
+import {
+    Roles,
+    IAuthority,
+    ManagerUpgradeable
+} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
 
-import { IGacha } from "./interfaces/IGacha.sol";
-import { IBK721 } from "./interfaces/IBK721.sol";
-import { IBKTreasury } from "./interfaces/IBKTreasury.sol";
-import { IWithdrawableUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
-import { IFundForwarderUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
-import { IERC721Upgradeable } from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+import {
+    TransferableUpgradeable
+} from "src/oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
 
-import { Bytes32Address } from "src/oz-custom/libraries/Bytes32Address.sol";
-import { BitMapsUpgradeable } from "src/oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
+import {
+    ProxyCheckerUpgradeable
+} from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
+
+import {
+    BitMapsUpgradeable
+} from "src/oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
+
+import {
+    MultiDelegatecallUpgradeable
+} from "src/oz-custom/internal-upgradeable/MultiDelegatecallUpgradeable.sol";
+
+import {
+    IWithdrawableUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+
+import {
+    IFundForwarderUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+
+import {
+    IERC721Upgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+// forgefmt: disable-end
 
 contract Gacha is
     IGacha,
@@ -33,9 +73,11 @@ contract Gacha is
     using ERC165CheckerUpgradeable for address;
     using BitMapsUpgradeable for BitMapsUpgradeable.BitMap;
 
-    /// @dev value is equal to keccak256("Claim(address token,uint256 ticketId,uint256 value,uint256 deadline,uint256
+    /// @dev value is equal to keccak256("Claim(address token,uint256
+    /// ticketId,uint256 value,uint256 deadline,uint256
     /// nonce)")
-    bytes32 private constant __CLAIM_TYPE_HASH = 0xff5122c8134d613571bf8ae24cff90116c8242a568b8dbe337419081fa1403bb;
+    bytes32 private constant __CLAIM_TYPE_HASH =
+        0xff5122c8134d613571bf8ae24cff90116c8242a568b8dbe337419081fa1403bb;
 
     mapping(uint256 => Ticket) private __tickets;
     BitMapsUpgradeable.BitMap private __supportedPayments;
@@ -44,10 +86,16 @@ contract Gacha is
     function initialize(IAuthority authority_) external initializer {
         __Signable_init_unchained(type(Gacha).name, "1");
         __Manager_init_unchained(authority_, Roles.TREASURER_ROLE);
-        __FundForwarder_init_unchained(IFundForwarderUpgradeable(address(authority_)).vault());
+        __FundForwarder_init_unchained(
+            IFundForwarderUpgradeable(address(authority_)).vault()
+        );
     }
 
-    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         _changeVault(vault_);
     }
 
@@ -74,7 +122,9 @@ contract Gacha is
             }
         }
 
-        emit TicketPricesUpdated(_msgSender(), typeId_, supportedPayments_, unitPrices_);
+        emit TicketPricesUpdated(
+            _msgSender(), typeId_, supportedPayments_, unitPrices_
+        );
     }
 
     function supportedPayments(address payment_) external view returns (bool) {
@@ -102,7 +152,8 @@ contract Gacha is
         }
 
         if (!token_.supportsInterface(type(IERC721Upgradeable).interfaceId)) {
-            uint256 unitPrice = IBKTreasury(vault()).priceOf(token_) * __unitPrices[type_][token_];
+            uint256 unitPrice = IBKTreasury(vault()).priceOf(token_)
+                * __unitPrices[type_][token_];
             if (unitPrice > value_) revert Gacha__InsufficientAmount();
         }
 
@@ -129,7 +180,12 @@ contract Gacha is
                 _recoverSigner(
                     keccak256(
                         abi.encode(
-                            __CLAIM_TYPE_HASH, token_, ticketId_, value_, deadline_, _useNonce(bytes32(ticketId_))
+                            __CLAIM_TYPE_HASH,
+                            token_,
+                            ticketId_,
+                            value_,
+                            deadline_,
+                            _useNonce(bytes32(ticketId_))
                         )
                     ),
                     signature_
@@ -149,7 +205,9 @@ contract Gacha is
         if (token_.supportsInterface(type(IERC721Upgradeable).interfaceId)) {
             IBK721(token_).safeMint(ticket.account, value_);
         } else {
-            IWithdrawableUpgradeable(vault()).withdraw(token_, ticket.account, value_, "");
+            IWithdrawableUpgradeable(vault()).withdraw(
+                token_, ticket.account, value_, ""
+            );
         }
 
         emit Rewarded(_msgSender(), ticketId_, token_, value_);
@@ -161,7 +219,15 @@ contract Gacha is
 
     function _beforeRecover(bytes memory) internal override whenPaused { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 
     uint256[47] private __gap;
 }

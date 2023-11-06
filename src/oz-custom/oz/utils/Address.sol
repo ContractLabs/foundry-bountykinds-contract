@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.1;
 
-import {ErrorHandler} from "../../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../../libraries/ErrorHandler.sol";
 
 error Address__CallToNonContract();
 error Address__InsufficientBalance();
@@ -37,14 +37,18 @@ library Address {
      * ====
      * You shouldn't rely on `isContract` to protect against flash loan attacks!
      *
-     * Preventing calls from contracts is highly discouraged. It breaks composability, breaks support for smart wallets
-     * like Gnosis Safe, and does not provide security since it can be circumvented by calling from a contract
+     * Preventing calls from contracts is highly discouraged. It breaks
+     * composability, breaks support for smart wallets
+     * like Gnosis Safe, and does not provide security since it can be
+     * circumvented by calling from a contract
      * constructor.
      * ====
      */
     function isContract(address account) internal view returns (bool) {
-        // This method relies on extcodesize/address.code.length, which returns 0
-        // for contracts in construction, since the code is only stored at the end
+        // This method relies on extcodesize/address.code.length, which returns
+        // 0
+        // for contracts in construction, since the code is only stored at the
+        // end
         // of the constructor execution.
 
         return account.code.length != 0;
@@ -59,20 +63,22 @@ library Address {
      * imposed by `transfer`, making them unable to receive funds via
      * `transfer`. {sendValue} removes this limitation.
      *
-     * https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn more].
+     * https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn
+     * more].
      *
      * IMPORTANT: because control is transferred to `recipient`, care must be
      * taken to not create reentrancy vulnerabilities. Consider using
      * {ReentrancyGuard} or the
-     * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
+     * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions
+     * pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        if (address(this).balance < amount)
+        if (address(this).balance < amount) {
             revert Address__InsufficientBalance();
+        }
 
-        (bool success, bytes memory revertData) = recipient.call{
-            value: amount
-        }("");
+        (bool success, bytes memory revertData) =
+            recipient.call{ value: amount }("");
         success.handleRevertIfNotSuccess(revertData);
     }
 
@@ -85,7 +91,8 @@ library Address {
      * function (like regular Solidity function calls).
      *
      * Returns the raw returned data. To convert to the expected return value,
-     * use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode#abi-encoding-and-decoding-functions[`abi.decode`].
+     * use
+     * https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode#abi-encoding-and-decoding-functions[`abi.decode`].
      *
      * Requirements:
      *
@@ -97,12 +104,16 @@ library Address {
     function functionCall(
         address target,
         bytes memory data
-    ) internal returns (bytes memory) {
+    )
+        internal
+        returns (bytes memory)
+    {
         return functionCall(target, data, "Address: CALL_FAILED");
     }
 
     /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`], but with
+     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
+     * but with
      * `errorMessage` as a fallback revert reason when `target` reverts.
      *
      * _Available since v3.1._
@@ -111,7 +122,10 @@ library Address {
         address target,
         bytes memory data,
         string memory errorMessage
-    ) internal returns (bytes memory) {
+    )
+        internal
+        returns (bytes memory)
+    {
         return functionCallWithValue(target, data, 0, errorMessage);
     }
 
@@ -130,18 +144,19 @@ library Address {
         address target,
         bytes memory data,
         uint256 value
-    ) internal returns (bytes memory) {
-        return
-            functionCallWithValue(
-                target,
-                data,
-                value,
-                "Address: VALUE_CALLED_FAILED"
-            );
+    )
+        internal
+        returns (bytes memory)
+    {
+        return functionCallWithValue(
+            target, data, value, "Address: VALUE_CALLED_FAILED"
+        );
     }
 
     /**
-     * @dev Same as {xref-Address-functionCallWithValue-address-bytes-uint256-}[`functionCallWithValue`], but
+     * @dev Same as
+     * {xref-Address-functionCallWithValue-address-bytes-uint256-}[`functionCallWithValue`],
+     * but
      * with `errorMessage` as a fallback revert reason when `target` reverts.
      *
      * _Available since v3.1._
@@ -151,15 +166,18 @@ library Address {
         bytes memory data,
         uint256 value,
         string memory errorMessage
-    ) internal returns (bytes memory) {
-        if (address(this).balance < value)
+    )
+        internal
+        returns (bytes memory)
+    {
+        if (address(this).balance < value) {
             revert Address__InsufficientBalance();
+        }
 
         if (!isContract(target)) revert Address__CallToNonContract();
 
-        (bool success, bytes memory returndata) = target.call{value: value}(
-            data
-        );
+        (bool success, bytes memory returndata) =
+            target.call{ value: value }(data);
         return verifyCallResult(success, returndata, errorMessage);
     }
 
@@ -172,12 +190,17 @@ library Address {
     function functionStaticCall(
         address target,
         bytes memory data
-    ) internal view returns (bytes memory) {
+    )
+        internal
+        view
+        returns (bytes memory)
+    {
         return functionStaticCall(target, data, "Address: STATIC_CALL_FAILED");
     }
 
     /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
+     * @dev Same as
+     * {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
      * but performing a static call.
      *
      * _Available since v3.3._
@@ -186,7 +209,11 @@ library Address {
         address target,
         bytes memory data,
         string memory errorMessage
-    ) internal view returns (bytes memory) {
+    )
+        internal
+        view
+        returns (bytes memory)
+    {
         if (!isContract(target)) revert Address__StaticcallToNonContract();
 
         (bool success, bytes memory returndata) = target.staticcall(data);
@@ -202,17 +229,17 @@ library Address {
     function functionDelegateCall(
         address target,
         bytes memory data
-    ) internal returns (bytes memory) {
+    )
+        internal
+        returns (bytes memory)
+    {
         return
-            functionDelegateCall(
-                target,
-                data,
-                "Address: DELEGATE_CALL_FAILED"
-            );
+            functionDelegateCall(target, data, "Address: DELEGATE_CALL_FAILED");
     }
 
     /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
+     * @dev Same as
+     * {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
      * but performing a delegate call.
      *
      * _Available since v3.4._
@@ -221,7 +248,10 @@ library Address {
         address target,
         bytes memory data,
         string memory errorMessage
-    ) internal returns (bytes memory) {
+    )
+        internal
+        returns (bytes memory)
+    {
         if (!isContract(target)) revert Address__DelegatecallToNonContract();
 
         (bool success, bytes memory returndata) = target.delegatecall(data);
@@ -229,7 +259,8 @@ library Address {
     }
 
     /**
-     * @dev Tool to verifies that a low level call was successful, and revert if it wasn't, either by bubbling the
+     * @dev Tool to verifies that a low level call was successful, and revert if
+     * it wasn't, either by bubbling the
      * revert reason using the provided one.
      *
      * _Available since v4.3._
@@ -238,13 +269,18 @@ library Address {
         bool success,
         bytes memory returndata,
         string memory errorMessage
-    ) internal pure returns (bytes memory) {
+    )
+        internal
+        pure
+        returns (bytes memory)
+    {
         if (success) {
             return returndata;
         } else {
             // Look for revert reason and bubble it up if present
             if (returndata.length > 0) {
-                // The easiest way to bubble the revert reason is using memory via assembly
+                // The easiest way to bubble the revert reason is using memory
+                // via assembly
                 /// @solidity memory-safe-assembly
                 assembly {
                     let returndata_size := mload(returndata)

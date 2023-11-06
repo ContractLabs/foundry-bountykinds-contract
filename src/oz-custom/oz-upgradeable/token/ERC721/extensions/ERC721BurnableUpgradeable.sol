@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/extensions/ERC721Burnable.sol)
+// OpenZeppelin Contracts (last updated v4.7.0)
+// (token/ERC721/extensions/ERC721Burnable.sol)
 
 pragma solidity ^0.8.10;
 
@@ -33,27 +34,26 @@ abstract contract ERC721BurnableUpgradeable is
      */
     function burn(uint256 tokenId) public virtual {
         //solhint-disable-next-line max-line-length
-        if (!_isApprovedOrOwner(_msgSender(), tokenId))
+        if (!_isApprovedOrOwner(_msgSender(), tokenId)) {
             revert ERC721Burnable__OnlyOwnerOrApproved();
+        }
         _burn(tokenId);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId_
-    )
+    function supportsInterface(bytes4 interfaceId_)
         public
         view
         virtual
         override(ERC721Upgradeable, IERC165Upgradeable)
         returns (bool)
     {
-        return
-            interfaceId_ == type(IERC721BurnableUpgradeable).interfaceId ||
-            super.supportsInterface(interfaceId_);
+        return interfaceId_ == type(IERC721BurnableUpgradeable).interfaceId
+            || super.supportsInterface(interfaceId_);
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

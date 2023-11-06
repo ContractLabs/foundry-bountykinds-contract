@@ -1,12 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { Roles, IAuthority, TreasuryUpgradeable } from "src/oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
+// forgefmt: disable-start
+import {
+    IBKTreasury
+} from "./interfaces/IBKTreasury.sol";
 
-import { IBKTreasury } from "./interfaces/IBKTreasury.sol";
-import { AggregatorV3Interface } from "chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {
+    EnumerableSet
+} from "src/oz-custom/oz/utils/structs/EnumerableSet.sol";
 
-import { EnumerableSet } from "src/oz-custom/oz/utils/structs/EnumerableSet.sol";
+import {
+    Roles,
+    IAuthority,
+    TreasuryUpgradeable
+} from "src/oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
+
+import {
+    AggregatorV3Interface
+} from "chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+// forgefmt: disable-end
 
 contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -62,7 +75,9 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
 
         results = new bool[](length);
         for (uint256 i; i < length;) {
-            results[i] = statuses_[i] ? __supportedPayments.add(payments_[i]) : __supportedPayments.remove(payments_[i]);
+            results[i] = statuses_[i]
+                ? __supportedPayments.add(payments_[i])
+                : __supportedPayments.remove(payments_[i]);
 
             unchecked {
                 ++i;

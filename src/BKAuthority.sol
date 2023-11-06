@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { Roles, AuthorityUpgradeable } from "src/oz-custom/presets-upgradeable/AuthorityUpgradeable.sol";
+// forgefmt: disable-start
+import {
+    FundForwarderUpgradeable,
+    BKFundForwarderUpgradeable
+} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
-    FundForwarderUpgradeable, BKFundForwarderUpgradeable
-} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
-import { IFundForwarderUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+    Roles,
+    AuthorityUpgradeable
+} from "src/oz-custom/presets-upgradeable/AuthorityUpgradeable.sol";
+
+import {
+    IFundForwarderUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+// forgefmt: disable-end
 
 contract BKAuthority is AuthorityUpgradeable, BKFundForwarderUpgradeable {
     function initialize(
@@ -28,8 +37,9 @@ contract BKAuthority is AuthorityUpgradeable, BKFundForwarderUpgradeable {
     function _grantRole(bytes32 role_, address account_) internal override {
         if (
             !(
-                role_ == Roles.PROXY_ROLE || role_ == Roles.SIGNER_ROLE || role_ == Roles.PAUSER_ROLE
-                    || role_ == Roles.MINTER_ROLE || role_ == Roles.OPERATOR_ROLE || role_ == Roles.UPGRADER_ROLE
+                role_ == Roles.PROXY_ROLE || role_ == Roles.SIGNER_ROLE
+                    || role_ == Roles.PAUSER_ROLE || role_ == Roles.MINTER_ROLE
+                    || role_ == Roles.OPERATOR_ROLE || role_ == Roles.UPGRADER_ROLE
                     || role_ == Roles.TREASURER_ROLE || role_ == DEFAULT_ADMIN_ROLE
             )
         ) revert AccessControl__Unauthorized();
@@ -37,9 +47,22 @@ contract BKAuthority is AuthorityUpgradeable, BKFundForwarderUpgradeable {
         super._grantRole(role_, account_);
     }
 
-    function _beforeRecover(bytes memory) internal override onlyRole(Roles.OPERATOR_ROLE) whenPaused { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        onlyRole(Roles.OPERATOR_ROLE)
+        whenPaused
+    { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 
     function _checkValidAddress(address vault_)
         internal

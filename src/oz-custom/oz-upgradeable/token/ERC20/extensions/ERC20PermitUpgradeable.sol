@@ -1,22 +1,26 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/extensions/draft-ERC20Permit.sol)
+// OpenZeppelin Contracts (last updated v4.6.0)
+// (token/ERC20/extensions/draft-ERC20Permit.sol)
 
 pragma solidity ^0.8.17;
 
-import {ERC20Upgradeable} from "../ERC20Upgradeable.sol";
+import { ERC20Upgradeable } from "../ERC20Upgradeable.sol";
 import {
     Bytes32Address,
     SignableUpgradeable
 } from "../../../../internal-upgradeable/SignableUpgradeable.sol";
 
-import {IERC20PermitUpgradeable} from "./IERC20PermitUpgradeable.sol";
+import { IERC20PermitUpgradeable } from "./IERC20PermitUpgradeable.sol";
 
 /**
- * @dev Implementation of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in
+ * @dev Implementation of the ERC20 Permit extension allowing approvals to be
+ * made via signatures, as defined in
  * https://eips.ethereum.org/EIPS/eip-2612[EIP-2612].
  *
- * Adds the {permit} method, which can be used to change an account's ERC20 allowance (see {IERC20-allowance}) by
- * presenting a message signed by the account. By not relying on `{IERC20-approve}`, the token holder account doesn't
+ * Adds the {permit} method, which can be used to change an account's ERC20
+ * allowance (see {IERC20-allowance}) by
+ * presenting a message signed by the account. By not relying on
+ * `{IERC20-approve}`, the token holder account doesn't
  * need to send a transaction, and thus is not required to hold Ether at all.
  *
  * _Available since v3.4._
@@ -29,18 +33,23 @@ abstract contract ERC20PermitUpgradeable is
     using Bytes32Address for address;
 
     // solhint-disable-next-line var-name-mixedcase
-    /// @dev value is equal to keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)")
+    /// @dev value is equal to keccak256("Permit(address owner,address
+    /// spender,uint256 value,uint256 nonce,uint256
+    /// deadline)")
     bytes32 private constant __PERMIT_TYPEHASH =
         0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
 
     /**
-     * @dev Initializes the {EIP712} domain separator using the `name` parameter, and setting `version` to `"1"`.
+     * @dev Initializes the {EIP712} domain separator using the `name`
+     * parameter, and setting `version` to `"1"`.
      *
-     * It's a good idea to use the same `name` that is defined as the ERC20 token name.
+     * It's a good idea to use the same `name` that is defined as the ERC20
+     * token name.
      */
-    function __ERC20Permit_init(
-        string calldata name_
-    ) internal onlyInitializing {
+    function __ERC20Permit_init(string calldata name_)
+        internal
+        onlyInitializing
+    {
         __EIP712_init_unchained(name_, "1");
     }
 
@@ -55,7 +64,11 @@ abstract contract ERC20PermitUpgradeable is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external virtual override {
+    )
+        external
+        virtual
+        override
+    {
         bytes32 digest;
         bytes32 allowanceKey;
         assembly {
@@ -97,8 +110,8 @@ abstract contract ERC20PermitUpgradeable is
     /**
      * @dev See {IERC20Permit-nonces}.
      *
-
-    /**
+     *
+     * /**
      * @dev See {IERC20Permit-DOMAIN_SEPARATOR}.
      */
     // solhint-disable-next-line func-name-mixedcase

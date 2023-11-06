@@ -13,7 +13,8 @@ error ProxyChecker__ProxyUnallowed();
 
 /**
  * @title ProxyCheckerUpgradeable
- * @dev Abstract contract for checking if a call was made by a proxy contract or an externally owned account.
+ * @dev Abstract contract for checking if a call was made by a proxy contract or
+ * an externally owned account.
  */
 abstract contract ProxyCheckerUpgradeable {
     modifier onlyEOA() {
@@ -26,24 +27,31 @@ abstract contract ProxyCheckerUpgradeable {
     }
 
     function _onlyEOA(address msgSender_, address txOrigin_) internal pure {
-        if (_isProxyCall(msgSender_, txOrigin_))
+        if (_isProxyCall(msgSender_, txOrigin_)) {
             revert ProxyChecker__ProxyUnallowed();
+        }
     }
 
     function _onlyProxy(address sender_) internal view {
-        if (!(_isProxyCall(sender_, _txOrigin()) || _isProxy(sender_)))
+        if (!(_isProxyCall(sender_, _txOrigin()) || _isProxy(sender_))) {
             revert ProxyChecker__EOAUnallowed();
+        }
     }
 
     function _onlyProxy(address msgSender_, address txOrigin_) internal view {
-        if (!(_isProxyCall(msgSender_, txOrigin_) || _isProxy(msgSender_)))
+        if (!(_isProxyCall(msgSender_, txOrigin_) || _isProxy(msgSender_))) {
             revert ProxyChecker__EOAUnallowed();
+        }
     }
 
     function _isProxyCall(
         address msgSender_,
         address txOrigin_
-    ) internal pure returns (bool) {
+    )
+        internal
+        pure
+        returns (bool)
+    {
         return msgSender_ != txOrigin_;
     }
 

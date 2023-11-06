@@ -3,16 +3,15 @@
 
 pragma solidity ^0.8.17;
 
-import {Context} from "../utils/Context.sol";
-import {Bytes32Address} from "../../libraries/Bytes32Address.sol";
+import { Context } from "../utils/Context.sol";
+import { Bytes32Address } from "../../libraries/Bytes32Address.sol";
 
 interface IOwnable {
     error Ownable__Unauthorized();
     error Ownable__NonZeroAddress();
 
     event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
+        address indexed previousOwner, address indexed newOwner
     );
 
     function renounceOwnership() external;
@@ -67,8 +66,9 @@ abstract contract Ownable is Context, IOwnable {
      * @dev Throws if the sender is not the owner.
      */
     function _checkOwner(address sender_) internal view virtual {
-        if (__owner != sender_.fillLast12Bytes())
+        if (__owner != sender_.fillLast12Bytes()) {
             revert Ownable__Unauthorized();
+        }
     }
 
     /**
@@ -100,7 +100,8 @@ abstract contract Ownable is Context, IOwnable {
             log3(
                 0x00,
                 0x00,
-                /// @dev value is equal to kecak256("OwnershipTransferred(address,address)");
+                /// @dev value is equal to
+                /// kecak256("OwnershipTransferred(address,address)");
                 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0,
                 sload(__owner.slot),
                 newOwner

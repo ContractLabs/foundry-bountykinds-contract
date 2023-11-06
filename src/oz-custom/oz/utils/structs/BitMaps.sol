@@ -3,8 +3,10 @@
 pragma solidity ^0.8.17;
 
 /**
- * @dev Library for managing uint256 to bool mapping in a compact and efficient way, providing the keys are sequential.
- * Largelly inspired by Uniswap's https://github.com/Uniswap/merkle-distributor/blob/master/contracts/MerkleDistributor.sol[merkle-distributor].
+ * @dev Library for managing uint256 to bool mapping in a compact and efficient
+ * way, providing the keys are sequential.
+ * Largelly inspired by Uniswap's
+ * https://github.com/Uniswap/merkle-distributor/blob/master/contracts/MerkleDistributor.sol[merkle-distributor].
  */
 library BitMaps {
     struct BitMap {
@@ -17,7 +19,11 @@ library BitMaps {
     function get(
         BitMap storage bitmap,
         uint256 index
-    ) internal view returns (bool isSet) {
+    )
+        internal
+        view
+        returns (bool isSet)
+    {
         assembly {
             mstore(0, shr(8, index))
             mstore(32, bitmap.slot)
@@ -33,7 +39,9 @@ library BitMaps {
         BitMap storage bitmap,
         uint256 index,
         bool shouldSet
-    ) internal {
+    )
+        internal
+    {
         assembly {
             mstore(0, shr(8, index))
             mstore(32, bitmap.slot)
@@ -44,11 +52,13 @@ library BitMaps {
             let shift := and(index, 0xff)
             // Isolate the bit at `shift`.
             let x := and(shr(shift, value), 1)
-            // Xor it with `shouldSet`. Results in 1 if both are different, else 0.
+            // Xor it with `shouldSet`. Results in 1 if both are different, else
+            // 0.
             x := xor(x, shouldSet)
             // Shifts the bit back. Then, xor with value.
             // Only the bit at `shift` will be flipped if they differ.
-            // Every other bit will stay the same, as they are xor'ed with zeroes.
+            // Every other bit will stay the same, as they are xor'ed with
+            // zeroes.
             value := xor(value, shl(shift, x))
 
             sstore(mapKey, value)
@@ -72,14 +82,14 @@ library BitMaps {
     function setBatch(
         BitMap storage bitmap_,
         uint256[] calldata values_
-    ) internal {
+    )
+        internal
+    {
         assembly {
             let length := values_.length
             let i := add(calldataload(values_.offset), 0x20)
             mstore(0x20, bitmap_.slot)
-            for {
-                let end := add(i, shl(5, length))
-            } lt(i, end) {
+            for { let end := add(i, shl(5, length)) } lt(i, end) {
                 i := add(i, 0x20)
             } {
                 mstore(0x00, shr(8, mload(i)))

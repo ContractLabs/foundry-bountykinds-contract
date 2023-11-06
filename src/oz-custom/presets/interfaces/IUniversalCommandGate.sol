@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {ICommandGate} from "../../internal/interfaces/ICommandGate.sol";
+import { ICommandGate } from "../../internal/interfaces/ICommandGate.sol";
 
 interface IUniversalCommandGate is ICommandGate {
     error UniversalCommandGate__LengthMismatch();

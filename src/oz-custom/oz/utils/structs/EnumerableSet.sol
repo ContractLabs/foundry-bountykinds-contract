@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (utils/structs/EnumerableSet.sol)
+// OpenZeppelin Contracts (last updated v4.7.0)
+// (utils/structs/EnumerableSet.sol)
 
 pragma solidity ^0.8.17;
 
@@ -29,10 +30,15 @@ pragma solidity ^0.8.17;
  *
  * [WARNING]
  * ====
- *  Trying to delete such a structure from storage will likely result in data corruption, rendering the structure unusable.
- *  See https://github.com/ethereum/solidity/pull/11843[ethereum/solidity#11843] for more info.
+ *  Trying to delete such a structure from storage will likely result in data
+ * corruption, rendering the structure
+ * unusable.
+ *  See https://github.com/ethereum/solidity/pull/11843[ethereum/solidity#11843]
+ * for more info.
  *
- *  In order to clean an EnumerableSet, you can either remove all elements one by one or create a fresh instance using an array of EnumerableSet.
+ *  In order to clean an EnumerableSet, you can either remove all elements one
+ * by one or create a fresh instance using
+ * an array of EnumerableSet.
  * ====
  */
 library EnumerableSet {
@@ -66,7 +72,9 @@ library EnumerableSet {
             // and use 0 as a sentinel value
             set._indexes[value] = set._values.length;
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -76,13 +84,16 @@ library EnumerableSet {
      * present.
      */
     function _remove(Set storage set, bytes32 value) private returns (bool) {
-        // We read and store the value's index to prevent multiple reads from the same storage slot
+        // We read and store the value's index to prevent multiple reads from
+        // the same storage slot
         uint256 valueIndex = set._indexes[value];
 
         if (valueIndex != 0) {
             // Equivalent to contains(set, value)
-            // To delete an element from the _values array in O(1), we swap the element to delete with the last one in
-            // the array, and then remove the last element (sometimes called as 'swap and pop').
+            // To delete an element from the _values array in O(1), we swap the
+            // element to delete with the last one in
+            // the array, and then remove the last element (sometimes called as
+            // 'swap and pop').
             // This modifies the order of the array, as noted in {at}.
 
             uint256 toDeleteIndex;
@@ -98,7 +109,8 @@ library EnumerableSet {
                 // Move the last value to the index where the value to delete is
                 set._values[toDeleteIndex] = lastValue;
                 // Update the index for the moved value
-                set._indexes[lastValue] = valueIndex; // Replace lastValue's index to valueIndex
+                set._indexes[lastValue] = valueIndex; // Replace lastValue's
+                    // index to valueIndex
             }
 
             // Delete the slot where the moved value was stored
@@ -119,7 +131,11 @@ library EnumerableSet {
     function _contains(
         Set storage set,
         bytes32 value
-    ) private view returns (bool) {
+    )
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -143,17 +159,25 @@ library EnumerableSet {
     function _at(
         Set storage set,
         uint256 index
-    ) private view returns (bytes32) {
+    )
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
     function _values(Set storage set) private view returns (bytes32[] memory) {
         return set._values;
@@ -174,7 +198,10 @@ library EnumerableSet {
     function add(
         Bytes32Set storage set,
         bytes32 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -187,7 +214,10 @@ library EnumerableSet {
     function remove(
         Bytes32Set storage set,
         bytes32 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
@@ -197,7 +227,11 @@ library EnumerableSet {
     function contains(
         Bytes32Set storage set,
         bytes32 value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -221,21 +255,31 @@ library EnumerableSet {
     function at(
         Bytes32Set storage set,
         uint256 index
-    ) internal view returns (bytes32) {
+    )
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        Bytes32Set storage set
-    ) internal view returns (bytes32[] memory) {
+    function values(Bytes32Set storage set)
+        internal
+        view
+        returns (bytes32[] memory)
+    {
         return _values(set._inner);
     }
 
@@ -254,7 +298,10 @@ library EnumerableSet {
     function add(
         AddressSet storage set,
         address value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         bytes32 store;
         assembly {
             store := value
@@ -271,7 +318,10 @@ library EnumerableSet {
     function remove(
         AddressSet storage set,
         address value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         bytes32 store;
         assembly {
             store := value
@@ -285,7 +335,11 @@ library EnumerableSet {
     function contains(
         AddressSet storage set,
         address value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         bytes32 store;
         assembly {
             store := value
@@ -313,7 +367,11 @@ library EnumerableSet {
     function at(
         AddressSet storage set,
         uint256 index
-    ) internal view returns (address addr) {
+    )
+        internal
+        view
+        returns (address addr)
+    {
         bytes32 value = _at(set._inner, index);
         assembly {
             addr := value
@@ -323,14 +381,20 @@ library EnumerableSet {
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        AddressSet storage set
-    ) internal view returns (address[] memory) {
+    function values(AddressSet storage set)
+        internal
+        view
+        returns (address[] memory)
+    {
         bytes32[] memory store = _values(set._inner);
         address[] memory result;
 
@@ -367,7 +431,10 @@ library EnumerableSet {
     function remove(
         UintSet storage set,
         uint256 value
-    ) internal returns (bool) {
+    )
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
@@ -377,7 +444,11 @@ library EnumerableSet {
     function contains(
         UintSet storage set,
         uint256 value
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -401,21 +472,31 @@ library EnumerableSet {
     function at(
         UintSet storage set,
         uint256 index
-    ) internal view returns (uint256) {
+    )
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 
     /**
      * @dev Return the entire set in an array
      *
-     * WARNING: This operation will copy the entire storage to memory, which can be quite expensive. This is designed
-     * to mostly be used by view accessors that are queried without any gas fees. Developers should keep in mind that
-     * this function has an unbounded cost, and using it as part of a state-changing function may render the function
-     * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
+     * WARNING: This operation will copy the entire storage to memory, which can
+     * be quite expensive. This is designed
+     * to mostly be used by view accessors that are queried without any gas
+     * fees. Developers should keep in mind that
+     * this function has an unbounded cost, and using it as part of a
+     * state-changing function may render the function
+     * uncallable if the set grows to a point where copying to memory consumes
+     * too much gas to fit in a block.
      */
-    function values(
-        UintSet storage set
-    ) internal view returns (uint256[] memory) {
+    function values(UintSet storage set)
+        internal
+        view
+        returns (uint256[] memory)
+    {
         bytes32[] memory store = _values(set._inner);
         uint256[] memory result;
 

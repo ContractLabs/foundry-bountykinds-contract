@@ -20,5 +20,8 @@ interface IMulticall {
     function multicall(
         CallData[] calldata calldata_,
         bytes calldata data_
-    ) external payable returns (bytes[] memory results);
+    )
+        external
+        payable
+        returns (bytes[] memory results);
 }

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {BitMaps} from "../../oz/utils/structs/BitMaps.sol";
+import { BitMaps } from "../../oz/utils/structs/BitMaps.sol";
 
 library PoseidonT3 {
-    function poseidon(uint256[2] memory) public pure returns (uint256) {}
+    function poseidon(uint256[2] memory) public pure returns (uint256) { }
 }
 
 // Each incremental tree has certain properties and data that will
@@ -14,10 +14,13 @@ struct IncrementalTreeData {
     uint256 root; // Root hash of the tree.
     uint256 numberOfLeaves; // Number of leaves of the tree.
     BitMaps.BitMap knownRoots;
-    mapping(uint8 => uint256) zeroes; // Zero hashes used for empty nodes (level -> zero hash).
+    mapping(uint8 => uint256) zeroes; // Zero hashes used for empty nodes (level
+        // -> zero hash).
     mapping(uint32 => uint256) leaves;
-    // The nodes of the subtrees used in the last addition of a leaf (level -> [left node, right node]).
-    mapping(uint256 => uint256[2]) lastSubtrees; // Caching these values is essential to efficient appends.
+    // The nodes of the subtrees used in the last addition of a leaf (level ->
+    // [left node, right node]).
+    mapping(uint256 => uint256[2]) lastSubtrees; // Caching these values is
+        // essential to efficient appends.
 }
 
 error IncrementalMerkleTree__OutOfField();
@@ -28,7 +31,8 @@ error IncrementalMerkleTree__LengthMismatch();
 error IncrementalMerkleTree__AllocationExceeded();
 
 /// @title Incremental binary Merkle tree.
-/// @dev The incremental tree allows to calculate the root hash each time a leaf is added, ensuring
+/// @dev The incremental tree allows to calculate the root hash each time a leaf
+/// is added, ensuring
 /// the integrity of the tree.
 library IncrementalMerkleTree {
     using BitMaps for BitMaps.BitMap;
@@ -45,15 +49,19 @@ library IncrementalMerkleTree {
         IncrementalTreeData storage self,
         uint256 depth,
         uint256 zero
-    ) internal {
-        if (zero >= SNARK_SCALAR_FIELD)
+    )
+        internal
+    {
+        if (zero >= SNARK_SCALAR_FIELD) {
             revert IncrementalMerkleTree__OutOfField();
-        if (depth == 0 || depth > MAX_DEPTH)
+        }
+        if (depth == 0 || depth > MAX_DEPTH) {
             revert IncrementalMerkleTree__OutOfDepth();
+        }
 
         self.depth = depth;
 
-        for (uint8 i; i < depth; ) {
+        for (uint8 i; i < depth;) {
             self.zeroes[i] = zero;
             zero = PoseidonT3.poseidon([zero, zero]);
 
@@ -70,18 +78,20 @@ library IncrementalMerkleTree {
     /// @param self: Tree data.
     /// @param leaf: Leaf to be inserted.
     function insert(IncrementalTreeData storage self, uint256 leaf) internal {
-        if (leaf >= SNARK_SCALAR_FIELD)
+        if (leaf >= SNARK_SCALAR_FIELD) {
             revert IncrementalMerkleTree__OutOfField();
+        }
 
         uint256 depth = self.depth;
         uint256 numberOfLeaves = self.numberOfLeaves;
-        if (numberOfLeaves >= 1 << depth)
+        if (numberOfLeaves >= 1 << depth) {
             revert IncrementalMerkleTree__AllocationExceeded();
+        }
 
         uint256 index = numberOfLeaves;
         uint256 hash = leaf;
 
-        for (uint8 i; i < depth; ) {
+        for (uint8 i; i < depth;) {
             if (index & 1 == 0) self.lastSubtrees[i] = [hash, self.zeroes[i]];
             else self.lastSubtrees[i][1] = hash;
 
@@ -103,7 +113,11 @@ library IncrementalMerkleTree {
     function isKnownRoot(
         IncrementalTreeData storage self_,
         uint256 root_
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         return self_.knownRoots.get(root_);
     }
 
@@ -111,7 +125,8 @@ library IncrementalMerkleTree {
     /// @param self: Tree data.
     /// @param leaf: Leaf to be updated.
     /// @param newLeaf: New leaf.
-    /// @param proofSiblings: Array of the sibling nodes of the proof of membership.
+    /// @param proofSiblings: Array of the sibling nodes of the proof of
+    /// membership.
     /// @param proofPathIndices: Path of the proof of membership.
     function update(
         IncrementalTreeData storage self,
@@ -119,27 +134,32 @@ library IncrementalMerkleTree {
         uint256 newLeaf,
         uint256[] calldata proofSiblings,
         uint256[] calldata proofPathIndices
-    ) internal {
-        if (!verify(self, leaf, proofSiblings, proofPathIndices))
+    )
+        internal
+    {
+        if (!verify(self, leaf, proofSiblings, proofPathIndices)) {
             revert IncrementalMerkleTree__LeafUnexists();
+        }
 
         uint256 depth = self.depth;
         uint256 hash = newLeaf;
 
         uint256 updateIndex;
         uint256 proofPathIndice;
-        for (uint256 i; i < depth; ) {
+        for (uint256 i; i < depth;) {
             proofPathIndice = proofPathIndices[i];
             updateIndex |= (proofPathIndice & 1) << i;
 
             if (proofPathIndice == 0) {
-                if (proofPathIndice == self.lastSubtrees[i][1])
+                if (proofPathIndice == self.lastSubtrees[i][1]) {
                     self.lastSubtrees[i][0] = hash;
+                }
 
                 hash = PoseidonT3.poseidon([hash, proofPathIndice]);
             } else {
-                if (proofPathIndice == self.lastSubtrees[i][0])
+                if (proofPathIndice == self.lastSubtrees[i][0]) {
                     self.lastSubtrees[i][1] = hash;
+                }
 
                 hash = PoseidonT3.poseidon([proofPathIndice, hash]);
             }
@@ -149,8 +169,9 @@ library IncrementalMerkleTree {
             }
         }
 
-        if (updateIndex >= self.numberOfLeaves)
+        if (updateIndex >= self.numberOfLeaves) {
             revert IncrementalMerkleTree__OutOfRange();
+        }
 
         self.root = hash;
         self.knownRoots.set(hash);
@@ -159,21 +180,25 @@ library IncrementalMerkleTree {
     /// @dev Removes a leaf from the tree.
     /// @param self: Tree data.
     /// @param leaf: Leaf to be removed.
-    /// @param proofSiblings: Array of the sibling nodes of the proof of membership.
+    /// @param proofSiblings: Array of the sibling nodes of the proof of
+    /// membership.
     /// @param proofPathIndices: Path of the proof of membership.
     function remove(
         IncrementalTreeData storage self,
         uint256 leaf,
         uint256[] calldata proofSiblings,
         uint256[] calldata proofPathIndices
-    ) internal {
+    )
+        internal
+    {
         update(self, leaf, self.zeroes[0], proofSiblings, proofPathIndices);
     }
 
     /// @dev Verify if the path is correct and the leaf is part of the tree.
     /// @param self: Tree data.
     /// @param leaf: Leaf to be removed.
-    /// @param proofSiblings: Array of the sibling nodes of the proof of membership.
+    /// @param proofSiblings: Array of the sibling nodes of the proof of
+    /// membership.
     /// @param proofPathIndices: Path of the proof of membership.
     /// @return True or false.
     function verify(
@@ -181,21 +206,27 @@ library IncrementalMerkleTree {
         uint256 leaf,
         uint256[] calldata proofSiblings,
         uint256[] calldata proofPathIndices
-    ) private view returns (bool) {
+    )
+        private
+        view
+        returns (bool)
+    {
         uint256 scalarField = SNARK_SCALAR_FIELD;
         if (leaf >= scalarField) revert IncrementalMerkleTree__OutOfField();
 
         uint256 depth = self.depth;
-        if (proofPathIndices.length != depth || proofSiblings.length != depth)
+        if (proofPathIndices.length != depth || proofSiblings.length != depth) {
             revert IncrementalMerkleTree__LengthMismatch();
+        }
 
         uint256 hash = leaf;
 
         uint256 proofSibling;
-        for (uint256 i; i < depth; ) {
+        for (uint256 i; i < depth;) {
             proofSibling = proofSiblings[i];
-            if (proofSibling >= scalarField)
+            if (proofSibling >= scalarField) {
                 revert IncrementalMerkleTree__OutOfField();
+            }
 
             hash = proofSibling == 0
                 ? PoseidonT3.poseidon([hash, proofSibling])

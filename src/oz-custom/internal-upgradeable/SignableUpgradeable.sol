@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ContextUpgradeable
-} from "../oz-upgradeable/utils/ContextUpgradeable.sol";
+import { ContextUpgradeable } from
+    "../oz-upgradeable/utils/ContextUpgradeable.sol";
 import {
     ECDSAUpgradeable,
     EIP712Upgradeable
 } from "../oz-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
 
-import {ISignableUpgradeable} from "./interfaces/ISignableUpgradeable.sol";
+import { ISignableUpgradeable } from "./interfaces/ISignableUpgradeable.sol";
 
-import {Bytes32Address} from "../libraries/Bytes32Address.sol";
+import { Bytes32Address } from "../libraries/Bytes32Address.sol";
 
 /**
  * @title SignableUpgradeable
@@ -38,14 +37,20 @@ abstract contract SignableUpgradeable is
     function __Signable_init(
         string calldata name_,
         string calldata version_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         __Signable_init_unchained(name_, version_);
     }
 
     function __Signable_init_unchained(
         string memory name_,
         string memory version_
-    ) internal onlyInitializing {
+    )
+        internal
+        onlyInitializing
+    {
         __EIP712_init_unchained(name_, version_);
     }
 
@@ -59,9 +64,14 @@ abstract contract SignableUpgradeable is
         address verifier_,
         bytes32 structHash_,
         bytes calldata signature_
-    ) internal view virtual {
-        if (_recoverSigner(structHash_, signature_) != verifier_)
+    )
+        internal
+        view
+        virtual
+    {
+        if (_recoverSigner(structHash_, signature_) != verifier_) {
             revert Signable__InvalidSignature();
+        }
     }
 
     /**
@@ -78,9 +88,14 @@ abstract contract SignableUpgradeable is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) internal view virtual {
-        if (_recoverSigner(structHash_, v, r, s) != verifier_)
+    )
+        internal
+        view
+        virtual
+    {
+        if (_recoverSigner(structHash_, v, r, s) != verifier_) {
             revert Signable__InvalidSignature();
+        }
     }
 
     /**
@@ -92,7 +107,11 @@ abstract contract SignableUpgradeable is
     function _recoverSigner(
         bytes32 structHash_,
         bytes calldata signature_
-    ) internal view returns (address) {
+    )
+        internal
+        view
+        returns (address)
+    {
         return _hashTypedDataV4(structHash_).recover(signature_);
     }
 
@@ -109,7 +128,11 @@ abstract contract SignableUpgradeable is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) internal view returns (address) {
+    )
+        internal
+        view
+        returns (address)
+    {
         return _hashTypedDataV4(structHash_).recover(v, r, s);
     }
 
@@ -130,7 +153,8 @@ abstract contract SignableUpgradeable is
             log4(
                 0x00,
                 0x00,
-                /// @dev value is equal to keccak256("NonceIncremented(address,bytes32,uint256)")
+                /// @dev value is equal to
+                /// keccak256("NonceIncremented(address,bytes32,uint256)")
                 0x81950aaf2c3573be1f953223448244747f16268d5a0573dea6bd6fa249a4c86e,
                 sender,
                 id_,

@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
+// forgefmt: disable-start
+import { IRBK721 } from "./interfaces/IRBK721.sol";
+
+import { IAuthority, IBKTreasury, BK721, Roles } from "src/BK721.sol";
+
 import {
     ERC721RentableUpgradeable,
     IERC721RentableUpgradeable
 } from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721RentableUpgradeable.sol";
-
-import { IRBK721 } from "./interfaces/IRBK721.sol";
-
-import { IAuthority, IBKTreasury, BK721, Roles } from "src/token/BK721.sol";
+// forgefmt: disable-end
 
 contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
     function initialize(
@@ -41,7 +43,8 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         _verifySig(
             keccak256(
                 abi.encode(
-                    ///@dev value is equal to keccak256("Permit(address user,uint256 tokenId,uint256 expires,uint256
+                    ///@dev value is equal to keccak256("Permit(address
+                    /// user,uint256 tokenId,uint256 expires,uint256
                     /// deadline,uint256 nonce)")
                     0x791d178915e3bc91599d5bc6c1eab516b25cb66fc0b46b415e2018109bbaa078,
                     user_,
@@ -74,7 +77,8 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                /// @dev value is equal to
+                /// keccak256("UpdateUser(uint256,address,uint64)")
                 0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                 tokenId,
                 user_
@@ -82,7 +86,15 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         }
     }
 
-    function setUser(uint256 tokenId_, address user_, uint64 expires_) public override whenNotPaused {
+    function setUser(
+        uint256 tokenId_,
+        address user_,
+        uint64 expires_
+    )
+        public
+        override
+        whenNotPaused
+    {
         if (!_isApprovedOrOwner(_msgSender(), tokenId_)) {
             revert ERC721Rentable__OnlyOwnerOrApproved();
         }
@@ -107,7 +119,8 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                /// @dev value is equal to
+                /// keccak256("UpdateUser(uint256,address,uint64)")
                 0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                 tokenId_,
                 user_
@@ -115,7 +128,13 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         }
     }
 
-    function fixTokenIdTrackers(uint256 typeId_, uint256 value_) public onlyRole(Roles.OPERATOR_ROLE) {
+    function fixTokenIdTrackers(
+        uint256 typeId_,
+        uint256 value_
+    )
+        public
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         _setTypeIdTrackers(typeId_, value_);
     }
 
@@ -125,7 +144,8 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         override(BK721, ERC721RentableUpgradeable)
         returns (bool)
     {
-        return interfaceId_ == type(IRBK721).interfaceId || super.supportsInterface(interfaceId_);
+        return interfaceId_ == type(IRBK721).interfaceId
+            || super.supportsInterface(interfaceId_);
     }
 
     function _beforeTokenTransfer(

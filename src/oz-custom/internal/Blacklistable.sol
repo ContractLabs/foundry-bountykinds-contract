@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
+import { Context } from "../oz/utils/Context.sol";
 
-import {IBlacklistable} from "./interfaces/IBlacklistable.sol";
+import { IBlacklistable } from "./interfaces/IBlacklistable.sol";
 
-import {BitMaps} from "../oz/utils/structs/BitMaps.sol";
-import {Bytes32Address} from "../libraries/Bytes32Address.sol";
+import { BitMaps } from "../oz/utils/structs/BitMaps.sol";
+import { Bytes32Address } from "../libraries/Bytes32Address.sol";
 
 /**
  * @title Blacklistable
@@ -21,22 +21,28 @@ abstract contract Blacklistable is Context, IBlacklistable {
     BitMaps.BitMap private __blacklisted;
 
     /// @inheritdoc IBlacklistable
-    function isBlacklisted(
-        address account_
-    ) public view virtual returns (bool) {
+    function isBlacklisted(address account_)
+        public
+        view
+        virtual
+        returns (bool)
+    {
         return __blacklisted.get(account_.fillLast96Bits());
     }
 
-    function areBlacklisted(
-        address[] calldata accounts_
-    ) public view virtual returns (bool) {
+    function areBlacklisted(address[] calldata accounts_)
+        public
+        view
+        virtual
+        returns (bool)
+    {
         uint256 length = accounts_.length;
         address[] memory memAccounts_ = accounts_;
         uint256[] memory uintAccounts;
         assembly {
             uintAccounts := memAccounts_
         }
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             if (__blacklisted.get(uintAccounts[i])) return true;
             unchecked {
                 ++i;
@@ -49,7 +55,8 @@ abstract contract Blacklistable is Context, IBlacklistable {
     /**
      * @dev Internal function to set the status of an account.
      * @param account_ The address to change the status of.
-     * @param status_ The new status for the address. True for blacklisted, false for not blacklisted.
+     * @param status_ The new status for the address. True for blacklisted,
+     * false for not blacklisted.
      */
     function _setUserStatus(address account_, bool status_) internal virtual {
         __blacklisted.setTo(account_.fillLast96Bits(), status_);

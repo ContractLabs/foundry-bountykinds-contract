@@ -6,10 +6,12 @@ pragma solidity ^0.8.17;
 error SafeCast__Overflow();
 
 /**
- * @dev Wrappers over Solidity's uintXX/intXX casting operators with added overflow
+ * @dev Wrappers over Solidity's uintXX/intXX casting operators with added
+ * overflow
  * checks.
  *
- * Downcasting from uint256/int256 in Solidity does not revert on overflow. This can
+ * Downcasting from uint256/int256 in Solidity does not revert on overflow. This
+ * can
  * easily result in undesired exploitation or bugs, since developers usually
  * assume that overflows raise errors. `SafeCast` restores this intuition by
  * reverting the transaction when such an operation overflows.
@@ -17,7 +19,8 @@ error SafeCast__Overflow();
  * Using this library instead of the unchecked operations eliminates an entire
  * class of bugs, so it's recommended to use it always.
  *
- * Can be combined with {SafeMath} and {SignedSafeMath} to extend it to smaller types, by performing
+ * Can be combined with {SafeMath} and {SignedSafeMath} to extend it to smaller
+ * types, by performing
  * all math on `uint256` and `int256` and then downcasting.
  */
 library SafeCast {
@@ -414,7 +417,8 @@ library SafeCast {
      * _Available since v4.2._
      */
     function toUint96(uint256 value) internal pure returns (uint96) {
-        //require(value <= type(uint96).max, "SafeCast: value doesn't fit in 96 bits");
+        //require(value <= type(uint96).max, "SafeCast: value doesn't fit in 96
+        // bits");
         if (value > ~uint96(0)) revert SafeCast__Overflow();
         return uint96(value);
     }
@@ -433,8 +437,7 @@ library SafeCast {
      */
     function toUint88(uint256 value) internal pure returns (uint88) {
         require(
-            value <= type(uint88).max,
-            "SafeCast: value doesn't fit in 88 bits"
+            value <= type(uint88).max, "SafeCast: value doesn't fit in 88 bits"
         );
         return uint88(value);
     }
@@ -453,8 +456,7 @@ library SafeCast {
      */
     function toUint80(uint256 value) internal pure returns (uint80) {
         require(
-            value <= type(uint80).max,
-            "SafeCast: value doesn't fit in 80 bits"
+            value <= type(uint80).max, "SafeCast: value doesn't fit in 80 bits"
         );
         return uint80(value);
     }
@@ -473,8 +475,7 @@ library SafeCast {
      */
     function toUint72(uint256 value) internal pure returns (uint72) {
         require(
-            value <= type(uint72).max,
-            "SafeCast: value doesn't fit in 72 bits"
+            value <= type(uint72).max, "SafeCast: value doesn't fit in 72 bits"
         );
         return uint72(value);
     }
@@ -493,8 +494,7 @@ library SafeCast {
      */
     function toUint64(uint256 value) internal pure returns (uint64) {
         require(
-            value <= type(uint64).max,
-            "SafeCast: value doesn't fit in 64 bits"
+            value <= type(uint64).max, "SafeCast: value doesn't fit in 64 bits"
         );
         return uint64(value);
     }
@@ -513,8 +513,7 @@ library SafeCast {
      */
     function toUint56(uint256 value) internal pure returns (uint56) {
         require(
-            value <= type(uint56).max,
-            "SafeCast: value doesn't fit in 56 bits"
+            value <= type(uint56).max, "SafeCast: value doesn't fit in 56 bits"
         );
         return uint56(value);
     }
@@ -533,8 +532,7 @@ library SafeCast {
      */
     function toUint48(uint256 value) internal pure returns (uint48) {
         require(
-            value <= type(uint48).max,
-            "SafeCast: value doesn't fit in 48 bits"
+            value <= type(uint48).max, "SafeCast: value doesn't fit in 48 bits"
         );
         return uint48(value);
     }
@@ -553,8 +551,7 @@ library SafeCast {
      */
     function toUint40(uint256 value) internal pure returns (uint40) {
         require(
-            value <= type(uint40).max,
-            "SafeCast: value doesn't fit in 40 bits"
+            value <= type(uint40).max, "SafeCast: value doesn't fit in 40 bits"
         );
         return uint40(value);
     }
@@ -573,8 +570,7 @@ library SafeCast {
      */
     function toUint32(uint256 value) internal pure returns (uint32) {
         require(
-            value <= type(uint32).max,
-            "SafeCast: value doesn't fit in 32 bits"
+            value <= type(uint32).max, "SafeCast: value doesn't fit in 32 bits"
         );
         return uint32(value);
     }
@@ -593,8 +589,7 @@ library SafeCast {
      */
     function toUint24(uint256 value) internal pure returns (uint24) {
         require(
-            value <= type(uint24).max,
-            "SafeCast: value doesn't fit in 24 bits"
+            value <= type(uint24).max, "SafeCast: value doesn't fit in 24 bits"
         );
         return uint24(value);
     }
@@ -613,8 +608,7 @@ library SafeCast {
      */
     function toUint16(uint256 value) internal pure returns (uint16) {
         require(
-            value <= type(uint16).max,
-            "SafeCast: value doesn't fit in 16 bits"
+            value <= type(uint16).max, "SafeCast: value doesn't fit in 16 bits"
         );
         return uint16(value);
     }
@@ -633,8 +627,7 @@ library SafeCast {
      */
     function toUint8(uint256 value) internal pure returns (uint8) {
         require(
-            value <= type(uint8).max,
-            "SafeCast: value doesn't fit in 8 bits"
+            value <= type(uint8).max, "SafeCast: value doesn't fit in 8 bits"
         );
         return uint8(value);
     }
@@ -1314,7 +1307,8 @@ library SafeCast {
      * _Available since v3.0._
      */
     function toInt256(uint256 value) internal pure returns (int256) {
-        // Note: Unsafe cast below is okay because `type(int256).max` is guaranteed to be positive
+        // Note: Unsafe cast below is okay because `type(int256).max` is
+        // guaranteed to be positive
         require(
             value <= uint256(type(int256).max),
             "SafeCast: value doesn't fit in an int256"

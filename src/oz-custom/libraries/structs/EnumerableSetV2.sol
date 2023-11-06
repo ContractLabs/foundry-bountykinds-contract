@@ -34,7 +34,8 @@ pragma solidity ^0.8.17;
 //         delete set_.length;
 //     }
 
-//     function _remove(Set storage set_, uint256 value_) private returns (bool) {
+//     function _remove(Set storage set_, uint256 value_) private returns (bool)
+// {
 //         if (_contains(set_, value_)) {
 //             set_.indexes.unset(value_);
 //             unchecked {
@@ -63,7 +64,8 @@ pragma solidity ^0.8.17;
 //         return _values(set).length;
 //     }
 
-//     function _values(Set storage set) private view returns (uint256[] memory) {
+//     function _values(Set storage set) private view returns (uint256[] memory)
+// {
 //         return abi.decode(set.ptr.read(), (uint256[]));
 //     }
 

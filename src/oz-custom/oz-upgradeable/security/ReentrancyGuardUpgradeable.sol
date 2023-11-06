@@ -2,7 +2,8 @@
 // OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)
 
 pragma solidity ^0.8.0;
-import {Initializable} from "../proxy/utils/Initializable.sol";
+
+import { Initializable } from "../proxy/utils/Initializable.sol";
 
 error ReentrancyGuard__Locked();
 
@@ -20,7 +21,8 @@ error ReentrancyGuard__Locked();
  *
  * TIP: If you would like to learn more about reentrancy and alternative ways
  * to protect against it, check out our blog post
- * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
+ * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After
+ * Istanbul].
  */
 abstract contract ReentrancyGuardUpgradeable is Initializable {
     // Booleans are more expensive than uint256 or any type that takes up a full
@@ -68,7 +70,8 @@ abstract contract ReentrancyGuardUpgradeable is Initializable {
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

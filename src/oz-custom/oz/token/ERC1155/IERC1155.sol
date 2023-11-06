@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {IERC165} from "../../utils/introspection/IERC165.sol";
+import { IERC165 } from "../../utils/introspection/IERC165.sol";
 
 interface IERC1155 is IERC165 {
     error ERC1155__Unauthorized();
@@ -13,7 +13,8 @@ interface IERC1155 is IERC165 {
     //////////////////////////////////////////////////////////////*/
 
     /**
-     * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+     * @dev Emitted when `value` tokens of token type `id` are transferred from
+     * `from` to `to` by `operator`.
      */
     event TransferSingle(
         address indexed operator,
@@ -24,7 +25,8 @@ interface IERC1155 is IERC165 {
     );
 
     /**
-     * @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
+     * @dev Equivalent to multiple {TransferSingle} events, where `operator`,
+     * `from` and `to` are the same for all
      * transfers.
      */
     event TransferBatch(
@@ -36,20 +38,21 @@ interface IERC1155 is IERC165 {
     );
 
     /**
-     * @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to
+     * @dev Emitted when `account` grants or revokes permission to `operator` to
+     * transfer their tokens, according to
      * `approved`.
      */
     event ApprovalForAll(
-        address indexed owner,
-        address indexed operator,
-        bool approved
+        address indexed owner, address indexed operator, bool approved
     );
 
     /**
-     * @dev Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
+     * @dev Emitted when the URI for token type `id` changes to `value`, if it
+     * is a non-programmatic URI.
      *
      * If an {URI} event was emitted for `id`, the standard
-     * https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value
+     * https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees]
+     * that `value` will equal the value
      * returned by {IERC1155MetadataURI-uri}.
      */
     event URI(string value, uint256 indexed id);
@@ -70,10 +73,14 @@ interface IERC1155 is IERC165 {
     function balanceOf(
         address account,
         uint256 id
-    ) external view returns (uint256);
+    )
+        external
+        view
+        returns (uint256);
 
     /**
-     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}.
+     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of
+     * {balanceOf}.
      *
      * Requirements:
      *
@@ -82,10 +89,14 @@ interface IERC1155 is IERC165 {
     function balanceOfBatch(
         address[] calldata accounts,
         uint256[] calldata ids
-    ) external view returns (uint256[] memory);
+    )
+        external
+        view
+        returns (uint256[] memory);
 
     /**
-     * @dev Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
+     * @dev Grants or revokes permission to `operator` to transfer the caller's
+     * tokens, according to `approved`,
      *
      * Emits an {ApprovalForAll} event.
      *
@@ -96,14 +107,18 @@ interface IERC1155 is IERC165 {
     function setApprovalForAll(address operator, bool approved) external;
 
     /**
-     * @dev Returns true if `operator` is approved to transfer ``account``'s tokens.
+     * @dev Returns true if `operator` is approved to transfer ``account``'s
+     * tokens.
      *
      * See {setApprovalForAll}.
      */
     function isApprovedForAll(
         address account,
         address operator
-    ) external view returns (bool);
+    )
+        external
+        view
+        returns (bool);
 
     /**
      * @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
@@ -113,9 +128,11 @@ interface IERC1155 is IERC165 {
      * Requirements:
      *
      * - `to` cannot be the zero address.
-     * - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}.
+     * - If the caller is not `from`, it must have been approved to spend
+     * ``from``'s tokens via {setApprovalForAll}.
      * - `from` must have a balance of tokens of type `id` of at least `amount`.
-     * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
+     * - If `to` refers to a smart contract, it must implement
+     * {IERC1155Receiver-onERC1155Received} and return the
      * acceptance magic value.
      */
     function safeTransferFrom(
@@ -124,17 +141,20 @@ interface IERC1155 is IERC165 {
         uint256 id,
         uint256 amount,
         bytes calldata data
-    ) external;
+    )
+        external;
 
     /**
-     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}.
+     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of
+     * {safeTransferFrom}.
      *
      * Emits a {TransferBatch} event.
      *
      * Requirements:
      *
      * - `ids` and `amounts` must have the same length.
-     * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
+     * - If `to` refers to a smart contract, it must implement
+     * {IERC1155Receiver-onERC1155BatchReceived} and return the
      * acceptance magic value.
      */
     function safeBatchTransferFrom(
@@ -143,5 +163,6 @@ interface IERC1155 is IERC165 {
         uint256[] calldata ids,
         uint256[] calldata amounts,
         bytes calldata data
-    ) external;
+    )
+        external;
 }

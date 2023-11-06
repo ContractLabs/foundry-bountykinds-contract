@@ -6,5 +6,8 @@ interface IMultichainDeployer {
         uint256 amount_,
         bytes32 salt_,
         bytes calldata bytecode_
-    ) external payable returns (address);
+    )
+        external
+        payable
+        returns (address);
 }

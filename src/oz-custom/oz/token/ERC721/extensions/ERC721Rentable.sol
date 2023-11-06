@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {IERC165, ERC721} from "../ERC721.sol";
+import { IERC165, ERC721 } from "../ERC721.sol";
 
-import {IERC721Rentable} from "./IERC721Rentable.sol";
+import { IERC721Rentable } from "./IERC721Rentable.sol";
 
 abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
     mapping(uint256 => UserInfo) internal _users;
@@ -12,9 +12,13 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
         uint256 tokenId,
         address user,
         uint64 expires
-    ) external virtual {
-        if (!_isApprovedOrOwner(_msgSender(), tokenId))
+    )
+        external
+        virtual
+    {
+        if (!_isApprovedOrOwner(_msgSender(), tokenId)) {
             revert ERC721Rentable__OnlyOwnerOrApproved();
+        }
 
         assembly {
             mstore(0x00, tokenId)
@@ -26,7 +30,8 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
             log3(
                 0x00,
                 0x20,
-                /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                /// @dev value is equal to
+                /// keccak256("UpdateUser(uint256,address,uint64)")
                 0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                 tokenId,
                 user
@@ -34,24 +39,30 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
         }
     }
 
-    function userOf(
-        uint256 tokenId
-    ) external view virtual override returns (address user) {
+    function userOf(uint256 tokenId)
+        external
+        view
+        virtual
+        override
+        returns (address user)
+    {
         assembly {
             mstore(0x00, tokenId)
             mstore(0x20, _users.slot)
             let rentInfo := sload(keccak256(0x00, 0x40))
 
             // leave dirty bytes uncleaned
-            if gt(shr(160, rentInfo), timestamp()) {
-                user := rentInfo
-            }
+            if gt(shr(160, rentInfo), timestamp()) { user := rentInfo }
         }
     }
 
-    function userExpires(
-        uint256 tokenId
-    ) public view virtual override returns (uint256 expires) {
+    function userExpires(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (uint256 expires)
+    {
         assembly {
             mstore(0x00, tokenId)
             mstore(0x20, _users.slot)
@@ -59,12 +70,15 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
         }
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(IERC165, ERC721) returns (bool) {
-        return
-            interfaceId == type(IERC721Rentable).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(IERC165, ERC721)
+        returns (bool)
+    {
+        return interfaceId == type(IERC721Rentable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     function _beforeTokenTransfer(
@@ -72,7 +86,11 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
 
         assembly {
@@ -85,8 +103,7 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
                 if iszero(
                     iszero(
                         and(
-                            rentInfo,
-                            0xffffffffffffffffffffffffffffffffffffffff
+                            rentInfo, 0xffffffffffffffffffffffffffffffffffffffff
                         )
                     )
                 ) {
@@ -95,7 +112,8 @@ abstract contract ERC721Rentable is IERC721Rentable, ERC721 {
                     log3(
                         0x00,
                         0x20,
-                        /// @dev value is equal to keccak256("UpdateUser(uint256,address,uint64)")
+                        /// @dev value is equal to
+                        /// keccak256("UpdateUser(uint256,address,uint64)")
                         0x4e06b4e7000e659094299b3533b47b6aa8ad048e95e872d23d1f4ee55af89cfe,
                         0,
                         0

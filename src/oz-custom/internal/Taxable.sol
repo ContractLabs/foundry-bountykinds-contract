@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
+import { Context } from "../oz/utils/Context.sol";
 
-import {ITaxable} from "./interfaces/ITaxable.sol";
+import { ITaxable } from "./interfaces/ITaxable.sol";
 
-import {FixedPointMathLib} from "../libraries/FixedPointMathLib.sol";
+import { FixedPointMathLib } from "../libraries/FixedPointMathLib.sol";
 
 abstract contract Taxable is Context, ITaxable {
     using FixedPointMathLib for uint256;
@@ -44,11 +44,20 @@ abstract contract Taxable is Context, ITaxable {
     function tax(
         address token_,
         uint256 amount_
-    ) public view virtual returns (uint256) {
+    )
+        public
+        view
+        virtual
+        returns (uint256)
+    {
         return amount_.mulDivUp(taxFraction(token_), percentageFraction());
     }
 
-    function taxFraction(address token_) public pure virtual returns (uint256);
+    function taxFraction(address token_)
+        public
+        pure
+        virtual
+        returns (uint256);
 
     function percentageFraction() public pure virtual returns (uint256);
 

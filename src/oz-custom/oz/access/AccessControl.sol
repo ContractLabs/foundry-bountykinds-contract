@@ -3,18 +3,20 @@
 
 pragma solidity ^0.8.17;
 
-import {Context} from "../utils/Context.sol";
-import {ERC165} from "../utils/introspection/ERC165.sol";
+import { Context } from "../utils/Context.sol";
+import { ERC165 } from "../utils/introspection/ERC165.sol";
 
-import {IAccessControl} from "./IAccessControl.sol";
+import { IAccessControl } from "./IAccessControl.sol";
 
-import {BitMap256} from "../../libraries/structs/BitMap256.sol";
-import {Bytes32Address} from "../../libraries/Bytes32Address.sol";
+import { BitMap256 } from "../../libraries/structs/BitMap256.sol";
+import { Bytes32Address } from "../../libraries/Bytes32Address.sol";
 
 /**
  * @dev Contract module that allows children to implement role-based access
- * control mechanisms. This is a lightweight version that doesn't allow enumerating role
- * members except through off-chain means by accessing the contract event logs. Some
+ * control mechanisms. This is a lightweight version that doesn't allow
+ * enumerating role
+ * members except through off-chain means by accessing the contract event logs.
+ * Some
  * applications may benefit from on-chain enumerability, for those cases see
  * {AccessControlEnumerable}.
  *
@@ -64,9 +66,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * @dev Modifier that checks that an account has a specific role. Reverts
      * with a standardized message including the required role.
      *
-     * The format of the revert reason is given by the following regular expression:
+     * The format of the revert reason is given by the following regular
+     * expression:
      *
-     *  /^AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})$/
+     *  /^AccessControl: account (0x[0-9a-f]{40}) is missing role
+     * (0x[0-9a-f]{64})$/
      *
      * _Available since v4.1._
      */
@@ -78,12 +82,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override returns (bool) {
-        return
-            interfaceId == type(IAccessControl).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return interfaceId == type(IAccessControl).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     /**
@@ -92,9 +99,15 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     function hasRole(
         bytes32 role,
         address account
-    ) public view virtual override returns (bool) {
+    )
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return
-            _roles[account].get({value_: uint256(role), shouldHash_: false});
+            _roles[account].get({ value_: uint256(role), shouldHash_: false });
     }
 
     /**
@@ -112,13 +125,16 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     /**
      * @dev Revert with a standard message if `account` is missing `role`.
      *
-     * The format of the revert reason is given by the following regular expression:
+     * The format of the revert reason is given by the following regular
+     * expression:
      *
-     *  /^AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})$/
+     *  /^AccessControl: account (0x[0-9a-f]{40}) is missing role
+     * (0x[0-9a-f]{64})$/
      */
     function _checkRole(bytes32 role, address account) internal view virtual {
-        if (!hasRole(role, account))
+        if (!hasRole(role, account)) {
             revert AccessControl__RoleMissing(role, account);
+        }
     }
 
     /**
@@ -127,9 +143,13 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      *
      * To change a role's admin, use {_setRoleAdmin}.
      */
-    function getRoleAdmin(
-        bytes32 role
-    ) public view virtual override returns (bytes32 admin) {
+    function getRoleAdmin(bytes32 role)
+        public
+        view
+        virtual
+        override
+        returns (bytes32 admin)
+    {
         assembly {
             mstore(0x00, role)
             mstore(0x20, _adminRoles.slot)
@@ -152,7 +172,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     function grantRole(
         bytes32 role,
         address account
-    ) public virtual onlyRole(getRoleAdmin(role)) {
+    )
+        public
+        virtual
+        onlyRole(getRoleAdmin(role))
+    {
         _grantRole(role, account);
     }
 
@@ -170,7 +194,12 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     function revokeRole(
         bytes32 role,
         address account
-    ) public virtual override onlyRole(getRoleAdmin(role)) {
+    )
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
         _revokeRole(role, account);
     }
 
@@ -193,7 +222,11 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     function renounceRole(
         bytes32 role,
         address account
-    ) public virtual override {
+    )
+        public
+        virtual
+        override
+    {
         if (account != _msgSender()) revert AccessControl__Unauthorized();
         _revokeRole(role, account);
     }
@@ -212,7 +245,8 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      * This function should only be called from the constructor when setting
      * up the initial roles for the system.
      *
-     * Using this function in any other way is effectively circumventing the admin
+     * Using this function in any other way is effectively circumventing the
+     * admin
      * system imposed by {AccessControl}.
      * ====
      *
@@ -233,7 +267,8 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
             log4(
                 0,
                 0,
-                /// @dev value is equal to keccak256("RoleAdminChanged(bytes32,bytes32,bytes32)")
+                /// @dev value is equal to
+                /// keccak256("RoleAdminChanged(bytes32,bytes32,bytes32)")
                 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff,
                 role,
                 roleAdminOf,
@@ -255,7 +290,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      */
     function _grantRole(bytes32 role, address account) internal virtual {
         if (!hasRole(role, account)) {
-            _roles[account].set({value_: uint256(role), shouldHash_: false});
+            _roles[account].set({ value_: uint256(role), shouldHash_: false });
             emit RoleGranted(role, account, _msgSender());
         }
     }
@@ -269,7 +304,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
      */
     function _revokeRole(bytes32 role, address account) internal virtual {
         if (hasRole(role, account)) {
-            _roles[account].unset({value_: uint256(role), shouldHash_: false});
+            _roles[account].unset({ value_: uint256(role), shouldHash_: false });
             emit RoleRevoked(role, account, _msgSender());
         }
     }

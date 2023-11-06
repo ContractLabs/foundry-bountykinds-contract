@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (proxy/ERC1967/ERC1967Upgrade.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (proxy/ERC1967/ERC1967Upgrade.sol)
 
 pragma solidity ^0.8.2;
 
-import {Initializable} from "../utils/Initializable.sol";
+import { Initializable } from "../utils/Initializable.sol";
 
-import {IBeaconUpgradeable} from "../beacon/IBeaconUpgradeable.sol";
-import {
-    IERC1822ProxiableUpgradeable
-} from "../../interfaces/draft-IERC1822Upgradeable.sol";
+import { IBeaconUpgradeable } from "../beacon/IBeaconUpgradeable.sol";
+import { IERC1822ProxiableUpgradeable } from
+    "../../interfaces/draft-IERC1822Upgradeable.sol";
 
-import {StorageSlotUpgradeable} from "../../utils/StorageSlotUpgradeable.sol";
+import { StorageSlotUpgradeable } from "../../utils/StorageSlotUpgradeable.sol";
 
 error ERC1967UpgradeUpgradeable__NonZeroAddress();
 error ERC1967UpgradeUpgradeable__ExecutionFailed();
@@ -21,7 +21,8 @@ error ERC1967UpgradeUpgradeable__DelegateCallToNonContract();
 error ERC1967UpgradeUpgradeable__ImplementationIsNotContract();
 
 /**
- * @dev This abstract contract provides getters and event emitting update functions for
+ * @dev This abstract contract provides getters and event emitting update
+ * functions for
  * https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots.
  *
  * _Available since v4.1._
@@ -35,7 +36,8 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
 
     /**
      * @dev Storage slot with the address of the current implementation.
-     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1, and is
+     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted
+     * by 1, and is
      * validated in the constructor.
      */
     bytes32 internal constant _IMPLEMENTATION_SLOT =
@@ -50,19 +52,18 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
      * @dev Returns the current implementation address.
      */
     function _getImplementation() internal view returns (address) {
-        return
-            StorageSlotUpgradeable.getAddressSlot(_IMPLEMENTATION_SLOT).value;
+        return StorageSlotUpgradeable.getAddressSlot(_IMPLEMENTATION_SLOT).value;
     }
 
     /**
      * @dev Stores a new address in the EIP1967 implementation slot.
      */
     function _setImplementation(address newImplementation) private {
-        if (!_isContract(newImplementation))
+        if (!_isContract(newImplementation)) {
             revert ERC1967UpgradeUpgradeable__ImplementationIsNotContract();
-        StorageSlotUpgradeable
-            .getAddressSlot(_IMPLEMENTATION_SLOT)
-            .value = newImplementation;
+        }
+        StorageSlotUpgradeable.getAddressSlot(_IMPLEMENTATION_SLOT).value =
+            newImplementation;
     }
 
     /**
@@ -84,7 +85,9 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
         address newImplementation,
         bytes memory data,
         bool forceCall
-    ) internal {
+    )
+        internal
+    {
         _upgradeTo(newImplementation);
         if (forceCall || data.length > 0) {
             _functionDelegateCall(newImplementation, data);
@@ -92,7 +95,8 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
     }
 
     /**
-     * @dev Perform implementation upgrade with security checks for UUPS proxies, and additional setup call.
+     * @dev Perform implementation upgrade with security checks for UUPS
+     * proxies, and additional setup call.
      *
      * Emits an {Upgraded} event.
      */
@@ -100,18 +104,23 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
         address newImplementation,
         bytes memory data,
         bool forceCall
-    ) internal {
-        // Upgrades from old implementations will perform a rollback test. This test requires the new
-        // implementation to upgrade back to the old, non-ERC1822 compliant, implementation. Removing
-        // this special case will break upgrade paths from old UUPS implementation to new ones.
+    )
+        internal
+    {
+        // Upgrades from old implementations will perform a rollback test. This
+        // test requires the new
+        // implementation to upgrade back to the old, non-ERC1822 compliant,
+        // implementation. Removing
+        // this special case will break upgrade paths from old UUPS
+        // implementation to new ones.
         if (StorageSlotUpgradeable.getBooleanSlot(__ROLLBACK_SLOT).value) {
             _setImplementation(newImplementation);
         } else {
-            try
-                IERC1822ProxiableUpgradeable(newImplementation).proxiableUUID()
+            try IERC1822ProxiableUpgradeable(newImplementation).proxiableUUID()
             returns (bytes32 slot) {
-                if (slot != _IMPLEMENTATION_SLOT)
+                if (slot != _IMPLEMENTATION_SLOT) {
                     revert ERC1967UpgradeUpgradeable__UnsupportedProxiableUUID();
+                }
             } catch {
                 revert ERC1967UpgradeUpgradeable__ImplementationIsNotUUPS();
             }
@@ -122,7 +131,8 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
 
     /**
      * @dev Storage slot with the admin of the contract.
-     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1, and is
+     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1, and
+     * is
      * validated in the constructor.
      */
     bytes32 internal constant _ADMIN_SLOT =
@@ -144,8 +154,9 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
      * @dev Stores a new address in the EIP1967 admin slot.
      */
     function _setAdmin(address newAdmin) private {
-        if (newAdmin == address(0))
+        if (newAdmin == address(0)) {
             revert ERC1967UpgradeUpgradeable__NonZeroAddress();
+        }
         StorageSlotUpgradeable.getAddressSlot(_ADMIN_SLOT).value = newAdmin;
     }
 
@@ -160,8 +171,10 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
     }
 
     /**
-     * @dev The storage slot of the UpgradeableBeacon contract which defines the implementation for this proxy.
-     * This is bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)) and is validated in the constructor.
+     * @dev The storage slot of the UpgradeableBeacon contract which defines the
+     * implementation for this proxy.
+     * This is bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)) and is
+     * validated in the constructor.
      */
     bytes32 internal constant _BEACON_SLOT =
         0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
@@ -182,16 +195,20 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
      * @dev Stores a new beacon in the EIP1967 beacon slot.
      */
     function _setBeacon(address newBeacon) private {
-        if (!_isContract(newBeacon))
+        if (!_isContract(newBeacon)) {
             revert ERC1967UpgradeUpgradeable__TargetIsNotContract();
-        if (!_isContract(IBeaconUpgradeable(newBeacon).implementation()))
+        }
+        if (!_isContract(IBeaconUpgradeable(newBeacon).implementation())) {
             revert ERC1967UpgradeUpgradeable__ImplementationIsNotContract();
+        }
         StorageSlotUpgradeable.getAddressSlot(_BEACON_SLOT).value = newBeacon;
     }
 
     /**
-     * @dev Perform beacon upgrade with additional setup call. Note: This upgrades the address of the beacon, it does
-     * not upgrade the implementation contained in the beacon (see {UpgradeableBeacon-_setImplementation} for that).
+     * @dev Perform beacon upgrade with additional setup call. Note: This
+     * upgrades the address of the beacon, it does
+     * not upgrade the implementation contained in the beacon (see
+     * {UpgradeableBeacon-_setImplementation} for that).
      *
      * Emits a {BeaconUpgraded} event.
      */
@@ -199,19 +216,21 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
         address newBeacon,
         bytes calldata data,
         bool forceCall
-    ) internal {
+    )
+        internal
+    {
         _setBeacon(newBeacon);
         emit BeaconUpgraded(newBeacon);
         if (forceCall || data.length > 0) {
             _functionDelegateCall(
-                IBeaconUpgradeable(newBeacon).implementation(),
-                data
+                IBeaconUpgradeable(newBeacon).implementation(), data
             );
         }
     }
 
     /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
+     * @dev Same as
+     * {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
      * but performing a delegate call.
      *
      * _Available since v3.4._
@@ -219,9 +238,13 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
     function _functionDelegateCall(
         address target,
         bytes memory data
-    ) private returns (bytes memory) {
-        if (!_isContract(target))
+    )
+        private
+        returns (bytes memory)
+    {
+        if (!_isContract(target)) {
             revert ERC1967UpgradeUpgradeable__DelegateCallToNonContract();
+        }
 
         // solhint-disable-next-line avoid-low-level-calls
         (bool success, bytes memory returndata) = target.delegatecall(data);
@@ -235,22 +258,31 @@ abstract contract ERC1967UpgradeUpgradeable is Initializable {
     function _verifyCallResult(
         bool success,
         bytes memory returndata
-    ) internal pure returns (bytes memory) {
-        if (success) return returndata;
-        else {
+    )
+        internal
+        pure
+        returns (bytes memory)
+    {
+        if (success) {
+            return returndata;
+        } else {
             // Look for revert reason and bubble it up if present
             if (returndata.length != 0) {
-                // The easiest way to bubble the revert reason is using memory via assembly
+                // The easiest way to bubble the revert reason is using memory
+                // via assembly
                 /// @solidity memory-safe-assembly
                 assembly {
                     revert(add(32, returndata), mload(returndata))
                 }
-            } else revert ERC1967UpgradeUpgradeable__ExecutionFailed();
+            } else {
+                revert ERC1967UpgradeUpgradeable__ExecutionFailed();
+            }
         }
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

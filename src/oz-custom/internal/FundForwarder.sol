@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../oz/utils/Context.sol";
+import { Context } from "../oz/utils/Context.sol";
 
-import {Transferable} from "./Transferable.sol";
-import {ProxyChecker} from "./ProxyChecker.sol";
+import { Transferable } from "./Transferable.sol";
+import { ProxyChecker } from "./ProxyChecker.sol";
 
-import {IFundForwarder} from "./interfaces/IFundForwarder.sol";
+import { IFundForwarder } from "./interfaces/IFundForwarder.sol";
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
 
 /**
  * @title FundForwarder
@@ -24,6 +24,7 @@ abstract contract FundForwarder is
     /**
      * @dev Address to forward funds to
      */
+
     bytes32 private __vault;
 
     /**
@@ -50,8 +51,8 @@ abstract contract FundForwarder is
 
         bool ok;
         bytes memory result;
-        for (uint256 i; i < length; ) {
-            (ok, result) = calldata_[i].token.call{value: calldata_[i].value}(
+        for (uint256 i; i < length;) {
+            (ok, result) = calldata_[i].token.call{ value: calldata_[i].value }(
                 abi.encodePacked(calldata_[i].fnSelector, calldata_[i].params)
             );
 
@@ -117,7 +118,8 @@ abstract contract FundForwarder is
             log4(
                 0x00,
                 0x00,
-                /// @dev value is equal to keccak256("VaultUpdated(address,address,address)")
+                /// @dev value is equal to
+                /// keccak256("VaultUpdated(address,address,address)")
                 0x2afec66505e0ceed692012e3833f6609d4933ded34732135bc05f28423744065,
                 caller(),
                 sload(__vault.slot),
@@ -135,15 +137,19 @@ abstract contract FundForwarder is
         address token_,
         uint256 value_,
         bytes memory params_
-    ) internal virtual;
+    )
+        internal
+        virtual;
 
     /**
-     *@dev Asserts that the given address is not the zero address
-     *@param addr_ The address to check
-     *@custom:throws FundForwarder__InvalidArgument if the address is the zero address
+     * @dev Asserts that the given address is not the zero address
+     * @param addr_ The address to check
+     * @custom:throws FundForwarder__InvalidArgument if the address is the zero
+     * address
      */
     function _checkValidAddress(address addr_) internal view virtual {
-        if (addr_ == address(0) || addr_ == address(this))
+        if (addr_ == address(0) || addr_ == address(this)) {
             revert FundForwarder__InvalidArgument();
+        }
     }
 }

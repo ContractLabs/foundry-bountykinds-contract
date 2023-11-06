@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { IERC721PermitUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+// forgefmt: disable-start
+import { 
+    IERC721PermitUpgradeable 
+} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+// forgefmt: disable-end
 
 interface IMarketplace {
     error Marketplace__Expired();
@@ -27,9 +30,13 @@ interface IMarketplace {
         uint256 deadline;
     }
 
-    event ProtocolFeeUpdated(address indexed operator, uint256 indexed feeFraction);
+    event ProtocolFeeUpdated(
+        address indexed operator, uint256 indexed feeFraction
+    );
 
-    event Redeemed(address indexed buyer, address indexed seller, Seller sellerItem);
+    event Redeemed(
+        address indexed buyer, address indexed seller, Seller sellerItem
+    );
 
     event TokensWhitelisted(address indexed operator, address[] tokens);
 

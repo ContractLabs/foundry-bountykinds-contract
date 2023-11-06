@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/extensions/ERC20Burnable.sol)
+// OpenZeppelin Contracts (last updated v4.5.0)
+// (token/ERC20/extensions/ERC20Burnable.sol)
 
 pragma solidity ^0.8.17;
 
-import {IERC20Upgradeable, ERC20Upgradeable} from "../ERC20Upgradeable.sol";
+import { IERC20Upgradeable, ERC20Upgradeable } from "../ERC20Upgradeable.sol";
 
 interface IERC721BurnableUpgradeable is IERC20Upgradeable {
     function burn(uint256 amount) external;

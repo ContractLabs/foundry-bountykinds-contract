@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import {ERC721Upgradeable} from "../ERC721Upgradeable.sol";
-import {PausableUpgradeable} from "../../../security/PausableUpgradeable.sol";
+import { ERC721Upgradeable } from "../ERC721Upgradeable.sol";
+import { PausableUpgradeable } from "../../../security/PausableUpgradeable.sol";
 
 /**
  * @dev ERC721 token with pausable token transfers, minting and burning.
@@ -33,12 +33,18 @@ abstract contract ERC721PausableUpgradeable is
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal virtual override whenNotPaused {
+    )
+        internal
+        virtual
+        override
+        whenNotPaused
+    {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

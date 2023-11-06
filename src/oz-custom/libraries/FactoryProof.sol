@@ -2,18 +2,24 @@
 pragma solidity ^0.8.17;
 
 library FactoryProofs {
-    // Validate that `deployed` was deployed by `deployer` using regular create opcode
+    // Validate that `deployed` was deployed by `deployer` using regular create
+    // opcode
     // given the `deployNonce` it was deployed with.
     function verifyDeployedBy(
         address deployed,
         address deployer,
         uint32 deployNonce
-    ) external pure returns (bool) {
+    )
+        external
+        pure
+        returns (bool)
+    {
         // The address a contract will be deployed at with the create opcode is
         // simply the hash of the RLP encoded deployer address + deployer nonce.
         // For EOA deployers, the deploy nonce is the account's nonce
         // (number of txs it has executed) when it deployed the contract.
-        // For contract deployers, the deploy nonce is 1 + the number of other contracts
+        // For contract deployers, the deploy nonce is 1 + the number of other
+        // contracts
         // that contract has deployed (using regular create opcode).
         address expected;
         assembly {
@@ -68,10 +74,11 @@ library FactoryProofs {
             }
             mstore8(0x00, add(0xD5, rlpNonceLength))
             mstore8(0x01, 0x94)
-            expected := and(
-                keccak256(0x00, add(0x16, rlpNonceLength)),
-                0xffffffffffffffffffffffffffffffffffffffff
-            )
+            expected :=
+                and(
+                    keccak256(0x00, add(0x16, rlpNonceLength)),
+                    0xffffffffffffffffffffffffffffffffffffffff
+                )
         }
         return deployed == expected;
     }
@@ -84,19 +91,21 @@ library FactoryProofs {
         address deployer,
         bytes32 initCodeHash,
         bytes32 deploySalt
-    ) external pure returns (bool) {
+    )
+        external
+        pure
+        returns (bool)
+    {
         // The address a contract will be deployed at with the create2 opcode is
         // the hash of:
-        // '\xff' + deployer address + salt + keccak256(type(DEPLOYED_CONTRACT).creationCode)
+        // '\xff' + deployer address + salt +
+        // keccak256(type(DEPLOYED_CONTRACT).creationCode)
         address expected = address(
             uint160(
                 uint256(
                     keccak256(
                         abi.encodePacked(
-                            hex"ff",
-                            deployer,
-                            deploySalt,
-                            initCodeHash
+                            hex"ff", deployer, deploySalt, initCodeHash
                         )
                     )
                 )

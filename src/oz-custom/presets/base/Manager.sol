@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Context} from "../../oz/utils/Context.sol";
+import { Context } from "../../oz/utils/Context.sol";
 
-import {ProxyChecker} from "../../internal/ProxyChecker.sol";
+import { ProxyChecker } from "../../internal/ProxyChecker.sol";
 
-import {IManager, IAuthority} from "./interfaces/IManager.sol";
-import {IPausable} from "../../oz/security/Pausable.sol";
-import {IAccessControl} from "../../oz/access/IAccessControl.sol";
-import {IBlacklistable} from "../../internal/interfaces/IBlacklistable.sol";
+import { IManager, IAuthority } from "./interfaces/IManager.sol";
+import { IPausable } from "../../oz/security/Pausable.sol";
+import { IAccessControl } from "../../oz/access/IAccessControl.sol";
+import { IBlacklistable } from "../../internal/interfaces/IBlacklistable.sol";
 
-import {Roles} from "../../libraries/Roles.sol";
-import {ErrorHandler} from "../../libraries/ErrorHandler.sol";
+import { Roles } from "../../libraries/Roles.sol";
+import { ErrorHandler } from "../../libraries/ErrorHandler.sol";
 
-import {ERC165Checker} from "../../oz/utils/introspection/ERC165Checker.sol";
+import { ERC165Checker } from "../../oz/utils/introspection/ERC165Checker.sol";
 
 abstract contract Manager is Context, IManager, ProxyChecker {
     using ErrorHandler for bool;
@@ -62,9 +62,10 @@ abstract contract Manager is Context, IManager, ProxyChecker {
     }
 
     /// @inheritdoc IManager
-    function updateAuthority(
-        IAuthority authority_
-    ) external onlyRole(Roles.OPERATOR_ROLE) {
+    function updateAuthority(IAuthority authority_)
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         __checkAuthority(address(authority_));
 
         IAuthority old = authority();
@@ -87,7 +88,8 @@ abstract contract Manager is Context, IManager, ProxyChecker {
 
     /**
      * @notice Returns the address of the authority contract, for internal use.
-     * @dev This function is for internal use only and should not be called by external contracts.
+     * @dev This function is for internal use only and should not be called by
+     * external contracts.
      * @return authority_ is the address of the authority contract.
      */
     function _authority() internal view returns (address authority_) {
@@ -98,9 +100,11 @@ abstract contract Manager is Context, IManager, ProxyChecker {
     }
 
     /**
-     * @notice Checks if the given account is blacklisted by the authority contract.
+     * @notice Checks if the given account is blacklisted by the authority
+     * contract.
      * @param account_ The address to check for blacklisting.
-     * @dev This function should be called before allowing the given account to perform certain actions.
+     * @dev This function should be called before allowing the given account to
+     * perform certain actions.
      * @custom:throws Manager__Blacklisted if the given account is blacklisted.
      */
     function _checkBlacklist(address account_) internal view {
@@ -110,8 +114,9 @@ abstract contract Manager is Context, IManager, ProxyChecker {
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (abi.decode(returnOrRevertData, (bool)))
+        if (abi.decode(returnOrRevertData, (bool))) {
             revert Manager__Blacklisted();
+        }
     }
 
     function _checkBlacklistMulti(address[] memory accounts_) internal view {
@@ -121,16 +126,19 @@ abstract contract Manager is Context, IManager, ProxyChecker {
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (abi.decode(returnOrRevertData, (bool)))
+        if (abi.decode(returnOrRevertData, (bool))) {
             revert Manager__Blacklisted();
+        }
     }
 
     /**
      * @notice Checks if the given account has the given role.
      * @param role_ The role to check for.
      * @param account_ The address to check for the role.
-     * @dev This function should be called before allowing the given account to perform certain actions.
-     * @custom:throws Manager__Unauthorized if the given account does not have the given role.
+     * @dev This function should be called before allowing the given account to
+     * perform certain actions.
+     * @custom:throws Manager__Unauthorized if the given account does not have
+     * the given role.
      */
     function _checkRole(bytes32 role_, address account_) internal view {
         if (!_hasRole(role_, account_)) revert Manager__Unauthorized();
@@ -144,20 +152,19 @@ abstract contract Manager is Context, IManager, ProxyChecker {
     }
 
     function _requirePaused() internal view {
-        (bool ok, bytes memory returnOrRevertData) = _authority().staticcall(
-            abi.encodeCall(IPausable.paused, ())
-        );
+        (bool ok, bytes memory returnOrRevertData) =
+            _authority().staticcall(abi.encodeCall(IPausable.paused, ()));
 
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
-        if (!abi.decode(returnOrRevertData, (bool)))
+        if (!abi.decode(returnOrRevertData, (bool))) {
             revert Manager__NotPaused();
+        }
     }
 
     function _requireNotPaused() internal view {
-        (bool ok, bytes memory returnOrRevertData) = _authority().staticcall(
-            abi.encodeCall(IPausable.paused, ())
-        );
+        (bool ok, bytes memory returnOrRevertData) =
+            _authority().staticcall(abi.encodeCall(IPausable.paused, ()));
         ok.handleRevertIfNotSuccess(returnOrRevertData);
 
         if (abi.decode(returnOrRevertData, (bool))) revert Manager__Paused();
@@ -166,7 +173,11 @@ abstract contract Manager is Context, IManager, ProxyChecker {
     function _hasRole(
         bytes32 role_,
         address account_
-    ) internal view returns (bool) {
+    )
+        internal
+        view
+        returns (bool)
+    {
         (bool ok, bytes memory returnOrRevertData) = _authority().staticcall(
             abi.encodeCall(IAccessControl.hasRole, (role_, account_))
         );
@@ -178,9 +189,8 @@ abstract contract Manager is Context, IManager, ProxyChecker {
 
     function __checkAuthority(address authority_) private view {
         if (
-            authority_ == address(0) ||
-            !_isProxy(authority_) ||
-            !authority_.supportsInterface(type(IAuthority).interfaceId)
+            authority_ == address(0) || !_isProxy(authority_)
+                || !authority_.supportsInterface(type(IAuthority).interfaceId)
         ) revert Manager__InvalidArgument();
     }
 }

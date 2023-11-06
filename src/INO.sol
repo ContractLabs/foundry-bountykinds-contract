@@ -1,33 +1,63 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { Roles, IAuthority, ManagerUpgradeable } from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+// forgefmt: disable-start
+import {
+    IINO
+} from "./interfaces/IINO.sol";
 
-import { BKFundForwarderUpgradeable } from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+import {
+    IBK721
+} from "./interfaces/IBK721.sol";
 
-import { IINO } from "./interfaces/IINO.sol";
-import { IBK721 } from "./interfaces/IBK721.sol";
-import { IBKTreasury } from "./interfaces/IBKTreasury.sol";
+import {
+    IBKTreasury
+} from "./interfaces/IBKTreasury.sol";
 
-import { IERC20PermitUpgradeable } from
-    "src/oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
+import {
+    SSTORE2
+} from "src/oz-custom/libraries/SSTORE2.sol";
 
-import { IFundForwarderUpgradeable } from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+import {
+    Bytes32Address
+} from "src/oz-custom/libraries/Bytes32Address.sol";
 
-import { SSTORE2 } from "src/oz-custom/libraries/SSTORE2.sol";
-import { Bytes32Address } from "src/oz-custom/libraries/Bytes32Address.sol";
-import { FixedPointMathLib } from "src/oz-custom/libraries/FixedPointMathLib.sol";
+import {
+    FixedPointMathLib
+} from "src/oz-custom/libraries/FixedPointMathLib.sol";
+
+import {
+    BKFundForwarderUpgradeable
+} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+
+import {
+    Roles,
+    IAuthority,
+    ManagerUpgradeable
+} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+
+import {
+    IFundForwarderUpgradeable
+} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+
+import {
+    IERC20PermitUpgradeable
+} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
+// forgefmt: disable-end
 
 contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
     using SSTORE2 for *;
     using Bytes32Address for *;
     using FixedPointMathLib for *;
 
-    bytes32 public constant VERSION = 0x3d277aecc6eab90208a3b105ab5e72d55c1c0c69bf67ccc488f44498aef41550;
+    bytes32 public constant VERSION =
+        0x3d277aecc6eab90208a3b105ab5e72d55c1c0c69bf67ccc488f44498aef41550;
 
-    /// @dev value is equal to keccak256("Permit(address buyer,uint256 ticketId,uint256 amount,uint256 nonce,uint256
+    /// @dev value is equal to keccak256("Permit(address buyer,uint256
+    /// ticketId,uint256 amount,uint256 nonce,uint256
     /// deadline)")
-    bytes32 public constant __PERMIT_TYPE_HASH = 0x5421fbeb44dd87c0132aceddf0c5325a43ac9ccb2291ee8cbf59d92a5fb63681;
+    bytes32 public constant __PERMIT_TYPE_HASH =
+        0x5421fbeb44dd87c0132aceddf0c5325a43ac9ccb2291ee8cbf59d92a5fb63681;
 
     // campaignId => supplies
     mapping(uint256 => uint256) private __supplies;
@@ -38,14 +68,27 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
 
     function initialize(IAuthority authority_) external initializer {
         __Manager_init_unchained(authority_, 0);
-        __FundForwarder_init_unchained(IFundForwarderUpgradeable(address(authority_)).vault());
+        __FundForwarder_init_unchained(
+            IFundForwarderUpgradeable(address(authority_)).vault()
+        );
     }
 
-    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
+    function changeVault(address vault_)
+        external
+        override
+        onlyRole(Roles.TREASURER_ROLE)
+    {
         _changeVault(vault_);
     }
 
-    function ticketId(uint64 campaignId_, uint32 amount_) external pure returns (uint256) {
+    function ticketId(
+        uint64 campaignId_,
+        uint32 amount_
+    )
+        external
+        pure
+        returns (uint256)
+    {
         return (campaignId_ << 32) | (amount_ & 0xffffffff);
     }
 
@@ -65,13 +108,19 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
             uint256 campaignId = (ticketId_ >> 32) & 0xffffffff;
             _campaign = abi.decode(__campaigns[campaignId].read(), (Campaign));
 
-            if (_campaign.start > block.timestamp || _campaign.end < block.timestamp) {
+            if (
+                _campaign.start > block.timestamp
+                    || _campaign.end < block.timestamp
+            ) {
                 revert INO__CampaignEndedOrNotYetStarted();
             }
 
             amount = ticketId_ & 0xffffffff;
             __supplies[campaignId] -= amount;
-            if ((__purchasedAmt[user_.fillLast12Bytes()][campaignId] += amount) > _campaign.limit) {
+            if (
+                (__purchasedAmt[user_.fillLast12Bytes()][campaignId] += amount)
+                    > _campaign.limit
+            ) {
                 revert INO__AllocationExceeded();
             }
         }
@@ -107,34 +156,65 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         emit Redeemed(user_, ticketId_, token_, value_);
     }
 
-    function setCampaign(uint256 campaignId_, Campaign calldata campaign_) external onlyRole(Roles.OPERATOR_ROLE) {
+    function setCampaign(
+        uint256 campaignId_,
+        Campaign calldata campaign_
+    )
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
         bytes32 ptr = __campaigns[campaignId_];
 
-        if (ptr != 0 && abi.decode(ptr.read(), (Campaign)).end > block.timestamp) revert INO__OnGoingCampaign();
+        if (
+            ptr != 0 && abi.decode(ptr.read(), (Campaign)).end > block.timestamp
+        ) revert INO__OnGoingCampaign();
 
         Campaign memory _campaign = campaign_;
 
         emit NewCampaign(
-            campaignId_, _campaign.start += uint64(block.timestamp), _campaign.end += uint64(block.timestamp)
+            campaignId_,
+            _campaign.start += uint64(block.timestamp),
+            _campaign.end += uint64(block.timestamp)
         );
 
         __supplies[campaignId_] = _campaign.maxSupply;
         __campaigns[campaignId_] = abi.encode(_campaign).write();
     }
 
-    function paymentOf(uint256 campaignId_) public view returns (address[] memory) {
+    function paymentOf(uint256 campaignId_)
+        public
+        view
+        returns (address[] memory)
+    {
         return abi.decode(__campaigns[campaignId_].read(), (Campaign)).payments;
     }
 
-    function campaign(uint256 campaignId_) external view returns (Campaign memory campaign_) {
+    function campaign(uint256 campaignId_)
+        external
+        view
+        returns (Campaign memory campaign_)
+    {
         bytes32 ptr = __campaigns[campaignId_];
         if (ptr == 0) return campaign_;
         campaign_ = abi.decode(ptr.read(), (Campaign));
     }
 
-    function _beforeRecover(bytes memory) internal override whenPaused onlyRole(Roles.OPERATOR_ROLE) { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        whenPaused
+        onlyRole(Roles.OPERATOR_ROLE)
+    { }
 
-    function _afterRecover(address, address, uint256, bytes memory) internal override { }
+    function _afterRecover(
+        address,
+        address,
+        uint256,
+        bytes memory
+    )
+        internal
+        override
+    { }
 
     uint256[47] private __gap;
 }

@@ -3,8 +3,10 @@
 pragma solidity ^0.8.0;
 
 /**
- * @dev Library for managing uint256 to bool mapping in a compact and efficient way, providing the keys are sequential.
- * Largelly inspired by Uniswap's https://github.com/Uniswap/merkle-distributor/blob/master/contracts/MerkleDistributor.sol[merkle-distributor].
+ * @dev Library for managing uint256 to bool mapping in a compact and efficient
+ * way, providing the keys are sequential.
+ * Largelly inspired by Uniswap's
+ * https://github.com/Uniswap/merkle-distributor/blob/master/contracts/MerkleDistributor.sol[merkle-distributor].
  */
 library BitMapsUpgradeable {
     struct BitMap {
@@ -17,7 +19,11 @@ library BitMapsUpgradeable {
     function get(
         BitMap storage bitmap,
         uint256 index
-    ) internal view returns (bool isSet) {
+    )
+        internal
+        view
+        returns (bool isSet)
+    {
         uint256 value = bitmap._data[index >> 8] & (1 << (index & 0xff));
 
         assembly {
@@ -32,7 +38,9 @@ library BitMapsUpgradeable {
         BitMap storage bitmap,
         uint256 index,
         bool shouldSet
-    ) internal {
+    )
+        internal
+    {
         uint256 value = bitmap._data[index >> 8];
 
         assembly {
@@ -40,11 +48,13 @@ library BitMapsUpgradeable {
             let shift := and(index, 0xff)
             // Isolate the bit at `shift`.
             let x := and(shr(shift, value), 1)
-            // Xor it with `shouldSet`. Results in 1 if both are different, else 0.
+            // Xor it with `shouldSet`. Results in 1 if both are different, else
+            // 0.
             x := xor(x, shouldSet)
             // Shifts the bit back. Then, xor with value.
             // Only the bit at `shift` will be flipped if they differ.
-            // Every other bit will stay the same, as they are xor'ed with zeroes.
+            // Every other bit will stay the same, as they are xor'ed with
+            // zeroes.
             value := xor(value, shl(shift, x))
         }
         bitmap._data[index >> 8] = value;

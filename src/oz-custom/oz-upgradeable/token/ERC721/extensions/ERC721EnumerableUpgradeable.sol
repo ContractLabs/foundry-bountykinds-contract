@@ -3,17 +3,18 @@
 
 pragma solidity ^0.8.0;
 
-import {ERC721Upgradeable, IERC165Upgradeable} from "../ERC721Upgradeable.sol";
+import { ERC721Upgradeable, IERC165Upgradeable } from "../ERC721Upgradeable.sol";
 
-import {Bytes32Address} from "../../../../libraries/Bytes32Address.sol";
+import { Bytes32Address } from "../../../../libraries/Bytes32Address.sol";
 
-import {
-    IERC721EnumerableUpgradeable
-} from "./IERC721EnumerableUpgradeable.sol";
+import { IERC721EnumerableUpgradeable } from
+    "./IERC721EnumerableUpgradeable.sol";
 
 /**
- * @dev This implements an optional extension of {ERC721} defined in the EIP that adds
- * enumerability of all the token ids in the contract as well as all token ids owned by each
+ * @dev This implements an optional extension of {ERC721} defined in the EIP
+ * that adds
+ * enumerability of all the token ids in the contract as well as all token ids
+ * owned by each
  * account.
  */
 abstract contract ERC721EnumerableUpgradeable is
@@ -35,18 +36,15 @@ abstract contract ERC721EnumerableUpgradeable is
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
         override(IERC165Upgradeable, ERC721Upgradeable)
         returns (bool)
     {
-        return
-            interfaceId == type(IERC721EnumerableUpgradeable).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC721EnumerableUpgradeable).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 
     /**
@@ -55,7 +53,13 @@ abstract contract ERC721EnumerableUpgradeable is
     function tokenOfOwnerByIndex(
         address owner,
         uint256 index
-    ) public view virtual override returns (uint256 tokenId) {
+    )
+        public
+        view
+        virtual
+        override
+        returns (uint256 tokenId)
+    {
         assembly {
             mstore(0x00, owner)
             mstore(0x20, _balanceOf.slot)
@@ -95,9 +99,13 @@ abstract contract ERC721EnumerableUpgradeable is
     /**
      * @dev See {IERC721Enumerable-tokenByIndex}.
      */
-    function tokenByIndex(
-        uint256 index
-    ) public view virtual override returns (uint256 tokenId) {
+    function tokenByIndex(uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256 tokenId)
+    {
         assembly {
             let length := sload(__allTokens.slot)
 
@@ -128,33 +136,46 @@ abstract contract ERC721EnumerableUpgradeable is
      * - `from` cannot be the zero address.
      * - `to` cannot be the zero address.
      *
-     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     * To learn more about hooks, head to
+     * xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal virtual override {
+    )
+        internal
+        virtual
+        override
+    {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
 
-        if (batchSize > 1)
-            // Will only trigger during construction. Batch transferring (minting) is not available afterwards.
+        if (batchSize > 1) {
+            // Will only trigger during construction. Batch transferring
+            // (minting) is not available afterwards.
             revert ERC721Enumerable__ConsecutiveTransferNotSupported();
+        }
 
-        if (from == address(0)) _addTokenToAllTokensEnumeration(firstTokenId);
-        else if (from != to)
+        if (from == address(0)) {
+            _addTokenToAllTokensEnumeration(firstTokenId);
+        } else if (from != to) {
             _removeTokenFromOwnerEnumeration(from, firstTokenId);
+        }
 
-        if (to == address(0))
+        if (to == address(0)) {
             _removeTokenFromAllTokensEnumeration(firstTokenId);
-        else if (to != from) _addTokenToOwnerEnumeration(to, firstTokenId);
+        } else if (to != from) {
+            _addTokenToOwnerEnumeration(to, firstTokenId);
+        }
     }
 
     /**
-     * @dev Private function to add a token to this extension's ownership-tracking data structures.
+     * @dev Private function to add a token to this extension's
+     * ownership-tracking data structures.
      * @param to address representing the new owner of the given token ID
-     * @param tokenId uint256 ID of the token to be added to the tokens list of the given address
+     * @param tokenId uint256 ID of the token to be added to the tokens list of
+     * the given address
      */
     function _addTokenToOwnerEnumeration(address to, uint256 tokenId) private {
         assembly {
@@ -177,7 +198,8 @@ abstract contract ERC721EnumerableUpgradeable is
     }
 
     /**
-     * @dev Private function to add a token to this extension's token tracking data structures.
+     * @dev Private function to add a token to this extension's token tracking
+     * data structures.
      * @param tokenId uint256 ID of the token to be added to the tokens list
      */
     function _addTokenToAllTokensEnumeration(uint256 tokenId) private {
@@ -197,25 +219,30 @@ abstract contract ERC721EnumerableUpgradeable is
     }
 
     /**
-     * @dev Private function to remove a token from this extension's ownership-tracking data structures. Note that
-     * while the token is not assigned a new owner, the `_ownedTokensIndex` mapping is _not_ updated: this allows for
-     * gas optimizations e.g. when performing a transfer operation (avoiding double writes).
-     * This has O(1) time complexity, but alters the order of the _ownedTokens array.
+     * @dev Private function to remove a token from this extension's
+     * ownership-tracking data structures. Note that
+     * while the token is not assigned a new owner, the `_ownedTokensIndex`
+     * mapping is _not_ updated: this allows for
+     * gas optimizations e.g. when performing a transfer operation (avoiding
+     * double writes).
+     * This has O(1) time complexity, but alters the order of the _ownedTokens
+     * array.
      * @param from address representing the previous owner of the given token ID
-     * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
+     * @param tokenId uint256 ID of the token to be removed from the tokens list
+     * of the given address
      */
     function _removeTokenFromOwnerEnumeration(
         address from,
         uint256 tokenId
-    ) private {
+    )
+        private
+    {
         assembly {
             mstore(0x00, from)
             mstore(0x20, _balanceOf.slot)
             let lastTokenIndex := sload(keccak256(0x00, 0x40))
             //  underflow check
-            if iszero(lastTokenIndex) {
-                revert(0, 0)
-            }
+            if iszero(lastTokenIndex) { revert(0, 0) }
 
             lastTokenIndex := sub(lastTokenIndex, 1)
 
@@ -225,7 +252,8 @@ abstract contract ERC721EnumerableUpgradeable is
             let tokenIndex := sload(ownedTokensIndexKey)
             // cache __ownedtokens[from] key
             let ownedTokensFromLastKey
-            // When the token to delete is the last token, the swap operation is unnecessary
+            // When the token to delete is the last token, the swap operation is
+            // unnecessary
             if iszero(eq(tokenIndex, lastTokenIndex)) {
                 // lastTokenId = __ownedTokens[from][lastTokenIndex];
                 mstore(0x00, from)
@@ -250,7 +278,8 @@ abstract contract ERC721EnumerableUpgradeable is
             }
 
             // This also deletes the contents at the last position of the array
-            // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
+            // To prevent a gap in from's tokens array, we store the last token
+            // in the index of the token to delete, and
             // then delete the last slot (swap and pop).
 
             // delete __ownedTokensIndex[tokenId];
@@ -262,20 +291,21 @@ abstract contract ERC721EnumerableUpgradeable is
     }
 
     /**
-     * @dev Private function to remove a token from this extension's token tracking data structures.
-     * This has O(1) time complexity, but alters the order of the _allTokens array.
+     * @dev Private function to remove a token from this extension's token
+     * tracking data structures.
+     * This has O(1) time complexity, but alters the order of the _allTokens
+     * array.
      * @param tokenId uint256 ID of the token to be removed from the tokens list
      */
     function _removeTokenFromAllTokensEnumeration(uint256 tokenId) private {
-        // To prevent a gap in the tokens array, we store the last token in the index of the token to delete, and
+        // To prevent a gap in the tokens array, we store the last token in the
+        // index of the token to delete, and
         // then delete the last slot (swap and pop).
         assembly {
             // uint256 lastTokenIndex = __allTokens.length - 1;
             let lastTokenIndex := sload(__allTokens.slot)
             // underflow check
-            if iszero(lastTokenIndex) {
-                revert(0, 0)
-            }
+            if iszero(lastTokenIndex) { revert(0, 0) }
             lastTokenIndex := sub(lastTokenIndex, 1)
 
             // uint256 tokenIndex = __allTokensIndex[tokenId];
@@ -284,14 +314,17 @@ abstract contract ERC721EnumerableUpgradeable is
             let allTokensIndexKey := keccak256(0x00, 0x40)
             let tokenIndex := sload(allTokensIndexKey)
 
-            // When the token to delete is the last token, the swap operation is unnecessary. However, since this occurs so
-            // rarely (when the last minted token is burnt) that we still do the swap here to avoid the gas cost of adding
+            // When the token to delete is the last token, the swap operation is
+            // unnecessary. However, since this occurs
+            // so
+            // rarely (when the last minted token is burnt) that we still do the
+            // swap here to avoid the gas cost of
+            // adding
             // an 'if' statement (like in _removeTokenFromOwnerEnumeration)
             // uint256 lastTokenId = __allTokens[lastTokenIndex];
             mstore(0x00, __allTokens.slot)
-            let lastTokenId := sload(
-                add(shl(5, lastTokenIndex), keccak256(0x00, 0x20))
-            )
+            let lastTokenId :=
+                sload(add(shl(5, lastTokenIndex), keccak256(0x00, 0x20)))
 
             // __allTokens[tokenIndex] = lastTokenId;
             // Move the last token to the slot of the to-delete token
@@ -313,7 +346,8 @@ abstract contract ERC721EnumerableUpgradeable is
     }
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @dev This empty reserved space is put in place to allow future versions
+     * to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */

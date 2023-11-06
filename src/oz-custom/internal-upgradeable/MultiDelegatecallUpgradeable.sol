@@ -1,23 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ContextUpgradeable
-} from "../oz-upgradeable/utils/ContextUpgradeable.sol";
-import {
-    ReentrancyGuardUpgradeable
-} from "../oz-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import {Initializable} from "../oz-upgradeable/proxy/utils/Initializable.sol";
+import { ContextUpgradeable } from
+    "../oz-upgradeable/utils/ContextUpgradeable.sol";
+import { ReentrancyGuardUpgradeable } from
+    "../oz-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import { Initializable } from "../oz-upgradeable/proxy/utils/Initializable.sol";
 
-import {ErrorHandler} from "../libraries/ErrorHandler.sol";
-import {Bytes32Address} from "../libraries/Bytes32Address.sol";
+import { ErrorHandler } from "../libraries/ErrorHandler.sol";
+import { Bytes32Address } from "../libraries/Bytes32Address.sol";
 
 error MultiDelegatecall__OnlyDelegatecall();
 error MultiDelegatecall__DelegatecallNotAllowed();
 
 /**
  * @title MultiDelegatecallUpgradeable
- * @dev Abstract contract for performing multiple delegatecalls in a single transaction.
+ * @dev Abstract contract for performing multiple delegatecalls in a single
+ * transaction.
  */
 abstract contract MultiDelegatecallUpgradeable is
     Initializable,
@@ -38,9 +37,7 @@ abstract contract MultiDelegatecallUpgradeable is
     }
 
     event BatchExecutionDelegated(
-        address indexed operator,
-        bytes[] callData,
-        bytes[] results
+        address indexed operator, bytes[] callData, bytes[] results
     );
 
     function __MultiDelegatecall_init() internal virtual onlyInitializing {
@@ -63,9 +60,7 @@ abstract contract MultiDelegatecallUpgradeable is
      * @param data_ Array of calldata for delegatecalls
      * @return results Array of delegatecall results
      */
-    function _multiDelegatecall(
-        bytes[] calldata data_
-    )
+    function _multiDelegatecall(bytes[] calldata data_)
         internal
         virtual
         onlyDelegatecalll
@@ -76,7 +71,7 @@ abstract contract MultiDelegatecallUpgradeable is
         results = new bytes[](length);
         bool ok;
         bytes memory result;
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             (ok, result) = address(this).delegatecall(data_[i]);
 
             ok.handleRevertIfNotSuccess(result);
@@ -92,8 +87,9 @@ abstract contract MultiDelegatecallUpgradeable is
     }
 
     function __onlyDelegateCall(bytes32 originalBytes_) private view {
-        if (address(this).fillLast12Bytes() == originalBytes_)
+        if (address(this).fillLast12Bytes() == originalBytes_) {
             revert MultiDelegatecall__OnlyDelegatecall();
+        }
     }
 
     uint256[49] private __gap;

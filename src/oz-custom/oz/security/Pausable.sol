@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.17;
 
-import {Context} from "../utils/Context.sol";
+import { Context } from "../utils/Context.sol";
 
 interface IPausable {
     error Pausable__Paused();
@@ -20,12 +20,14 @@ interface IPausable {
     event Unpaused(address indexed account);
 
     /**
-     * @dev Pauses all functions in the contract. Only callable by accounts with the PAUSER_ROLE.
+     * @dev Pauses all functions in the contract. Only callable by accounts with
+     * the PAUSER_ROLE.
      */
     function pause() external;
 
     /**
-     * @dev Unpauses all functions in the contract. Only callable by accounts with the PAUSER_ROLE.
+     * @dev Unpauses all functions in the contract. Only callable by accounts
+     * with the PAUSER_ROLE.
      */
     function unpause() external;
 
@@ -54,7 +56,8 @@ abstract contract Pausable is Context, IPausable {
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is not paused.
+     * @dev Modifier to make a function callable only when the contract is not
+     * paused.
      *
      * Requirements:
      *
@@ -66,7 +69,8 @@ abstract contract Pausable is Context, IPausable {
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is paused.
+     * @dev Modifier to make a function callable only when the contract is
+     * paused.
      *
      * Requirements:
      *

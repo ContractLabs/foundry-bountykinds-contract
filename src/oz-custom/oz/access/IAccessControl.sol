@@ -4,19 +4,22 @@
 pragma solidity ^0.8.17;
 
 /**
- * @dev External interface of AccessControl declared to support ERC165 detection.
+ * @dev External interface of AccessControl declared to support ERC165
+ * detection.
  */
 interface IAccessControl {
     error AccessControl__Unauthorized();
     error AccessControl__RoleMissing(bytes32 role, address account);
     /**
-     * @dev Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole`
+     * @dev Emitted when `newAdminRole` is set as ``role``'s admin role,
+     * replacing `previousAdminRole`
      *
      * `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite
      * {RoleAdminChanged} not being emitted signaling this.
      *
      * _Available since v3.1._
      */
+
     event RoleAdminChanged(
         bytes32 indexed role,
         bytes32 indexed previousAdminRole,
@@ -30,9 +33,7 @@ interface IAccessControl {
      * bearer except when using {AccessControl-_setupRole}.
      */
     event RoleGranted(
-        bytes32 indexed role,
-        address indexed account,
-        address indexed sender
+        bytes32 indexed role, address indexed account, address indexed sender
     );
 
     /**
@@ -43,9 +44,7 @@ interface IAccessControl {
      *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
      */
     event RoleRevoked(
-        bytes32 indexed role,
-        address indexed account,
-        address indexed sender
+        bytes32 indexed role, address indexed account, address indexed sender
     );
 
     /**
@@ -54,7 +53,10 @@ interface IAccessControl {
     function hasRole(
         bytes32 role,
         address account
-    ) external view returns (bool);
+    )
+        external
+        view
+        returns (bool);
 
     /**
      * @dev Returns the admin role that controls `role`. See {grantRole} and
