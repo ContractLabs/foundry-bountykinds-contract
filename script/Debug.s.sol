@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
-import { Script, console2 } from "forge-std/Script.sol";
-import { ErrorHandler } from "src/oz-custom/libraries/ErrorHandler.sol";
+import { BaseScript, ErrorHandler } from "./utils/Base.s.sol";
 
-contract Debug is Script {
+contract Debug is BaseScript {
     using ErrorHandler for *;
 
     function debug(
@@ -22,6 +21,6 @@ contract Debug is Script {
         vm.prank(from);
         (bool success, bytes memory returnOrRevertData) =
             to.call{ value: value }(callData);
-        success.handleRevertIfNotSuccess(returnOrRevertData);
+        success.handleRevert(returnOrRevertData);
     }
 }
