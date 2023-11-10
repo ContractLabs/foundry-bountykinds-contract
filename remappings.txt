@@ -6,3 +6,4 @@ v2-core/=lib/v2-core/contracts/
 forge-std/=lib/forge-std/src/
 chainlink/=lib/chainlink/
 solady/=lib/solady/
+boundry-deployment-kit/=lib/boundry-deployment-kit/script/
