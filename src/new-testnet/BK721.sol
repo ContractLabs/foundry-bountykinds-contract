@@ -630,18 +630,13 @@ abstract contract BK721 is
         _setBaseURI(baseURI_);
     }
 
-    function _useTypeIdTrackers(uint256 typeId_)
-        internal
-        returns (uint256 tokenId)
-    {
+    function _useTypeIdTrackers(uint256 typeId_) returns (uint256 tokenId) {
         assembly {
             mstore(0x00, typeId_)
             mstore(0x20, typeIdTrackers.slot)
-            let key := keccak256(0x00, 0x40)
-            let typeIdTracker := sload(key)
-            tokenId := or(shl(32, typeId_), typeIdTracker)
-
-            sstore(key, add(1, typeIdTracker))
+            let typeIdTracker := sload(keccak256(0x00, 0x40))
+            tokenId := or(shl(32, typeId_), add(1, typeIdTracker))
+            sstore(key, add(1, tokenId))
         }
     }
 
