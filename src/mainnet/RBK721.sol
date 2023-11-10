@@ -2,9 +2,9 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import { IRBK721 } from "./interfaces/IRBK721.sol";
+import { IRBK721 } from "src/interfaces/IRBK721.sol";
 
-import { IAuthority, IBKTreasury, BK721, Roles } from "src/BK721.sol";
+import { IAuthority, IBKTreasury, BK721, Roles } from "./BK721.sol";
 
 import {
     ERC721RentableUpgradeable,

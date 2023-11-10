@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IBKTreasury
-} from "./interfaces/IBKTreasury.sol";
+} from "src/interfaces/IBKTreasury.sol";
 
 import {
     EnumerableSet

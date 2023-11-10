@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 import {
     FundForwarderUpgradeable,
     BKFundForwarderUpgradeable
-} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     Roles,

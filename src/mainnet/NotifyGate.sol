@@ -2,11 +2,11 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import { INotifyGate } from "./interfaces/INotifyGate.sol";
+import { INotifyGate } from "src/interfaces/INotifyGate.sol";
 
 import { ReentrancyGuard } from "src/oz-custom/oz/security/ReentrancyGuard.sol";
 
-import { FundForwarder, BKFundForwarder } from "./internal/BKFundForwarder.sol";
+import { FundForwarder, BKFundForwarder } from "src/internal/BKFundForwarder.sol";
 
 import { Roles, Manager, IAuthority } from "src/oz-custom/presets/base/Manager.sol";
 

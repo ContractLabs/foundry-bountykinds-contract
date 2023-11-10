@@ -10,7 +10,7 @@ import {
 import {
     IUniswapV2Pair,
     IBountyKindsERC20
-} from "./interfaces/IBountyKindsERC20.sol";
+} from "src/interfaces/IBountyKindsERC20.sol";
 
 import {
     Transferable

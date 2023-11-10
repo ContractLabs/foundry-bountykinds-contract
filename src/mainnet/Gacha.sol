@@ -4,15 +4,15 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IGacha
-} from "./interfaces/IGacha.sol";
+} from "src/interfaces/IGacha.sol";
 
 import {
     IBK721
-} from "./interfaces/IBK721.sol";
+} from "src/interfaces/IBK721.sol";
 
 import {
     IBKTreasury
-} from "./interfaces/IBKTreasury.sol";
+} from "src/interfaces/IBKTreasury.sol";
 
 import {
     Bytes32Address
@@ -21,7 +21,7 @@ import {
 import {
     ERC165CheckerUpgradeable,
     BKFundForwarderUpgradeable
-} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     SignableUpgradeable

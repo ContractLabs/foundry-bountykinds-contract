@@ -4,10 +4,10 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IBKTreasury
-} from "./interfaces/IBKTreasury.sol";
+} from "src/interfaces/IBKTreasury.sol";
 import {
     IMarketplace
-} from "./interfaces/IMarketplace.sol";
+} from "src/interfaces/IMarketplace.sol";
 import {
     Bytes32Address
 } from "src/oz-custom/libraries/Bytes32Address.sol";
@@ -17,7 +17,7 @@ import {
 
 import {
     BKFundForwarderUpgradeable
-} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     SignableUpgradeable

@@ -4,15 +4,15 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IINO
-} from "./interfaces/IINO.sol";
+} from "src/interfaces/IINO.sol";
 
 import {
     IBK721
-} from "./interfaces/IBK721.sol";
+} from "src/interfaces/IBK721.sol";
 
 import {
     IBKTreasury
-} from "./interfaces/IBKTreasury.sol";
+} from "src/interfaces/IBKTreasury.sol";
 
 import {
     SSTORE2
@@ -28,7 +28,7 @@ import {
 
 import {
     BKFundForwarderUpgradeable
-} from "./internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     Roles,

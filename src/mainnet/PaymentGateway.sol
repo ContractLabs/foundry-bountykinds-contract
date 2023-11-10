@@ -16,7 +16,7 @@ import { IERC721, ERC721TokenReceiver } from "src/oz-custom/oz/token/ERC721/ERC7
 
 import { FundForwarder, IFundForwarder } from "src/oz-custom/internal/FundForwarder.sol";
 
-import { IERC20, ITreasury, IERC20Permit, ICommandGate } from "./interfaces/ICommandGate.sol";
+import { IERC20, ITreasury, IERC20Permit, ICommandGate } from "src/interfaces/ICommandGate.sol";
 
 import { IERC721Enumerable } from "src/oz-custom/oz/token/ERC721/extensions/IERC721Enumerable.sol";
 // forgefmt: disable-end
