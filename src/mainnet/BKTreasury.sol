@@ -118,7 +118,7 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
     }
 
     function _configTimestamp(uint256 rawTimestamp_)
-        public
+        internal
         pure
         returns (uint256 configuredTimestamp)
     {
