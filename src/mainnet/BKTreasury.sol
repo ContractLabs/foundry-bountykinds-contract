@@ -105,6 +105,18 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         return __supportedPayments.values();
     }
 
+    function setLimit(
+        address token_,
+        uint256 limitPerUser_,
+        uint256 limitTokenPerDay_
+    )
+        external
+        onlyRole(Roles.OPERATOR_ROLE)
+    {
+        limitTokenPerDay[token_] = limitTokenPerDay_;
+        limitTokenPerUser[token_] = limitPerUser_;
+    }
+
     function _configTimestamp(uint256 rawTimestamp_)
         public
         pure
