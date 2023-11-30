@@ -238,6 +238,7 @@ abstract contract TreasuryUpgradeable is
         onlyEOA
         whenNotPaused
     {
+        _beforeWithdraw(token_, to_, value_, amount_);
         if (block.timestamp > deadline_) revert Treasury__Expired();
 
         _checkBlacklist(to_);
@@ -354,6 +355,16 @@ abstract contract TreasuryUpgradeable is
             || interfaceId == type(IWithdrawableUpgradeable).interfaceId
             || interfaceId == type(IERC1155Receiver).interfaceId;
     }
+
+    function _beforeWithdraw(
+        address token,
+        address to,
+        uint256 value,
+        uint256 amount
+    )
+        internal
+        virtual
+    { }
 
     function _isRecoverHeader(bytes memory data_)
         internal
