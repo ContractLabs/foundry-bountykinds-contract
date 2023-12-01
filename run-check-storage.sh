@@ -11,7 +11,7 @@ read network
 echo Enter the latest implementation address:
 read latest_logic_address
 
-latest=$(cast storage $latest_logic_address --rpc-url $network --etherscan-api-key $ETHERSCAN_KEY)
+latest=$(cast storage $latest_logic_address --rpc-url $network --etherscan-api-key $BSCSCAN_KEY)
 upcomming=$(forge inspect $contract_name storage --pretty)
 
 formatted_latest=$(echo "$latest" | awk -F "|" 'NR > 2 { printf "%s: Type(%s) Slot(%s) Offset(%s) Bytes(%s)\n", $2, $3, $4, $5, $6 }' | sed '1d')
