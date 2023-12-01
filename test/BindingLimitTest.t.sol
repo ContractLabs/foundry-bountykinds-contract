@@ -23,6 +23,20 @@ contract BindingLimitTest is Test {
         );
     }
 
+    function test_withdrawWithBindingSuccessCase2() public {
+        treasury.withdraw(address(token), vm.addr(1), 0, 100 ether);
+        assertEq(
+            token.balanceOf(address(treasury)), 1_000_000 ether - 100 ether
+        );
+
+        vm.warp(block.timestamp + 86_900);
+        treasury.withdraw(address(token), vm.addr(1), 0, 100 ether);
+
+        assertEq(
+            token.balanceOf(address(treasury)), 1_000_000 ether - 200 ether
+        );
+    }
+
     function test_withdrawWithBindingFailureCase1() public {
         vm.expectRevert("The user exceeded the withdrawal limit.");
         treasury.withdraw(address(token), vm.addr(2), 0, 101 ether);
@@ -56,5 +70,23 @@ contract BindingLimitTest is Test {
         treasury.withdraw(address(token), vm.addr(10), 0, 100 ether);
         vm.expectRevert("The token exceeded the withdrawal limit.");
         treasury.withdraw(address(token), vm.addr(11), 0, 10 ether);
+    }
+
+    function test_withdrawWithBindingSuccessCase4() public {
+        treasury.withdraw(address(token), vm.addr(1), 0, 100 ether);
+        assertEq(
+            token.balanceOf(address(treasury)), 1_000_000 ether - 100 ether
+        );
+
+        vm.warp(block.timestamp + 86_900);
+        treasury.withdraw(address(token), vm.addr(1), 0, 100 ether);
+
+        assertEq(
+            token.balanceOf(address(treasury)), 1_000_000 ether - 200 ether
+        );
+
+        vm.warp(block.timestamp + 1000);
+        vm.expectRevert("The user exceeded the withdrawal limit.");
+        treasury.withdraw(address(token), vm.addr(1), 0, 100 ether);
     }
 }
