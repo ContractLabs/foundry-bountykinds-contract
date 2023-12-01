@@ -169,5 +169,5 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         }
     }
 
-    uint256[44] private __gap;
+    uint256[43] private __gap;
 }
