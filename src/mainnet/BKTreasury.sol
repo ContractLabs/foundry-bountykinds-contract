@@ -2,19 +2,19 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
+import {DateTimeLib} from "src/libraries/DateTimeLib.sol";
+
 import {IBKTreasury} from "src/interfaces/IBKTreasury.sol";
 
 import {EnumerableSet} from "src/oz-custom/oz/utils/structs/EnumerableSet.sol";
 
-import {Roles, IAuthority, TreasuryUpgradeable} from "src/oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
-
 import {AggregatorV3Interface} from "chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-import {DateTimeLib} from "src/libraries/DateTimeLib.sol";
-
+import {Roles, IAuthority, ERC165CheckerUpgradeable, IERC1155, TreasuryUpgradeable} from "src/oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
+    using ERC165CheckerUpgradeable for address;
     using EnumerableSet for EnumerableSet.AddressSet;
 
     AggregatorV3Interface public priceFeed;
@@ -133,7 +133,7 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         address token_,
         address to_,
         uint256 value_,
-        uint256 amount_
+        uint256 amount_ // for erc1155
     )
         internal
         override
@@ -148,16 +148,7 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         uint256 currentUserWithdrawedAmount =
             userWithdrawedAmountPerDay[token_][to_][timestamp];
 
-        if (token_ == address(0)) {
-            if ((currentTokenWithdrawedAmount + value_) > _limitTokenPerDay) {
-                revert("The token exceeded the withdrawal limit.");
-            }
-            if ((currentUserWithdrawedAmount + value_) > _limitTokenPerUser) {
-                revert("The user exceeded the withdrawal limit.");
-            }
-            tokenWithdrawedAmountPerDay[token_][timestamp] += value_;
-            userWithdrawedAmountPerDay[token_][to_][timestamp] += value_;
-        } else {
+        if (token_.supportsInterface(type(IERC1155).interfaceId)) {
             if ((currentTokenWithdrawedAmount + amount_) > _limitTokenPerDay) {
                 revert("The token exceeded the withdrawal limit.");
             }
@@ -166,6 +157,15 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
             }
             tokenWithdrawedAmountPerDay[token_][timestamp] += amount_;
             userWithdrawedAmountPerDay[token_][to_][timestamp] += amount_;
+        } else {
+            if ((currentTokenWithdrawedAmount + value_) > _limitTokenPerDay) {
+                revert("The token exceeded the withdrawal limit.");
+            }
+            if ((currentUserWithdrawedAmount + value_) > _limitTokenPerUser) {
+                revert("The user exceeded the withdrawal limit.");
+            }
+            tokenWithdrawedAmountPerDay[token_][timestamp] += value_;
+            userWithdrawedAmountPerDay[token_][to_][timestamp] += value_;
         }
     }
 
