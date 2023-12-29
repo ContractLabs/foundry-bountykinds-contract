@@ -28,6 +28,9 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
     mapping(address => mapping(address => mapping(uint256 => uint256))) public
         userWithdrawedAmountPerDay;
 
+    bytes32 private constant ADMIN =
+        0x0000000000000000000000000000000000000000000000000000000000000000;
+
     function initialize(
         string calldata name_,
         IAuthority authority_,
@@ -111,7 +114,7 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         uint256 limitTokenPerDay_
     )
         external
-        onlyRole(Roles.OPERATOR_ROLE)
+        onlyRole(ADMIN)
     {
         limitTokenPerDay[token_] = limitTokenPerDay_;
         limitTokenPerUser[token_] = limitPerUser_;

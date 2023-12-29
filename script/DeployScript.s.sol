@@ -27,13 +27,19 @@ contract DeployScript is BaseDeploy {
     // }
 
     function upgradeTreasury() public broadcast {
-        address proxy = 0xf92ba0784ff1f7A19410bcf67BaAc5971dFa9CF1;
-        address logic =
-            deployRaw("mainnet/BKTreasury.sol:BKTreasury", EMPTY_ARGS);
-        upgradeRaw(payable(proxy), logic, EMPTY_ARGS);
-
-        console2.log("Logic", logic);
+        address proxy = 0xe5a3777Eb96DE2EF8B8A1A42D839CDB1BDaAa591;
+        upgradeRaw(
+            payable(proxy),
+            0x47036cA77D748d32703EeE9A2A20FD5f4d6b953C,
+            EMPTY_ARGS
+        );
     }
+
+    // function deployLogic() public broadcast {
+    //     address logic =
+    //         deployRaw("mainnet/BKTreasury.sol:BKTreasury", EMPTY_ARGS);
+    //     console2.log("Logic", logic);
+    // }
 
     // function changeVault() public broadcast {
     //     IAuthority(0x3005775740fA97131036b6aBfe86fc2acd70f7F0).changeVault()
