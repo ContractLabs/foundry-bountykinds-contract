@@ -1,0 +1,55 @@
+AUTHORITY 
+- Proxy:                 0x38e586659c83c7ea2cbc7b796b08b8179eddebc5 
+- Latest implementation: 0xBe838568DF7F758dC001812cCA1D97b143dbf7AB
+
+TREASURY
+- Proxy:                 0xe5a3777eb96de2ef8b8a1a42d839cdb1bdaaa591
+- Latest implementation: 0x47036cA77D748d32703EeE9A2A20FD5f4d6b953C
+
+FFE
+- Contract:              0x9E0335fb61958Fe19Bb120F3F8408B4297921820
+
+YU
+- Contract:              0x3e098C23DCFBbE0A3f468A6bEd1cf1a59DC1770D
+
+SPHERE
+- Proxy:                 0x4b9c0a7F383335c824DFEa21B9F91ebFdF7168Ff
+- Latest implementation: 0x2752d8b638c992fEA37afd817De04197c620F643
+
+EQUIPMENT
+- Proxy:                 0x7d7b66C91fb117f09B98dB9e3a5698D3a886AC59
+- Latest implementation: 0x4ECA7C22d0D1eEe734A7D74332BEe2CABEeC27C7
+
+ITEM
+- Proxy:                 0x87d20921BB5639c3eA6b66e4567396877a009595
+- Latest implementation: 0x4fb5422a741aD9F0B92AB02d2418BC6C555ff69c
+
+ITEM2
+- Proxy:                 0x47a7E561bc3783A439eE34B64D600B80866F8E18
+- Latest implementation: 0x4ECA7C22d0D1eEe734A7D74332BEe2CABEeC27C7
+
+CHARACTER
+- Proxy:                 0x412dEa263e6531645235931dC104dD3DB1Ec7923
+- Latest implementation: 0xA983547b9210518EEe76A4267Fc246d067834E42
+
+MARKETPLACE
+- Proxy:                 0x8B734B4EF73559F5f37297F28Ae3449d1b241Dd9
+- Latest implementation: 0x93214B7Ea58c4abeD3DFaeC89Ca753a345C05EC1
+
+INO
+- Proxy:                 0x1f684548662ac1917d31cd7ff9a28e2f1a906b3f
+- Latest implementation: 0x89eCB7014F4fae5e4C1309126d3C2Dc22E3b33d7
+
+GACHA
+- Proxy:                 0x635fCe835Ae164364245B1B4638aE7118399A887
+- Latest implementation: 0x016f9b6728a081e24ceca17857be39b423d03CC7
+
+NOTIFY_GATE
+- Contract:              0x9bf92ac2ef3e7f5c20106b205bc3c7b2723c91ee
+
+COMMAND_GATE
+- Contract:              0xC4e232D41b554466b7aba713AA5efc67Cb8d08b4
+
+MULTICALL
+- Proxy:                 0x2a76A0dc5E2Ee7a93d87936581c90932d4204aAb
+- Latest implementation: 0x0B38B74b3676381e236245AE50c304d28F8F66DD

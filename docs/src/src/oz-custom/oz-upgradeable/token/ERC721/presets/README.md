@@ -1,0 +1,4 @@
+
+
+# Contents
+- [ERC721PresetMinterPauserAutoIdUpgradeable](ERC721PresetMinterPauserAutoIdUpgradeable.sol/abstract.ERC721PresetMinterPauserAutoIdUpgradeable.md)
