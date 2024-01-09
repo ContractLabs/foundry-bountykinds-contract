@@ -2,21 +2,21 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import { INotifyGate } from "src/interfaces/INotifyGate.sol";
+import { INotifyGate } from "../interfaces/INotifyGate.sol";
 
-import { ReentrancyGuard } from "src/oz-custom/oz/security/ReentrancyGuard.sol";
+import { ReentrancyGuard } from "../oz-custom/oz/security/ReentrancyGuard.sol";
 
-import { FundForwarder, BKFundForwarder } from "src/internal/BKFundForwarder.sol";
+import { FundForwarder, BKFundForwarder } from "../internal/BKFundForwarder.sol";
 
-import { Roles, Manager, IAuthority } from "src/oz-custom/presets/base/Manager.sol";
+import { Roles, Manager, IAuthority } from "../oz-custom/presets/base/Manager.sol";
 
-import { IWithdrawable } from "src/oz-custom/internal/interfaces/IWithdrawable.sol";
+import { IWithdrawable } from "../oz-custom/internal/interfaces/IWithdrawable.sol";
 
-import { IFundForwarder } from "src/oz-custom/internal/interfaces/IFundForwarder.sol";
+import { IFundForwarder } from "../oz-custom/internal/interfaces/IFundForwarder.sol";
 
-import { IERC721, ERC721TokenReceiver } from "src/oz-custom/oz/token/ERC721/ERC721.sol";
+import { IERC721, ERC721TokenReceiver } from "../oz-custom/oz/token/ERC721/ERC721.sol";
 
-import { IERC20, IERC20Permit } from "src/oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
+import { IERC20, IERC20Permit } from "../oz-custom/oz/token/ERC20/extensions/IERC20Permit.sol";
 // forgefmt: disable-end
 
 contract NotifyGate is
