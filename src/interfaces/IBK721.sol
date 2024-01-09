@@ -88,6 +88,18 @@ interface IBK721 is IBKAsset {
         address indexed operator, address indexed from, uint256 indexed nextId
     );
 
+    /**
+     * @dev Executes an exchange of assets, swapping BK721 tokens for another
+     * asset type.
+     * @param forNFT_ The BK721 contract for the NFTs to exchange.
+     * @param forAmount_ The amount of BK721 tokens to exchange.
+     * @param forTypeId_ The type ID of the tokens to receive in exchange.
+     * @param nonce_ The nonce to prevent replay attacks.
+     * @param deadline_ The deadline by which the transaction must be executed.
+     * @param myIds_ An array of IDs to be exchanged.
+     * @param signature_ The signature for authentication.
+     * @return forIds An array of IDs received in exchange.
+     */
     function exchangeAssets(
         IBK721 forNFT_,
         uint256 forAmount_,
@@ -100,6 +112,15 @@ interface IBK721 is IBKAsset {
         external
         returns (uint256[] memory forIds);
 
+    /**
+     * @dev Redeems a bulk amount of a specific asset type.
+     * @param nonce_ The nonce to prevent replay attacks.
+     * @param amount_ The amount to redeem.
+     * @param typeId_ The type ID of the asset to redeem.
+     * @param claimer_ The address claiming the redeemed assets.
+     * @param deadline_ The deadline by which the transaction must be executed.
+     * @param signature_ The signature for authentication.
+     */
     function redeemBulk(
         uint256 nonce_,
         uint256 amount_,
@@ -110,6 +131,12 @@ interface IBK721 is IBKAsset {
     )
         external;
 
+    /**
+     * @dev Transfers a batch of tokens from one address to multiple recipients.
+     * @param from_ The address from which the tokens will be transferred.
+     * @param tos_ An array of recipient addresses.
+     * @param tokenIds_ An array of token IDs to be transferred.
+     */
     function transferBatch(
         address from_,
         address[] calldata tos_,
@@ -117,6 +144,12 @@ interface IBK721 is IBKAsset {
     )
         external;
 
+    /**
+     * @dev Mints a single token and assigns it to a specified address.
+     * @param to_ The address to which the minted token will be assigned.
+     * @param tokenId_ The unique ID of the minted token.
+     * @return tokenId The unique ID of the minted token.
+     */
     function mint(
         address to_,
         uint256 tokenId_
@@ -124,6 +157,13 @@ interface IBK721 is IBKAsset {
         external
         returns (uint256 tokenId);
 
+    /**
+     * @dev Safely mints a single token of a specified type and assigns it to a
+     * specified address.
+     * @param to_ The address to which the minted token will be assigned.
+     * @param typeId_ The type ID of the minted token.
+     * @return tokenId The unique ID of the minted token.
+     */
     function safeMint(
         address to_,
         uint256 typeId_
@@ -131,8 +171,23 @@ interface IBK721 is IBKAsset {
         external
         returns (uint256 tokenId);
 
+    /**
+     * @dev Mints multiple tokens of the same type and assigns them to multiple
+     * addresses.
+     * @param typeId_ The type ID of the minted tokens.
+     * @param tos_ An array of addresses to which the minted tokens will be
+     * assigned.
+     */
     function mintBatch(uint256 typeId_, address[] calldata tos_) external;
 
+    /**
+     * @dev Safely mints multiple tokens of the same type and assigns them to a
+     * specified address.
+     * @param to_ The address to which the minted tokens will be assigned.
+     * @param typeId_ The type ID of the minted tokens.
+     * @param length_ The number of tokens to mint.
+     * @return tokenIds An array of unique IDs for the minted tokens.
+     */
     function safeMintBatch(
         address to_,
         uint256 typeId_,
@@ -141,6 +196,13 @@ interface IBK721 is IBKAsset {
         external
         returns (uint256[] memory tokenIds);
 
+    /**
+     * @dev Merges multiple tokens into a single token.
+     * @param fromIds_ An array of IDs to merge.
+     * @param toId_ The ID of the token to merge into.
+     * @param deadline_ The deadline by which the transaction must be executed.
+     * @param signature_ The signature for authentication.
+     */
     function merge(
         uint256[] calldata fromIds_,
         uint256 toId_,
@@ -149,8 +211,21 @@ interface IBK721 is IBKAsset {
     )
         external;
 
+    /**
+     * @dev Retrieves the nonce associated with a specific account.
+     * @param account_ The address of the account.
+     * @return The nonce value for the account.
+     */
     function nonces(address account_) external view returns (uint256);
 
+    /**
+     * @dev Retrieves the nonce bitmap for a specific account and nonce value.
+     * @param account_ The address of the account.
+     * @param nonce_ The nonce value.
+     * @return bitmap The nonce bitmap.
+     * @return isDirtied A boolean indicating whether the nonce bitmap is
+     * dirtied.
+     */
     function nonceBitMaps(
         address account_,
         uint256 nonce_
@@ -159,6 +234,12 @@ interface IBK721 is IBKAsset {
         view
         returns (uint256 bitmap, bool isDirtied);
 
+    /**
+     * @dev Invalidates a specific nonce for a given account.
+     * @param account_ The address of the account.
+     * @param wordPos_ The position of the word in the bitmap.
+     * @param mask_ The mask to invalidate the nonce.
+     */
     function invalidateNonce(
         address account_,
         uint248 wordPos_,
@@ -166,9 +247,22 @@ interface IBK721 is IBKAsset {
     )
         external;
 
+    /**
+     * @dev Retrieves the next available ID for tokens of a specific type.
+     * @param typeId_ The type ID.
+     * @return The next available token ID for the specified type.
+     */
     function nextIdFromType(uint256 typeId_) external view returns (uint256);
 
+    /**
+     * @dev Retrieves the base URI for token metadata.
+     * @return The base URI.
+     */
     function baseURI() external view returns (string memory);
 
+    /**
+     * @dev Sets the base URI for token metadata.
+     * @param baseURI_ The new base URI.
+     */
     function setBaseURI(string calldata baseURI_) external;
 }

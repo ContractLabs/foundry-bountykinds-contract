@@ -4,45 +4,45 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IBK20
-} from "src/interfaces/IBK20.sol";
+} from "../interfaces/IBK20.sol";
 
 import {
     ErrorHandler
-} from "src/oz-custom/libraries/ErrorHandler.sol";
+} from "../oz-custom/libraries/ErrorHandler.sol";
 
 import {
     UUPSUpgradeable
-} from "src/oz-custom/oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import {
     TransferableUpgradeable
-} from "src/oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/TransferableUpgradeable.sol";
 
 import {
     ProxyCheckerUpgradeable
-} from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
 
 import {
     BlacklistableUpgradeable
-} from "src/oz-custom/internal-upgradeable/BlacklistableUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/BlacklistableUpgradeable.sol";
 
 import {
     AccessControlEnumerableUpgradeable
-} from "src/oz-custom/oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {
     ERC20Upgradeable,
     ERC20PermitUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 import {
     ERC20BurnableUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 
 import {
     PausableUpgradeable,
     ERC20PausableUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BK20 is

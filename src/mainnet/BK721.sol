@@ -4,59 +4,59 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IBK721
-} from "src/interfaces/IBK721.sol";
+} from "../interfaces/IBK721.sol";
 
 import {
     IBKTreasury
-} from "src/interfaces/IBKTreasury.sol";
+} from "../interfaces/IBKTreasury.sol";
 
 import {
     SSTORE2
-} from "src/oz-custom/libraries/SSTORE2.sol";
+} from "../oz-custom/libraries/SSTORE2.sol";
 
 import {
     StringLib
-} from "src/oz-custom/libraries/StringLib.sol";
+} from "../oz-custom/libraries/StringLib.sol";
 
 import {
     Bytes32Address
-} from "src/oz-custom/libraries/Bytes32Address.sol";
+} from "../oz-custom/libraries/Bytes32Address.sol";
 
 import {
     BKFundForwarderUpgradeable
-} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "../internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     ProtocolFeeUpgradeable
-} from "src/oz-custom/internal-upgradeable/ProtocolFeeUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/ProtocolFeeUpgradeable.sol";
 
 import {
     Roles,
     IAuthority,
     ManagerUpgradeable
-} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+} from "../oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
 
 import {
     IWithdrawableUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
 
 import {
     IFundForwarderUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 
 import {
     ERC721Upgradeable,
     IERC165Upgradeable,
     ERC721PermitUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721PermitUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721PermitUpgradeable.sol";
 
 import {
     ERC721BurnableUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
 
 import {
     ERC721EnumerableUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 // forgefmt: disable-end
 
 abstract contract BK721 is

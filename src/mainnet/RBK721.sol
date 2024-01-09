@@ -2,14 +2,14 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import { IRBK721 } from "src/interfaces/IRBK721.sol";
+import { IRBK721 } from "../interfaces/IRBK721.sol";
 
 import { IAuthority, IBKTreasury, BK721, Roles } from "./BK721.sol";
 
 import {
     ERC721RentableUpgradeable,
     IERC721RentableUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721RentableUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC721/extensions/ERC721RentableUpgradeable.sol";
 // forgefmt: disable-end
 
 contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
@@ -27,6 +27,7 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         __BK_init(name_, symbol_, baseURI_, feeAmt_, feeToken_, authority_);
     }
 
+    /// @inheritdoc IRBK721
     function setUser(
         address user_,
         uint256 tokenId,
@@ -128,6 +129,13 @@ contract RBK721 is BK721, IRBK721, ERC721RentableUpgradeable {
         }
     }
 
+    /**
+     * @dev Fixes the token ID trackers for a specific type after mintBatch
+     * if the result of typeIdTrackers indicates that a tokenId was minted.
+     *
+     * @param typeId_ The type ID to fix the trackers for.
+     * @param value_ The new value to set for the trackers.
+     */
     function fixTokenIdTrackers(
         uint256 typeId_,
         uint256 value_

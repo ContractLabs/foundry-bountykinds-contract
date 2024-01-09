@@ -34,6 +34,11 @@ contract NotifyGate is
         _changeVault(IFundForwarder(address(authority_)).vault());
     }
 
+    /**
+     * @dev Allows only the treasurer to change the vault address.
+     *
+     * @param vault_ The new vault address.
+     */
     function changeVault(address vault_)
         external
         override
@@ -42,6 +47,7 @@ contract NotifyGate is
         _changeVault(vault_);
     }
 
+    /// @inheritdoc INotifyGate
     function notifyWithNative(bytes calldata message_) external payable {
         _safeNativeTransfer(vault(), msg.value, "");
         emit Notified(_msgSender(), message_, address(0), msg.value);
@@ -67,6 +73,7 @@ contract NotifyGate is
         return this.onERC721Received.selector;
     }
 
+    /// @inheritdoc INotifyGate
     function notifyWithERC20(
         IERC20 token_,
         uint256 value_,

@@ -2,23 +2,23 @@
 pragma solidity ^0.8.17;
 
 // forgefmt: disable-start
-import { BitMaps } from "src/oz-custom/oz/utils/structs/BitMaps.sol";
+import { BitMaps } from "../oz-custom/oz/utils/structs/BitMaps.sol";
 
-import { Bytes32Address } from "src/oz-custom/libraries/Bytes32Address.sol";
+import { Bytes32Address } from "../oz-custom/libraries/Bytes32Address.sol";
 
-import { IWithdrawable } from "src/oz-custom/internal/interfaces/IWithdrawable.sol";
+import { IWithdrawable } from "../oz-custom/internal/interfaces/IWithdrawable.sol";
 
-import { Roles, Manager, IAuthority } from "src/oz-custom/presets/base/Manager.sol";
+import { Roles, Manager, IAuthority } from "../oz-custom/presets/base/Manager.sol";
 
-import { ERC165Checker } from "src/oz-custom/oz/utils/introspection/ERC165Checker.sol";
+import { ERC165Checker } from "../oz-custom/oz/utils/introspection/ERC165Checker.sol";
 
-import { IERC721, ERC721TokenReceiver } from "src/oz-custom/oz/token/ERC721/ERC721.sol";
+import { IERC721, ERC721TokenReceiver } from "../oz-custom/oz/token/ERC721/ERC721.sol";
 
-import { FundForwarder, IFundForwarder } from "src/oz-custom/internal/FundForwarder.sol";
+import { FundForwarder, IFundForwarder } from "../oz-custom/internal/FundForwarder.sol";
 
-import { IERC20, ITreasury, IERC20Permit, ICommandGate } from "src/interfaces/ICommandGate.sol";
+import { IERC20, ITreasury, IERC20Permit, ICommandGate } from "../interfaces/ICommandGate.sol";
 
-import { IERC721Enumerable } from "src/oz-custom/oz/token/ERC721/extensions/IERC721Enumerable.sol";
+import { IERC721Enumerable } from "../oz-custom/oz/token/ERC721/extensions/IERC721Enumerable.sol";
 // forgefmt: disable-end
 
 contract PaymentGateway is
@@ -45,6 +45,11 @@ contract PaymentGateway is
         __whitelistVaults(vaults_);
     }
 
+    /**
+     * @dev Allows only the treasurer to change the vault address.
+     *
+     * @param vault_ The new vault address.
+     */
     function changeVault(address vault_)
         external
         override
@@ -60,6 +65,7 @@ contract PaymentGateway is
         __whitelistVaults(vaults_);
     }
 
+    /// @inheritdoc ICommandGate
     function updateTreasury(ITreasury treasury_)
         external
         onlyRole(Roles.OPERATOR_ROLE)
@@ -67,6 +73,7 @@ contract PaymentGateway is
         _changeVault(address(treasury_));
     }
 
+    /// @inheritdoc ICommandGate
     function whitelistAddress(address addr_)
         external
         onlyRole(Roles.OPERATOR_ROLE)
@@ -79,6 +86,7 @@ contract PaymentGateway is
         emit Whitelisted(addr_);
     }
 
+    /// @inheritdoc ICommandGate
     function depositNativeTokenWithCommand(
         address contract_,
         address vault_,
@@ -117,6 +125,7 @@ contract PaymentGateway is
         );
     }
 
+    /// @inheritdoc ICommandGate
     function depositERC20WithCommand(
         IERC20 token_,
         uint256 value_,
@@ -254,6 +263,7 @@ contract PaymentGateway is
         return this.onERC721Received.selector;
     }
 
+    /// @inheritdoc ICommandGate
     function depositERC721MultiWithCommand(
         uint256[] calldata tokenIds_,
         IERC721[] calldata contracts_,
@@ -275,10 +285,12 @@ contract PaymentGateway is
         }
     }
 
+    /// @inheritdoc ICommandGate
     function isVaultWhitelisted(address addr_) external view returns (bool) {
         return __whitelistedVaults.get(addr_.fillLast96Bits());
     }
 
+    /// @inheritdoc ICommandGate
     function isTargetWhitelisted(address addr_) external view returns (bool) {
         return __isWhitelisted.get(addr_.fillLast96Bits());
     }

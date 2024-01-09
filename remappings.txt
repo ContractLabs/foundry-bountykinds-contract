@@ -1,9 +1,11 @@
+@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+boundry-deployment-kit/=lib/boundry-deployment-kit/script/
+chainlink/=lib/chainlink/
+ds-test/=lib/forge-std/lib/ds-test/src/
+erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/
+forge-std/=lib/forge-std/src/
 openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/
 openzeppelin-contracts/=lib/openzeppelin-contracts/
-erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/
-ds-test/=lib/forge-std/lib/ds-test/src/
-v2-core/=lib/v2-core/contracts/
-forge-std/=lib/forge-std/src/
-chainlink/=lib/chainlink/
 solady/=lib/solady/
-boundry-deployment-kit/=lib/boundry-deployment-kit/script/
+v2-core/=lib/v2-core/contracts/

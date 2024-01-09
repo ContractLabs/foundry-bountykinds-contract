@@ -2,22 +2,25 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import {
-    FundForwarder
-} from "src/oz-custom/internal/FundForwarder.sol";
+import { FundForwarder } from "../oz-custom/internal/FundForwarder.sol";
 
-import {
-    ITreasury
-} from "src/oz-custom/presets/interfaces/ITreasury.sol";
+import { ITreasury } from "../oz-custom/presets/interfaces/ITreasury.sol";
 
-import {
-    ERC165Checker
-} from "src/oz-custom/oz/utils/introspection/ERC165Checker.sol";
+import { ERC165Checker } from "../oz-custom/oz/utils/introspection/ERC165Checker.sol";
 // forgefmt: disable-end
 
+/**
+ * @title BKFundForwarder
+ * @dev Abstract contract extending FundForwarder with additional features for
+ * BK-specific functionalities.
+ */
 abstract contract BKFundForwarder is FundForwarder {
     using ERC165Checker for address;
 
+    /**
+     * @dev Retrieves the header for safeRecover functionality.
+     * @return The header as bytes.
+     */
     function safeRecoverHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_RECOVER_HEADER")
         return bytes.concat(
@@ -27,6 +30,10 @@ abstract contract BKFundForwarder is FundForwarder {
         );
     }
 
+    /**
+     * @dev Retrieves the header for safeTransfer functionality.
+     * @return The header as bytes.
+     */
     function safeTransferHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_TRANSFER")
         return bytes.concat(
@@ -36,6 +43,11 @@ abstract contract BKFundForwarder is FundForwarder {
         );
     }
 
+    /**
+     * @dev Checks if the provided vault address is a valid Treasury contract.
+     * @param vault_ The address of the vault.
+     * @inheritdoc FundForwarder
+     */
     function _checkValidAddress(address vault_) internal view override {
         super._checkValidAddress(vault_);
         if (!vault_.supportsInterface(type(ITreasury).interfaceId)) {

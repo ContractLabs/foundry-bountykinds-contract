@@ -4,45 +4,45 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IINO
-} from "src/interfaces/IINO.sol";
+} from "../interfaces/IINO.sol";
 
 import {
     IBK721
-} from "src/interfaces/IBK721.sol";
+} from "../interfaces/IBK721.sol";
 
 import {
     IBKTreasury
-} from "src/interfaces/IBKTreasury.sol";
+} from "../interfaces/IBKTreasury.sol";
 
 import {
     SSTORE2
-} from "src/oz-custom/libraries/SSTORE2.sol";
+} from "../oz-custom/libraries/SSTORE2.sol";
 
 import {
     Bytes32Address
-} from "src/oz-custom/libraries/Bytes32Address.sol";
+} from "../oz-custom/libraries/Bytes32Address.sol";
 
 import {
     FixedPointMathLib
-} from "src/oz-custom/libraries/FixedPointMathLib.sol";
+} from "../oz-custom/libraries/FixedPointMathLib.sol";
 
 import {
     BKFundForwarderUpgradeable
-} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "../internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     Roles,
     IAuthority,
     ManagerUpgradeable
-} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+} from "../oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
 
 import {
     IFundForwarderUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 
 import {
     IERC20PermitUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
 // forgefmt: disable-end
 
 contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
@@ -73,6 +73,11 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         );
     }
 
+    /**
+     * @dev Allows only the treasurer to change the vault address.
+     *
+     * @param vault_ The new vault address.
+     */
     function changeVault(address vault_)
         external
         override
@@ -81,6 +86,7 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         _changeVault(vault_);
     }
 
+    /// @inheritdoc IINO
     function ticketId(
         uint64 campaignId_,
         uint32 amount_
@@ -92,6 +98,7 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         return (campaignId_ << 32) | (amount_ & 0xffffffff);
     }
 
+    /// @inheritdoc IINO
     function redeem(
         address user_,
         address token_,
@@ -156,6 +163,7 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         emit Redeemed(user_, ticketId_, token_, value_);
     }
 
+    /// @inheritdoc IINO
     function setCampaign(
         uint256 campaignId_,
         Campaign calldata campaign_
@@ -181,6 +189,7 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         __campaigns[campaignId_] = abi.encode(_campaign).write();
     }
 
+    /// @inheritdoc IINO
     function paymentOf(uint256 campaignId_)
         public
         view
@@ -189,6 +198,7 @@ contract INO is IINO, ManagerUpgradeable, BKFundForwarderUpgradeable {
         return abi.decode(__campaigns[campaignId_].read(), (Campaign)).payments;
     }
 
+    /// @inheritdoc IINO
     function campaign(uint256 campaignId_)
         external
         view

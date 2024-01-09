@@ -2,23 +2,32 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import {
-    ITreasury
-} from "src/oz-custom/presets-upgradeable/interfaces/ITreasury.sol";
+import { 
+    ITreasury 
+} from "../oz-custom/presets-upgradeable/interfaces/ITreasury.sol";
 
 import {
     IFundForwarderUpgradeable,
     FundForwarderUpgradeable
-} from "src/oz-custom/internal-upgradeable/FundForwarderUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/FundForwarderUpgradeable.sol";
 
-import {
-    ERC165CheckerUpgradeable
-} from "src/oz-custom/oz-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
+import { 
+    ERC165CheckerUpgradeable 
+} from "../oz-custom/oz-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 // forgefmt: disable-end
 
+/**
+ * @title BKFundForwarderUpgradeable
+ * @dev Abstract contract extending FundForwarderUpgradeable with additional
+ * features for BK-specific functionalities.
+ */
 abstract contract BKFundForwarderUpgradeable is FundForwarderUpgradeable {
     using ERC165CheckerUpgradeable for address;
 
+    /**
+     * @dev Retrieves the header for safeRecover functionality.
+     * @return The header as bytes.
+     */
     function safeRecoverHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_RECOVER_HEADER")
         return bytes.concat(
@@ -28,6 +37,10 @@ abstract contract BKFundForwarderUpgradeable is FundForwarderUpgradeable {
         );
     }
 
+    /**
+     * @dev Retrieves the header for safeTransfer functionality.
+     * @return The header as bytes.
+     */
     function safeTransferHeader() public pure override returns (bytes memory) {
         /// @dev value is equal keccak256("SAFE_TRANSFER")
         return bytes.concat(
@@ -37,6 +50,11 @@ abstract contract BKFundForwarderUpgradeable is FundForwarderUpgradeable {
         );
     }
 
+    /**
+     * @dev Checks if the provided vault address is a valid Treasury contract.
+     * @param vault_ The address of the vault.
+     * @inheritdoc FundForwarderUpgradeable
+     */
     function _checkValidAddress(address vault_)
         internal
         view

@@ -27,8 +27,7 @@ import {
     IERC1155,
     IERC1155Receiver
 } from
-    "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol"; // TODO:
-    // update oz-custom
+    "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 
 import {
     IERC165Upgradeable,

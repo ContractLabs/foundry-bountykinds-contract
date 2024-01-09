@@ -5,16 +5,16 @@ pragma solidity 0.8.20;
 import {
     FundForwarderUpgradeable,
     BKFundForwarderUpgradeable
-} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "../internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     Roles,
     AuthorityUpgradeable
-} from "src/oz-custom/presets-upgradeable/AuthorityUpgradeable.sol";
+} from "../oz-custom/presets-upgradeable/AuthorityUpgradeable.sol";
 
 import {
     IFundForwarderUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BKAuthority is AuthorityUpgradeable, BKFundForwarderUpgradeable {
@@ -64,6 +64,7 @@ contract BKAuthority is AuthorityUpgradeable, BKFundForwarderUpgradeable {
         override
     { }
 
+    /// @inheritdoc BKFundForwarderUpgradeable
     function _checkValidAddress(address vault_)
         internal
         view

@@ -2,15 +2,15 @@
 pragma solidity 0.8.20;
 
 // forgefmt: disable-start
-import {DateTimeLib} from "src/libraries/DateTimeLib.sol";
+import {DateTimeLib} from "../libraries/DateTimeLib.sol";
 
-import {IBKTreasury} from "src/interfaces/IBKTreasury.sol";
+import {IBKTreasury} from "../interfaces/IBKTreasury.sol";
 
-import {EnumerableSet} from "src/oz-custom/oz/utils/structs/EnumerableSet.sol";
+import {EnumerableSet} from "../oz-custom/oz/utils/structs/EnumerableSet.sol";
 
 import {AggregatorV3Interface} from "chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-import {Roles, IAuthority, ERC165CheckerUpgradeable, IERC1155, TreasuryUpgradeable} from "src/oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
+import {Roles, IAuthority, ERC165CheckerUpgradeable, IERC1155, TreasuryUpgradeable} from "../oz-custom/presets-upgradeable/TreasuryUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
@@ -21,12 +21,19 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
     mapping(address => uint256) private __priceOf;
     EnumerableSet.AddressSet private __supportedPayments;
 
-    mapping(address => uint256) public limitTokenPerUser;
-    mapping(address => uint256) public limitTokenPerDay;
-    mapping(address => mapping(uint256 => uint256)) public
-        tokenWithdrawedAmountPerDay;
-    mapping(address => mapping(address => mapping(uint256 => uint256))) public
-        userWithdrawedAmountPerDay;
+    mapping(address account => uint256 configuredTimestamp) public
+        limitTokenPerUser;
+    mapping(address token => uint256 configuredTimestamp) public
+        limitTokenPerDay;
+    mapping(address token => mapping(uint256 configuredTimestamp => uint256))
+        public tokenWithdrawedAmountPerDay;
+    mapping(
+        address token
+            => mapping(
+                address account
+                    => mapping(uint256 configuredTimestamp => uint256)
+            )
+    ) public userWithdrawedAmountPerDay;
 
     bytes32 private constant ADMIN =
         0x0000000000000000000000000000000000000000000000000000000000000000;
@@ -43,6 +50,13 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         __Treasury_init(authority_, name_);
     }
 
+    /**
+     * @dev Updates the prices of specified tokens and adds them to the list of
+     * supported payments.
+     * Only accessible by users with the TREASURER_ROLE.
+     * @param tokens_ An array of token addresses to update.
+     * @param prices_ An array of corresponding prices for the tokens.
+     */
     function updatePrices(
         address[] calldata tokens_,
         uint256[] calldata prices_
@@ -64,6 +78,16 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         emit PricesUpdated(_msgSender(), tokens_, prices_);
     }
 
+    /**
+     * @dev Updates the status of specified payments (add or remove) and returns
+     * the results.
+     * Only accessible by users with the TREASURER_ROLE.
+     * @param payments_ An array of payment addresses to update.
+     * @param statuses_ An array of corresponding status (true for add, false
+     * for remove) for the payments.
+     * @return results An array indicating the success status of each update
+     * operation.
+     */
     function updatePayments(
         address[] calldata payments_,
         bool[] calldata statuses_
@@ -89,6 +113,7 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         emit PaymentsUpdated(_msgSender(), payments_, statuses_);
     }
 
+    /// @inheritdoc IBKTreasury
     function priceOf(address token_) external view returns (uint256 usdPrice) {
         if (token_ == address(0)) {
             AggregatorV3Interface _priceFeed = priceFeed;
@@ -100,14 +125,24 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         }
     }
 
+    /// @inheritdoc IBKTreasury
     function supportedPayment(address token_) external view returns (bool) {
         return __supportedPayments.contains(token_);
     }
 
+    /// @inheritdoc IBKTreasury
     function viewSupportedPayments() external view returns (address[] memory) {
         return __supportedPayments.values();
     }
 
+    /**
+     * @dev Set daily and per-user limits for a specific token.
+     * @param token_ The address of the token for which limits are set.
+     * @param limitPerUser_ The maximum amount allowed per user in a day.
+     * @param limitTokenPerDay_ The total daily limit for the specified token.
+     * Requirements:
+     * - The caller must have the ADMIN role.
+     */
     function setLimit(
         address token_,
         uint256 limitPerUser_,
@@ -120,6 +155,14 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
         limitTokenPerUser[token_] = limitPerUser_;
     }
 
+    /**
+     * @dev Configures a raw timestamp to the start of the day by extracting the
+     * date
+     * components and converting them back to a timestamp.
+     * @param rawTimestamp_ The original timestamp to be configured.
+     * @return configuredTimestamp The timestamp representing the start of the
+     * day.
+     */
     function _configTimestamp(uint256 rawTimestamp_)
         internal
         pure
@@ -132,6 +175,27 @@ contract BKTreasury is TreasuryUpgradeable, IBKTreasury {
             * DateTimeLib.SECONDS_PER_DAY;
     }
 
+    /**
+     * @dev Performs pre-withdrawal checks and updates withdrawal records.
+     *
+     * This internal function is called before processing a withdrawal of
+     * tokens.
+     * It calculates and checks withdrawal limits based on the token type,
+     * recipient,
+     * and withdrawal amounts. If the withdrawal exceeds the specified limits,
+     * the function reverts with appropriate error messages.
+     *
+     * @param token_ The address of the token being withdrawn.
+     * @param to_ The address of the recipient.
+     * @param value_ The withdrawal value (for ERC20 tokens).
+     * @param amount_ The withdrawal amount (for ERC1155 tokens).
+     *
+     * Requirements:
+     * - The token address must support the ERC1155 interface if `amount_` is
+     * provided.
+     * - The withdrawal amount must not exceed the daily limit for the token.
+     * - The withdrawal amount for the user must not exceed the daily limit.
+     */
     function _beforeWithdraw(
         address token_,
         address to_,

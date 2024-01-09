@@ -4,55 +4,55 @@ pragma solidity 0.8.20;
 // forgefmt: disable-start
 import {
     IBKTreasury
-} from "src/interfaces/IBKTreasury.sol";
+} from "../interfaces/IBKTreasury.sol";
 import {
     IMarketplace
-} from "src/interfaces/IMarketplace.sol";
+} from "../interfaces/IMarketplace.sol";
 import {
     Bytes32Address
-} from "src/oz-custom/libraries/Bytes32Address.sol";
+} from "../oz-custom/libraries/Bytes32Address.sol";
 import {
     FixedPointMathLib
-} from "src/oz-custom/libraries/FixedPointMathLib.sol";
+} from "../oz-custom/libraries/FixedPointMathLib.sol";
 
 import {
     BKFundForwarderUpgradeable
-} from "src/internal-upgradeable/BKFundForwarderUpgradeable.sol";
+} from "../internal-upgradeable/BKFundForwarderUpgradeable.sol";
 
 import {
     SignableUpgradeable
-} from "src/oz-custom/internal-upgradeable/SignableUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/SignableUpgradeable.sol";
 
 import {
     Roles,
     IAuthority,
     ManagerUpgradeable
-} from "src/oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
+} from "../oz-custom/presets-upgradeable/base/ManagerUpgradeable.sol";
 
 import {
     ProxyCheckerUpgradeable
-} from "src/oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/ProxyCheckerUpgradeable.sol";
 
 import {
     BitMapsUpgradeable
-} from "src/oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/utils/structs/BitMapsUpgradeable.sol";
 
 import {
     IWithdrawableUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IWithdrawableUpgradeable.sol";
 
 import {
     IFundForwarderUpgradeable
-} from "src/oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
+} from "../oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 
 import {
     IERC20Upgradeable,
     IERC20PermitUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
 
 import {
     IERC721PermitUpgradeable
-} from "src/oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
+} from "../oz-custom/oz-upgradeable/token/ERC721/extensions/IERC721PermitUpgradeable.sol";
 // forgefmt: disable-end
 
 contract Marketplace is
@@ -103,6 +103,11 @@ contract Marketplace is
         __whiteListContracts(supportedContracts_);
     }
 
+    /**
+     * @dev Allows only the treasurer to change the vault address.
+     *
+     * @param vault_ The new vault address.
+     */
     function changeVault(address vault_)
         external
         override
@@ -118,6 +123,7 @@ contract Marketplace is
         __whiteListContracts(addrs_);
     }
 
+    /// @inheritdoc IMarketplace
     function setProtocolFee(uint256 feeFraction_)
         external
         onlyRole(Roles.OPERATOR_ROLE)
@@ -125,6 +131,7 @@ contract Marketplace is
         __setProtocolFee(feeFraction_);
     }
 
+    /// @inheritdoc IMarketplace
     function redeem(
         uint256 deadline_,
         Buyer calldata buyer_,
@@ -148,10 +155,17 @@ contract Marketplace is
         emit Redeemed(buyer, seller, sellItem_);
     }
 
+    /// @inheritdoc IMarketplace
     function nonces(address account_) external view returns (uint256) {
         return _nonces[account_.fillLast12Bytes()];
     }
 
+    /**
+     * @dev Checks if a contract address is whitelisted.
+     *
+     * @param addr_ The contract address to check.
+     * @return Whether the contract address is whitelisted.
+     */
     function isWhitelisted(address addr_) external view returns (bool) {
         return __whitelistedContracts.get(addr_.fillLast96Bits());
     }

@@ -5,50 +5,50 @@ pragma solidity 0.8.20;
 import {
     Taxable,
     FixedPointMathLib
-} from "src/oz-custom/internal/Taxable.sol";
+} from "../oz-custom/internal/Taxable.sol";
 
 import {
     IUniswapV2Pair,
     IBountyKindsERC20
-} from "src/interfaces/IBountyKindsERC20.sol";
+} from "../interfaces/IBountyKindsERC20.sol";
 
 import {
     Transferable
-} from "src/oz-custom/internal/Transferable.sol";
+} from "../oz-custom/internal/Transferable.sol";
 
 import {
     ProxyChecker
-} from "src/oz-custom/internal/ProxyChecker.sol";
+} from "../oz-custom/internal/ProxyChecker.sol";
 
 import {
     ErrorHandler
-} from "src/oz-custom/libraries/ErrorHandler.sol";
+} from "../oz-custom/libraries/ErrorHandler.sol";
 
 import {
     Blacklistable
-} from "src/oz-custom/internal/Blacklistable.sol";
+} from "../oz-custom/internal/Blacklistable.sol";
 
 import {
     IWNT
-} from "src/oz-custom/presets/token/interfaces/IWNT.sol";
+} from "../oz-custom/presets/token/interfaces/IWNT.sol";
 
 import {
     AccessControlEnumerable
-} from "src/oz-custom/oz/access/AccessControlEnumerable.sol";
+} from "../oz-custom/oz/access/AccessControlEnumerable.sol";
 
 import {
     ERC20,
     ERC20Permit
-} from "src/oz-custom/oz/token/ERC20/extensions/ERC20Permit.sol";
+} from "../oz-custom/oz/token/ERC20/extensions/ERC20Permit.sol";
 
 import {
     ERC20Burnable
-} from "src/oz-custom/oz/token/ERC20/extensions/ERC20Burnable.sol";
+} from "../oz-custom/oz/token/ERC20/extensions/ERC20Burnable.sol";
 
 import {
     Pausable,
     ERC20Pausable
-} from "src/oz-custom/oz/token/ERC20/extensions/ERC20Pausable.sol";
+} from "../oz-custom/oz/token/ERC20/extensions/ERC20Pausable.sol";
 
 import {
     AggregatorV3Interface
