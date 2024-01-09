@@ -47,7 +47,7 @@ Allow users to deposit tokens and request the server to perform a specific actio
 
 ## Deployment
 ### Deployed contract
-All the deployed contracts can be found in [this](https://github.com/ContractLabs/foundry-bountykinds-contract)
+All the deployed contracts can be found in [this](https://github.com/ContractLabs/foundry-bountykinds-contract/blob/main/deployed-history.txt)
 ### Deploy contract
 - Implement a deployment script in the **script** folder. Then, use `run.sh` to execute the deployment script. 
 - You can find examples of deployments in this [this repo](https://github.com/tasibii/boundry) or in the [foundry docs](https://book.getfoundry.sh/forge/deploying).
