@@ -16,6 +16,3 @@
 [submodule "lib/chainlink"]
 	path = lib/chainlink
 	url = https://github.com/smartcontractkit/chainlink
-[submodule "lib/boundry-deployment-kit"]
-	path = lib/boundry-deployment-kit
-	url = https://github.com/tasibii/boundry-deployment-kit
