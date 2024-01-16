@@ -47,6 +47,9 @@ contract BK20 is
         __ERC20_init_unchained(name_, symbol_);
         __ERC20Permit_init(name_);
         __Manager_init_unchained(authority_, 0);
+        __FundForwarder_init_unchained(
+            IFundForwarderUpgradeable(address(authority_)).vault()
+        );
         _mint(recipient_, initialSupply_ * 1 ether);
     }
 
@@ -59,6 +62,11 @@ contract BK20 is
         onlyRole(Roles.MINTER_ROLE)
     {
         _mint(to_, amount_);
+    }
+
+    /// @inheritdoc IBK20
+    function burn(address from_, uint256 amount_) external {
+        _burn(from_, amount_);
     }
 
     /**
