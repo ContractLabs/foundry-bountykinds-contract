@@ -45,19 +45,32 @@ contract BKStaking is
     using EnumerableSetUpgradeable for *;
 
     uint256 public constant MULTIPLER = 10_000;
-
+    bool public claimable;
     address public stakingToken;
     uint256 public totalStakes;
     mapping(address user => uint256) public stakedAmount;
+
     EnumerableSetUpgradeable.AddressSet private _rewardTokens;
     mapping(address rewardToken => uint256) private _rewardAmount;
 
-    function initialize(IAuthority authority_) external initializer {
+    modifier whenClaimable() {
+        if (!claimable) revert BKStaking__Unclaimable();
+        _;
+    }
+
+    function initialize(
+        IAuthority authority_,
+        address stakingToken_
+    )
+        external
+        initializer
+    {
         __ReentrancyGuard_init();
-        __Manager_init_unchained(authority_, Roles.PROXY_ROLE);
+        __Manager_init_unchained(authority_, 0);
         __FundForwarder_init_unchained(
             IFundForwarderUpgradeable(address(authority_)).vault()
         );
+        stakingToken = stakingToken_;
     }
 
     function getCurrentRewards()
@@ -99,6 +112,17 @@ contract BKStaking is
         }
     }
 
+    function toggleClaimable() external onlyRole(Roles.OPERATOR_ROLE) {
+        claimable = !claimable;
+    }
+
+    function setStakingToken(address token_)
+        external
+        onlyRole(Roles.TREASURER_ROLE)
+    {
+        stakingToken = token_;
+    }
+
     function stake(uint256 amount_) external nonReentrant whenNotPaused {
         if (amount_ == 0) revert BKStaking__ZeroValue();
         address sender = _msgSender();
@@ -110,7 +134,12 @@ contract BKStaking is
         emit Staked(sender, amount_);
     }
 
-    function claimReward() external onlyWhitelisted {
+    function claimReward()
+        external
+        whenClaimable
+        whenNotPaused
+        onlyWhitelisted
+    {
         address sender = _msgSender();
         uint256 _stakedAmount = stakedAmount[sender];
 

@@ -3,6 +3,7 @@ pragma solidity 0.8.20;
 
 interface IBKStaking {
     error BKStaking__ZeroValue();
+    error BKStaking__Unclaimable();
     error BKStaking__UnsupportedToken();
 
     event Claimed(address indexed user, Reward[] rewards);
