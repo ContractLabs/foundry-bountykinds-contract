@@ -73,9 +73,8 @@ contract Gacha is
     using ERC165CheckerUpgradeable for address;
     using BitMapsUpgradeable for BitMapsUpgradeable.BitMap;
 
-    /// @dev value is equal to keccak256("Claim(address token,uint256
-    /// ticketId,uint256 value,uint256 deadline,uint256
-    /// nonce)")
+    // forgefmt: disable-next-line
+    /// @dev value is equal to keccak256("Claim(address token,uint256 ticketId,uint256 value,uint256 deadline,uint256 nonce)")
     bytes32 private constant __CLAIM_TYPE_HASH =
         0xff5122c8134d613571bf8ae24cff90116c8242a568b8dbe337419081fa1403bb;
 
@@ -262,7 +261,12 @@ contract Gacha is
         return _nonces[bytes32(ticketId_)];
     }
 
-    function _beforeRecover(bytes memory) internal override whenPaused { }
+    function _beforeRecover(bytes memory)
+        internal
+        override
+        whenPaused
+        onlyRole(Roles.OPERATOR_ROLE)
+    { }
 
     function _afterRecover(
         address,
