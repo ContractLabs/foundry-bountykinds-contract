@@ -108,10 +108,6 @@ abstract contract ERC20PermitUpgradeable is
     }
 
     /**
-     * @dev See {IERC20Permit-nonces}.
-     *
-     *
-     * /**
      * @dev See {IERC20Permit-DOMAIN_SEPARATOR}.
      */
     // solhint-disable-next-line func-name-mixedcase
