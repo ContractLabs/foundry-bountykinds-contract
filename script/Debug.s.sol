@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import { BaseScript, ErrorHandler } from "boundry-deployment-kit/Base.s.sol";
+import { BaseScript, ErrorHandler } from "./base/Base.s.sol";
 
 contract Debug is BaseScript {
     using ErrorHandler for *;
@@ -21,6 +21,6 @@ contract Debug is BaseScript {
         vm.prank(from, from);
         (bool success, bytes memory returnOrRevertData) =
             to.call{ value: value }(callData);
-        success.handleRevert(returnOrRevertData);
+        success.handleRevertIfNotSuccess(returnOrRevertData);
     }
 }
