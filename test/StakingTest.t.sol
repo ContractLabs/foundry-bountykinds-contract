@@ -78,4 +78,109 @@ contract StakingTest is Test {
         staking.addReward(address(WBNB), 100 ether);
         vm.stopPrank();
     }
+
+    function testClaimFailure() public {
+        vm.startPrank(TREASURER, TREASURER);
+        WBNB.approve(address(staking), 100 ether);
+        staking.addReward(address(WBNB), 100 ether);
+        vm.stopPrank();
+
+        vm.startPrank(bob, bob);
+        stakingToken.approve(address(staking), 1 ether);
+        staking.stake(1 ether);
+        IBKStaking.Reward[] memory bobRewards = staking.getStakerReward(bob);
+        for (uint256 i; i < bobRewards.length;) {
+            console2.log(
+                "Token: ",
+                bobRewards[i].rewardToken,
+                ", Amount: ",
+                bobRewards[i].rewardAmount
+            );
+            unchecked {
+                ++i;
+            }
+        }
+        vm.expectRevert(
+            abi.encodeWithSelector(IBKStaking.BKStaking__Unclaimable.selector)
+        );
+        staking.claimReward();
+        vm.stopPrank();
+    }
+
+    function testClaimSuccess() public {
+        vm.startPrank(TREASURER, TREASURER);
+        WBNB.approve(address(staking), 100 ether);
+        staking.addReward(address(WBNB), 100 ether);
+        staking.toggleClaimable();
+        vm.stopPrank();
+
+        vm.startPrank(alice, alice);
+        stakingToken.approve(address(staking), 10 ether);
+        staking.stake(10 ether);
+        vm.stopPrank();
+
+        vm.startPrank(bob, bob);
+        stakingToken.approve(address(staking), 20 ether);
+        staking.stake(20 ether);
+        vm.stopPrank();
+
+        vm.startPrank(peter, peter);
+        stakingToken.approve(address(staking), 30 ether);
+        staking.stake(30 ether);
+        vm.stopPrank();
+
+        IBKStaking.Reward[] memory aliceRewards = staking.getStakerReward(alice);
+        console2.log("Alice's rewards");
+        for (uint256 i; i < aliceRewards.length;) {
+            console2.log(
+                "Token: ",
+                aliceRewards[i].rewardToken,
+                ", Amount: ",
+                aliceRewards[i].rewardAmount
+            );
+            unchecked {
+                ++i;
+            }
+        }
+
+        IBKStaking.Reward[] memory bobRewards = staking.getStakerReward(bob);
+        console2.log("Bob's rewards");
+        for (uint256 i; i < bobRewards.length;) {
+            console2.log(
+                "Token: ",
+                bobRewards[i].rewardToken,
+                ", Amount: ",
+                bobRewards[i].rewardAmount
+            );
+            unchecked {
+                ++i;
+            }
+        }
+
+        IBKStaking.Reward[] memory peterRewards = staking.getStakerReward(peter);
+        console2.log("Peter's rewards");
+        for (uint256 i; i < peterRewards.length;) {
+            console2.log(
+                "Token: ",
+                peterRewards[i].rewardToken,
+                ", Amount: ",
+                peterRewards[i].rewardAmount
+            );
+            unchecked {
+                ++i;
+            }
+        }
+
+        vm.startPrank(alice, alice);
+        staking.claimReward();
+        vm.stopPrank();
+
+        vm.startPrank(bob, bob);
+        staking.claimReward();
+        vm.stopPrank();
+
+        vm.startPrank(peter, peter);
+        staking.claimReward();
+        vm.stopPrank();
+    }
 }
