@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import { IProxy } from "./Interfaces.sol";
 import { console2, BaseScript } from "./Base.s.sol";
 import { ERC1967Proxy } from
-    "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+    "../../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 abstract contract Migrator is BaseScript {
     bytes internal EMPTY_ARGS;
@@ -55,6 +55,6 @@ abstract contract Migrator is BaseScript {
     {
         address logic = deployRaw(filename, EMPTY_ARGS);
         // forgefmt: disable-next-line
-        proxy = deployRaw("ERC1967Proxy.sol:ERC1967Proxy", abi.encode(logic, args));
+        proxy = deployRaw("ERC1967/ERC1967Proxy.sol:ERC1967Proxy", abi.encode(logic, args));
     }
 }
