@@ -44,8 +44,8 @@ contract BK20 is
         external
         initializer
     {
-        __ERC20_init_unchained(name_, symbol_);
         __ERC20Permit_init(name_);
+        __ERC20_init_unchained(name_, symbol_);
         __Manager_init_unchained(authority_, 0);
         __FundForwarder_init_unchained(
             IFundForwarderUpgradeable(address(authority_)).vault()
@@ -106,6 +106,7 @@ contract BK20 is
     )
         internal
         override(ERC20Upgradeable)
+        whenNotPaused
         onlyWhitelisted
     {
         super._beforeTokenTransfer(from_, to_, amount_);

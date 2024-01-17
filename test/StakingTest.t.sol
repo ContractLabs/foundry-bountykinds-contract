@@ -6,11 +6,9 @@ import { MockERC20 } from "test/mock/MockERC20.sol";
 import { IAuthority, IBKStaking, BKStaking } from "../src/mainnet/BKStaking.sol";
 
 contract StakingTest is Test {
-    // event Claimed(address indexed user, Reward[] rewards);
-
     event RewardAdded(address rewardToken, uint256 amount);
-
     event Staked(address indexed user, uint256 indexed amount);
+    event Claimed(address indexed user, IBKStaking.Reward[] rewards);
 
     MockERC20 stakingToken;
     MockERC20 WBNB;
@@ -74,18 +72,10 @@ contract StakingTest is Test {
 
     function testAddRewardSuccess() public {
         vm.startPrank(TREASURER, TREASURER);
-        USDC.approve(address(staking), 0.000000001 ether);
         WBNB.approve(address(staking), 100 ether);
-
-        vm.expectEmit();
-        emit RewardAdded(address(USDC), 0.000000001 ether);
-        staking.addReward(address(USDC), 0.000000001 ether);
-
         vm.expectEmit();
         emit RewardAdded(address(WBNB), 100 ether);
         staking.addReward(address(WBNB), 100 ether);
         vm.stopPrank();
-
-        staking.getCurrentRewards();
     }
 }

@@ -3,14 +3,14 @@ pragma solidity 0.8.20;
 
 // forgefmt: disable-start
 import { 
-    IBKStaking 
+    IBK20 
+} from "../interfaces/IBK20.sol";
+import {
+    IBKStaking
 } from "../interfaces/IBKStaking.sol";
 import { 
     SafeTransferLib 
 } from "../libraries/SafeTransferLib.sol";
-import {
-    IBKStakingToken 
-} from "../interfaces/IBKStakingToken.sol";
 import {
     ERC165CheckerUpgradeable,
     BKFundForwarderUpgradeable
@@ -146,7 +146,7 @@ contract BKStaking is
         // update stored amount
         stakedAmount[sender] = 0;
         totalStakes -= _stakedAmount;
-        IBKStakingToken(stakingToken).burn(address(this), _stakedAmount);
+        IBK20(stakingToken).burn(address(this), _stakedAmount);
 
         uint256 length = _rewardTokens.length();
         uint256 interestRate = (_stakedAmount * MULTIPLER) / totalStakes;
