@@ -141,15 +141,15 @@ contract BKStaking is
         onlyWhitelisted
     {
         address sender = _msgSender();
+        uint256 _totalStakes = totalStakes;
         uint256 _stakedAmount = stakedAmount[sender];
-
         // update stored amount
         stakedAmount[sender] = 0;
         totalStakes -= _stakedAmount;
         IBK20(stakingToken).burn(address(this), _stakedAmount);
 
         uint256 length = _rewardTokens.length();
-        uint256 interestRate = (_stakedAmount * MULTIPLER) / totalStakes;
+        uint256 interestRate = (_stakedAmount * MULTIPLER) / _totalStakes;
 
         Reward[] memory rewards = new Reward[](length);
         address rewardToken;
@@ -158,6 +158,7 @@ contract BKStaking is
             rewardToken = _rewardTokens.at(i);
             // forgefmt: disable-next-line
             rewardAmount = (_rewardAmount[rewardToken] * interestRate) / MULTIPLER;
+            _rewardAmount[rewardToken] -= rewardAmount;
             SafeTransferLib.safeTransfer(rewardToken, sender, rewardAmount);
             rewards[i] = Reward(rewardToken, rewardAmount);
             unchecked {
