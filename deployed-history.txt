@@ -42,7 +42,7 @@ INO
 
 GACHA
 - Proxy:                 0x635fCe835Ae164364245B1B4638aE7118399A887
-- Latest implementation: 0x016f9b6728a081e24ceca17857be39b423d03CC7
+- Latest implementation: 0xaF0224fF679C83cDaE8bEB7f46aDdD09BFAc6fE0
 
 NOTIFY_GATE
 - Contract:              0x9bf92ac2ef3e7f5c20106b205bc3c7b2723c91ee
