@@ -31,11 +31,6 @@ import {
     IFundForwarderUpgradeable 
 } from "../oz-custom/internal-upgradeable/interfaces/IFundForwarderUpgradeable.sol";
 import { 
-    ERC20Upgradeable,
-    IERC20Upgradeable,
-    IERC20BurnableUpgradeable 
-} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
-import { 
     IERC20MetadataUpgradeable
 } from "../oz-custom/oz-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 // forgefmt: disable-end
@@ -48,8 +43,6 @@ contract BKStaking is IBKStaking, ManagerUpgradeable, BKFundForwarderUpgradeable
     uint256 public totalStakes;
     address public stakingToken;
     EnumerableSetUpgradeable.AddressSet private _rewardTokens;
-
-    mapping(address user => uint256) public stakedAmount;
 
     mapping(address => Rewards) private _globalRewards;
     mapping(address => EnumerableSetUpgradeable.UintSet) private _stakeIds;
@@ -206,6 +199,7 @@ contract BKStaking is IBKStaking, ManagerUpgradeable, BKFundForwarderUpgradeable
         uint256 amount = _stakeDetails[account_][stakeId_].stakeAmount;
         _stakeDetails[account_][stakeId_].stakeAmount = 0;
         totalStakes -= amount;
+        SafeTransferLib.safeApprove(stakingToken, _msgSender(), amount);
         IBK20(stakingToken).burn(address(this), amount);
         _stakeIds[account_].remove(stakeId_);
         emit Unstaked(account_, stakeId_, amount);
