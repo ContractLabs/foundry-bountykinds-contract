@@ -6,7 +6,7 @@ pragma solidity ^0.8.17;
 
 import { IERC20Upgradeable, ERC20Upgradeable } from "../ERC20Upgradeable.sol";
 
-interface IERC721BurnableUpgradeable is IERC20Upgradeable {
+interface IERC20BurnableUpgradeable is IERC20Upgradeable {
     function burn(uint256 amount) external;
 
     function burnFrom(address account, uint256 amount) external;
@@ -19,7 +19,7 @@ interface IERC721BurnableUpgradeable is IERC20Upgradeable {
  */
 abstract contract ERC20BurnableUpgradeable is
     ERC20Upgradeable,
-    IERC721BurnableUpgradeable
+    IERC20BurnableUpgradeable
 {
     /**
      * @dev Destroys `amount` tokens from the caller.
