@@ -50,7 +50,7 @@ contract StakingTest is Test {
         USDC = new MockERC20("USD Coin", "USDC", 6);
 
         stakingToken.mintBulk(_setUpUsers(), _setUpAmounts());
-        WBNB.mint(TREASURER, 100 ether);
+        WBNB.mint(TREASURER, 200 ether);
         USDC.mint(TREASURER, 1 ether);
 
         vm.startPrank(OPERATOR, OPERATOR);
@@ -149,6 +149,66 @@ contract StakingTest is Test {
         vm.startPrank(exploiter, exploiter);
         vm.expectRevert(abi.encodeWithSelector(IBKStaking.BKStaking__ZeroValue.selector));
         staking.unstake(stakeId);
+        vm.stopPrank();
+    }
+
+    function testCaseLikeBossWant() public {
+        uint256 stakeId = block.timestamp;
+        // first stake
+        baseStake(vm.addr(1), 1 ether);
+        baseStake(vm.addr(2), 1 ether);
+        baseStake(vm.addr(3), 1 ether);
+        baseStake(vm.addr(4), 1 ether);
+        baseStake(vm.addr(5), 1 ether);
+        baseStake(vm.addr(6), 1 ether);
+        baseStake(vm.addr(7), 1 ether);
+        baseStake(vm.addr(8), 1 ether);
+        baseStake(vm.addr(9), 1 ether);
+        baseStake(vm.addr(10), 1 ether);
+
+        vm.startPrank(TREASURER, TREASURER);
+        WBNB.approve(address(staking), 100 ether);
+        staking.addReward(address(WBNB), 100 ether);
+        vm.stopPrank();
+
+        baseStake(vm.addr(11), 1 ether);
+
+        assertEq(10 ether, staking.getRewards(vm.addr(1), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(2), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(3), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(4), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(5), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(6), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(7), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(8), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(9), stakeId, address(WBNB)));
+        assertEq(10 ether, staking.getRewards(vm.addr(10), stakeId, address(WBNB)));
+        assertEq(0, staking.getRewards(vm.addr(11), stakeId, address(WBNB)));
+
+        vm.warp(block.timestamp + 1000);
+        vm.startPrank(TREASURER, TREASURER);
+        WBNB.approve(address(staking), 10 ether);
+        staking.addReward(address(WBNB), 10 ether);
+        vm.stopPrank();
+
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(1), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(2), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(3), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(4), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(5), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(6), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(7), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(8), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(9), stakeId, address(WBNB)));
+        assertEq(10_909_090_909_090_909_090, staking.getRewards(vm.addr(10), stakeId, address(WBNB)));
+        assertEq(909_090_909_090_909_090, staking.getRewards(vm.addr(11), stakeId, address(WBNB)));
+    }
+
+    function baseStake(address staker, uint256 stakeAmount) public {
+        vm.startPrank(staker, staker);
+        stakingToken.mint(staker, stakeAmount);
+        stakingToken.approve(address(staking), stakeAmount);
+        staking.stake(stakeAmount);
         vm.stopPrank();
     }
 }
