@@ -21,9 +21,6 @@ import {
     ERC20Upgradeable,
     ERC20PermitUpgradeable
 } from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
-import {
-    ERC20BurnableUpgradeable
-} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BK20 is
@@ -31,7 +28,6 @@ contract BK20 is
     ERC20Upgradeable,
     ManagerUpgradeable,
     ERC20PermitUpgradeable,
-    ERC20BurnableUpgradeable,
     BKFundForwarderUpgradeable
 {
     function initialize(
@@ -64,7 +60,6 @@ contract BK20 is
         _mint(to_, amount_);
     }
 
-    /// @inheritdoc IBK20
     function burn(address from_, uint256 amount_) external {
         _burn(from_, amount_);
     }

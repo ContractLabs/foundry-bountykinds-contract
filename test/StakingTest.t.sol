@@ -6,9 +6,12 @@ import { MockERC20 } from "test/mock/MockERC20.sol";
 import { IAuthority, IBKStaking, BKStaking } from "../src/mainnet/BKStaking.sol";
 
 contract StakingTest is Test {
+    error Manager__Unauthorized();
+
+    event Staked(address indexed user, uint256 stakeId, uint256 amount);
+    event Unstaked(address indexed user, uint256 stakeId, uint256 amount);
+    event RewardClaimed(address indexed user, uint256 stakeId, address rewardToken, uint256 reward);
     event RewardAdded(address rewardToken, uint256 amount);
-    event Staked(address indexed user, uint256 indexed amount);
-    event Claimed(address indexed user, IBKStaking.Reward[] rewards);
 
     MockERC20 stakingToken;
     MockERC20 WBNB;
@@ -52,25 +55,60 @@ contract StakingTest is Test {
 
         vm.startPrank(OPERATOR, OPERATOR);
         staking = new BKStaking();
-        staking.initialize(
-            IAuthority(0x38E586659c83c7Ea2cBC7b796b08B8179EddEbC5),
-            address(stakingToken)
-        );
+        staking.initialize(IAuthority(0x38E586659c83c7Ea2cBC7b796b08B8179EddEbC5), address(stakingToken));
         vm.stopPrank();
     }
+
+    // Test read methods
+    function testGetRewards() public {
+        uint256 stakeId = block.timestamp;
+        uint256 expectedRewards = 100 ether;
+        testAddRewardSuccess();
+        assertEq(staking.getRewards(bob, stakeId, address(WBNB)), expectedRewards);
+    }
+
+    function testGetStakingInfo() public {
+        uint256 expectedTotalStaked = 1 ether;
+        uint256 expectedTotalUserStaked = 1 ether;
+        uint256 expectedTotalRewards = 100 ether;
+        testAddRewardSuccess();
+        (uint256 total, uint256 totalUserStaked, uint256 totalRewards) = staking.getStakingInfo(bob, address(WBNB));
+        assertEq(total, expectedTotalStaked);
+        assertEq(totalUserStaked, expectedTotalUserStaked);
+        assertEq(totalRewards, expectedTotalRewards);
+    }
+
+    function testGlobalRewards() public {
+        uint256 expectedRewards = 100 ether;
+        testAddRewardSuccess();
+        assertEq(staking.globalRewards(address(WBNB)), expectedRewards);
+    }
+
+    function testGetStakingDetails() public {
+        testAddRewardSuccess();
+        staking.getStakingDetails(bob, address(WBNB));
+    }
+    // Test write methods
 
     function testStakeSuccess() public {
         vm.startPrank(bob, bob);
         stakingToken.approve(address(staking), 1 ether);
         vm.expectEmit();
-        emit Staked(address(bob), 1 ether);
+        emit Staked(address(bob), block.timestamp, 1 ether);
         staking.stake(1 ether);
         vm.stopPrank();
+    }
 
-        console2.log("Current total staked: ", staking.totalStakes());
+    function testStakeZeroAmountFailed() public {
+        vm.startPrank(bob, bob);
+        vm.expectRevert(abi.encodeWithSelector(IBKStaking.BKStaking__ZeroValue.selector));
+        staking.stake(0);
+        vm.stopPrank();
     }
 
     function testAddRewardSuccess() public {
+        testStakeSuccess();
+
         vm.startPrank(TREASURER, TREASURER);
         WBNB.approve(address(staking), 100 ether);
         vm.expectEmit();
@@ -79,108 +117,38 @@ contract StakingTest is Test {
         vm.stopPrank();
     }
 
-    function testClaimFailure() public {
+    function testAddRewardFailed() public {
         vm.startPrank(TREASURER, TREASURER);
         WBNB.approve(address(staking), 100 ether);
+        vm.expectRevert(abi.encodeWithSelector(IBKStaking.BKStaking__ZeroStaker.selector));
         staking.addReward(address(WBNB), 100 ether);
-        vm.stopPrank();
-
-        vm.startPrank(bob, bob);
-        stakingToken.approve(address(staking), 1 ether);
-        staking.stake(1 ether);
-        IBKStaking.Reward[] memory bobRewards = staking.getStakerReward(bob);
-        for (uint256 i; i < bobRewards.length;) {
-            console2.log(
-                "Token: ",
-                bobRewards[i].rewardToken,
-                ", Amount: ",
-                bobRewards[i].rewardAmount
-            );
-            unchecked {
-                ++i;
-            }
-        }
-        vm.expectRevert(
-            abi.encodeWithSelector(IBKStaking.BKStaking__Unclaimable.selector)
-        );
-        staking.claimReward();
         vm.stopPrank();
     }
 
-    function testClaimSuccess() public {
-        vm.startPrank(TREASURER, TREASURER);
+    function testAddRewardUnauthorizedFailed() public {
+        vm.startPrank(exploiter, exploiter);
         WBNB.approve(address(staking), 100 ether);
+        vm.expectRevert(abi.encodeWithSelector(Manager__Unauthorized.selector));
         staking.addReward(address(WBNB), 100 ether);
-        staking.toggleClaimable();
         vm.stopPrank();
+    }
 
-        vm.startPrank(alice, alice);
-        stakingToken.approve(address(staking), 10 ether);
-        staking.stake(10 ether);
-        vm.stopPrank();
-
+    function testUnstakeAndClaimSuccess() public {
+        uint256 stakeId = block.timestamp;
+        testAddRewardSuccess();
         vm.startPrank(bob, bob);
-        stakingToken.approve(address(staking), 20 ether);
-        staking.stake(20 ether);
+        vm.expectEmit();
+        emit RewardClaimed(bob, stakeId, address(WBNB), 100 ether);
+        emit Unstaked(bob, stakeId, 1 ether);
+        staking.unstake(stakeId);
         vm.stopPrank();
+    }
 
-        vm.startPrank(peter, peter);
-        stakingToken.approve(address(staking), 30 ether);
-        staking.stake(30 ether);
-        vm.stopPrank();
-
-        IBKStaking.Reward[] memory aliceRewards = staking.getStakerReward(alice);
-        console2.log("Alice's rewards");
-        for (uint256 i; i < aliceRewards.length;) {
-            console2.log(
-                "Token: ",
-                aliceRewards[i].rewardToken,
-                ", Amount: ",
-                aliceRewards[i].rewardAmount
-            );
-            unchecked {
-                ++i;
-            }
-        }
-
-        IBKStaking.Reward[] memory bobRewards = staking.getStakerReward(bob);
-        console2.log("Bob's rewards");
-        for (uint256 i; i < bobRewards.length;) {
-            console2.log(
-                "Token: ",
-                bobRewards[i].rewardToken,
-                ", Amount: ",
-                bobRewards[i].rewardAmount
-            );
-            unchecked {
-                ++i;
-            }
-        }
-
-        IBKStaking.Reward[] memory peterRewards = staking.getStakerReward(peter);
-        console2.log("Peter's rewards");
-        for (uint256 i; i < peterRewards.length;) {
-            console2.log(
-                "Token: ",
-                peterRewards[i].rewardToken,
-                ", Amount: ",
-                peterRewards[i].rewardAmount
-            );
-            unchecked {
-                ++i;
-            }
-        }
-
-        vm.startPrank(alice, alice);
-        staking.claimReward();
-        vm.stopPrank();
-
-        vm.startPrank(bob, bob);
-        staking.claimReward();
-        vm.stopPrank();
-
-        vm.startPrank(peter, peter);
-        staking.claimReward();
+    function testUnstakeAndClaimFailed() public {
+        uint256 stakeId = block.timestamp;
+        vm.startPrank(exploiter, exploiter);
+        vm.expectRevert(abi.encodeWithSelector(IBKStaking.BKStaking__ZeroValue.selector));
+        staking.unstake(stakeId);
         vm.stopPrank();
     }
 }
