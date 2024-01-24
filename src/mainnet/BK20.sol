@@ -21,6 +21,10 @@ import {
     ERC20Upgradeable,
     ERC20PermitUpgradeable
 } from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import { 
+    IERC20BurnableUpgradeable,
+    ERC20BurnableUpgradeable
+} from "../oz-custom/oz-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 // forgefmt: disable-end
 
 contract BK20 is
@@ -28,6 +32,7 @@ contract BK20 is
     ERC20Upgradeable,
     ManagerUpgradeable,
     ERC20PermitUpgradeable,
+    ERC20BurnableUpgradeable,
     BKFundForwarderUpgradeable
 {
     function initialize(
@@ -43,56 +48,27 @@ contract BK20 is
         __ERC20Permit_init(name_);
         __ERC20_init_unchained(name_, symbol_);
         __Manager_init_unchained(authority_, 0);
-        __FundForwarder_init_unchained(
-            IFundForwarderUpgradeable(address(authority_)).vault()
-        );
+        __FundForwarder_init_unchained(IFundForwarderUpgradeable(address(authority_)).vault());
         _mint(recipient_, initialSupply_ * 1 ether);
     }
 
     /// @inheritdoc IBK20
-    function mint(
-        address to_,
-        uint256 amount_
-    )
-        external
-        onlyRole(Roles.MINTER_ROLE)
-    {
+    function mint(address to_, uint256 amount_) external onlyRole(Roles.MINTER_ROLE) {
         _mint(to_, amount_);
     }
-
-    function burn(address from_, uint256 amount_) external {
-        _burn(from_, amount_);
-    }
-
     /**
      * @dev Allows only the treasurer to change the vault address.
      *
      * @param vault_ The new vault address.
      */
-    function changeVault(address vault_)
-        external
-        override
-        onlyRole(Roles.TREASURER_ROLE)
-    {
+
+    function changeVault(address vault_) external override onlyRole(Roles.TREASURER_ROLE) {
         _changeVault(vault_);
     }
 
-    function _beforeRecover(bytes memory)
-        internal
-        override
-        whenPaused
-        onlyRole(Roles.OPERATOR_ROLE)
-    { }
+    function _beforeRecover(bytes memory) internal override whenPaused onlyRole(Roles.OPERATOR_ROLE) { }
 
-    function _afterRecover(
-        address,
-        address,
-        uint256,
-        bytes memory
-    )
-        internal
-        override
-    { }
+    function _afterRecover(address, address, uint256, bytes memory) internal override { }
 
     function _beforeTokenTransfer(
         address from_,
@@ -107,13 +83,7 @@ contract BK20 is
         super._beforeTokenTransfer(from_, to_, amount_);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC20Upgradeable)
-        returns (bool)
-    { }
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC20Upgradeable) returns (bool) { }
 
     uint256[50] private __gap;
 }

@@ -20,6 +20,7 @@ interface IBKStaking {
     function unstake(uint256 stakeId) external;
     function unstakeAll() external;
     function addReward(address rewardToken, uint256 amount) external;
+    function setStakingToken(address token) external;
 
     struct Rewards {
         uint256 amount;

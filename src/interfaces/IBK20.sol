@@ -14,11 +14,4 @@ interface IBK20 {
      * @param amount_ The amount of tokens to mint.
      */
     function mint(address to_, uint256 amount_) external;
-
-    /**
-     * @dev Burns tokens to the specified address.
-     * @param from_ The address that will burn the tokens.
-     * @param amount_ The amount of tokens to burn.
-     */
-    function burn(address from_, uint256 amount_) external;
 }

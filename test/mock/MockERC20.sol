@@ -6,13 +6,7 @@ import { ERC20 } from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 contract MockERC20 is ERC20 {
     uint8 decimal;
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        uint8 decimal_
-    )
-        ERC20(name_, symbol_)
-    {
+    constructor(string memory name_, string memory symbol_, uint8 decimal_) ERC20(name_, symbol_) {
         decimal = decimal_;
     }
 
@@ -24,12 +18,7 @@ contract MockERC20 is ERC20 {
         _mint(to, amount);
     }
 
-    function mintBulk(
-        address[] calldata addresses,
-        uint256[] calldata amounts
-    )
-        public
-    {
+    function mintBulk(address[] calldata addresses, uint256[] calldata amounts) public {
         for (uint256 i; i < addresses.length;) {
             _mint(addresses[i], amounts[i]);
             unchecked {
@@ -38,7 +27,7 @@ contract MockERC20 is ERC20 {
         }
     }
 
-    function burn(address from, uint256 amount) public {
-        _burn(from, amount);
+    function burn(uint256 amount) public {
+        _burn(_msgSender(), amount);
     }
 }

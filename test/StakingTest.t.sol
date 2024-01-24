@@ -155,23 +155,23 @@ contract StakingTest is Test {
     function testCaseLikeBossWant() public {
         uint256 stakeId = block.timestamp;
         // first stake
-        baseStake(vm.addr(1), 1 ether);
-        baseStake(vm.addr(2), 1 ether);
-        baseStake(vm.addr(3), 1 ether);
-        baseStake(vm.addr(4), 1 ether);
-        baseStake(vm.addr(5), 1 ether);
-        baseStake(vm.addr(6), 1 ether);
-        baseStake(vm.addr(7), 1 ether);
-        baseStake(vm.addr(8), 1 ether);
-        baseStake(vm.addr(9), 1 ether);
-        baseStake(vm.addr(10), 1 ether);
+        _baseStake(vm.addr(1), 1 ether);
+        _baseStake(vm.addr(2), 1 ether);
+        _baseStake(vm.addr(3), 1 ether);
+        _baseStake(vm.addr(4), 1 ether);
+        _baseStake(vm.addr(5), 1 ether);
+        _baseStake(vm.addr(6), 1 ether);
+        _baseStake(vm.addr(7), 1 ether);
+        _baseStake(vm.addr(8), 1 ether);
+        _baseStake(vm.addr(9), 1 ether);
+        _baseStake(vm.addr(10), 1 ether);
 
         vm.startPrank(TREASURER, TREASURER);
         WBNB.approve(address(staking), 100 ether);
         staking.addReward(address(WBNB), 100 ether);
         vm.stopPrank();
 
-        baseStake(vm.addr(11), 1 ether);
+        _baseStake(vm.addr(11), 1 ether);
 
         assertEq(10 ether, staking.getRewards(vm.addr(1), stakeId, address(WBNB)));
         assertEq(10 ether, staking.getRewards(vm.addr(2), stakeId, address(WBNB)));
@@ -204,7 +204,7 @@ contract StakingTest is Test {
         assertEq(909_090_909_090_909_090, staking.getRewards(vm.addr(11), stakeId, address(WBNB)));
     }
 
-    function baseStake(address staker, uint256 stakeAmount) public {
+    function _baseStake(address staker, uint256 stakeAmount) internal {
         vm.startPrank(staker, staker);
         stakingToken.mint(staker, stakeAmount);
         stakingToken.approve(address(staking), stakeAmount);
